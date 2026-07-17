@@ -1,0 +1,674 @@
+[
+  {
+    "unit": 1,
+    "hanViet": "TƯ",
+    "kanji": "私",
+    "hiragana": "わたし",
+    "meaning": "tôi"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHÂN",
+    "kanji": "人",
+    "hiragana": "ひと",
+    "meaning": "con người"
+  },
+  {
+    "unit": 1,
+    "hanViet": "TAM NHÂN",
+    "kanji": "三人",
+    "hiragana": "さんにん",
+    "meaning": "3 người"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHÂN",
+    "kanji": "タイ人",
+    "hiragana": "タイじん",
+    "meaning": "người Thái"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẤT TÀI",
+    "kanji": "一才",
+    "hiragana": "いっさい",
+    "meaning": "một tuổi"
+  },
+  {
+    "unit": 1,
+    "hanViet": "TÀI",
+    "kanji": "二十五才",
+    "hiragana": "にじゅうごさい",
+    "meaning": "25 tuổi"
+  },
+  {
+    "unit": 1,
+    "hanViet": "ĐẠI HỌC",
+    "kanji": "大学",
+    "hiragana": "だいがく",
+    "meaning": "đại học"
+  },
+  {
+    "unit": 1,
+    "hanViet": "ĐẠI HỌC SINH",
+    "kanji": "大学生",
+    "hiragana": "だいがくせい",
+    "meaning": "sinh viên"
+  },
+  {
+    "unit": 1,
+    "hanViet": "TIÊN SINH",
+    "kanji": "先生",
+    "hiragana": "せんせい",
+    "meaning": "giáo viên"
+  },
+  {
+    "unit": 1,
+    "hanViet": "HỌC SINH",
+    "kanji": "学生",
+    "hiragana": "がくせい",
+    "meaning": "học sinh"
+  },
+  {
+    "unit": 1,
+    "hanViet": "HỌC HIỆU",
+    "kanji": "学校",
+    "hiragana": "がっこう",
+    "meaning": "trường học"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẬT",
+    "kanji": "日",
+    "hiragana": "ひ",
+    "meaning": "mặt trời/ ngày"
+  },
+  {
+    "unit": 1,
+    "hanViet": "TAM NHẬT",
+    "kanji": "三日",
+    "hiragana": "みっか",
+    "meaning": "ngày 3"
+  },
+  {
+    "unit": 1,
+    "hanViet": "BẢN",
+    "kanji": "本",
+    "hiragana": "ほん",
+    "meaning": "sách"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẬT BẢN",
+    "kanji": "日本",
+    "hiragana": "にほん",
+    "meaning": "Nhật Bản"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẬT BẢN NHÂN",
+    "kanji": "日本人",
+    "hiragana": "にほんじん",
+    "meaning": "người Nhật Bản"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẬT BẢN NGỮ",
+    "kanji": "日本語",
+    "hiragana": "にほんご",
+    "meaning": "tiếng Nhật"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NGỮ",
+    "kanji": "ベトナム語",
+    "hiragana": "ベトナムご",
+    "meaning": "tiếng Việt"
+  },
+  {
+    "unit": 1,
+    "hanViet": "NHẬT BẢN NGỮ HỌC HIỆU",
+    "kanji": "日本語学校",
+    "hiragana": "にほんごがっこう",
+    "meaning": "trường Nhật ngữ"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT",
+    "kanji": "一",
+    "hiragana": "いち",
+    "meaning": "một"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT NGUYỆT",
+    "kanji": "一月",
+    "hiragana": "いちがつ",
+    "meaning": "tháng 1"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT NHẬT",
+    "kanji": "一日",
+    "hiragana": "ついたち・いちにち",
+    "meaning": "ngày 1 / 1 ngày"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT NHÂN",
+    "kanji": "一人",
+    "hiragana": "ひとり",
+    "meaning": "1 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHỊ",
+    "kanji": "二",
+    "hiragana": "に",
+    "meaning": "2"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHỊ NGUYỆT",
+    "kanji": "二月",
+    "hiragana": "にがつ",
+    "meaning": "tháng 2"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHỊ NHẬT",
+    "kanji": "二日",
+    "hiragana": "ふつか",
+    "meaning": "ngày 2"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHỊ NHÂN",
+    "kanji": "二人",
+    "hiragana": "ふたり",
+    "meaning": "2 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TAM",
+    "kanji": "三",
+    "hiragana": "さん",
+    "meaning": "3"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TAM NGUYỆT",
+    "kanji": "三月",
+    "hiragana": "さんがつ",
+    "meaning": "tháng 3"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TAM NHẬT",
+    "kanji": "三日",
+    "hiragana": "みっか",
+    "meaning": "ngày 3"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TAM NHÂN",
+    "kanji": "三人",
+    "hiragana": "さんにん",
+    "meaning": "3 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TỨ",
+    "kanji": "四",
+    "hiragana": "よん",
+    "meaning": "4"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TỨ NGUYỆT",
+    "kanji": "四月",
+    "hiragana": "しがつ",
+    "meaning": "tháng 4"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TỨ NHẬT",
+    "kanji": "四日",
+    "hiragana": "よっか",
+    "meaning": "ngày 4"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TỨ NHÂN",
+    "kanji": "四人",
+    "hiragana": "よにん",
+    "meaning": "4 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NGŨ",
+    "kanji": "五",
+    "hiragana": "ご",
+    "meaning": "5"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NGŨ NGUYỆT",
+    "kanji": "五月",
+    "hiragana": "ごがつ",
+    "meaning": "tháng 5"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NGŨ NHẬT",
+    "kanji": "五日",
+    "hiragana": "いつか",
+    "meaning": "ngày 5"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NGŨ NHÂN",
+    "kanji": "五人",
+    "hiragana": "ごにん",
+    "meaning": "5 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "LỤC",
+    "kanji": "六",
+    "hiragana": "ろく",
+    "meaning": "6"
+  },
+  {
+    "unit": 2,
+    "hanViet": "LỤC NGUYỆT",
+    "kanji": "六月",
+    "hiragana": "ろくがつ",
+    "meaning": "tháng 6"
+  },
+  {
+    "unit": 2,
+    "hanViet": "LỤC NHẬT",
+    "kanji": "六日",
+    "hiragana": "むいか",
+    "meaning": "ngày 6"
+  },
+  {
+    "unit": 2,
+    "hanViet": "LỤC NHÂN",
+    "kanji": "六人",
+    "hiragana": "ろくにん",
+    "meaning": "6 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẤT",
+    "kanji": "七",
+    "hiragana": "なな・しち",
+    "meaning": "7"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẤT NGUYỆT",
+    "kanji": "七月",
+    "hiragana": "しちがつ",
+    "meaning": "tháng 7"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẤT NHẬT",
+    "kanji": "七日",
+    "hiragana": "なのか",
+    "meaning": "ngày 7"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẤT NHÂN",
+    "kanji": "七人",
+    "hiragana": "ななにん",
+    "meaning": "7 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁT",
+    "kanji": "八",
+    "hiragana": "はち",
+    "meaning": "8"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁT NGUYỆT",
+    "kanji": "八月",
+    "hiragana": "はちがつ",
+    "meaning": "tháng 8"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁT NHẬT",
+    "kanji": "八日",
+    "hiragana": "ようか",
+    "meaning": "ngày 8"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁT NHÂN",
+    "kanji": "八人",
+    "hiragana": "はちにん",
+    "meaning": "8 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "CỬU",
+    "kanji": "九",
+    "hiragana": "きゅう",
+    "meaning": "9"
+  },
+  {
+    "unit": 2,
+    "hanViet": "CỬU NGUYỆT",
+    "kanji": "九月",
+    "hiragana": "きゅうがつ",
+    "meaning": "tháng 9"
+  },
+  {
+    "unit": 2,
+    "hanViet": "CỬU NHẬT",
+    "kanji": "九日",
+    "hiragana": "ここのか",
+    "meaning": "ngày 9"
+  },
+  {
+    "unit": 2,
+    "hanViet": "CỬU NHÂN",
+    "kanji": "九人",
+    "hiragana": "きゅうにん",
+    "meaning": "9 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẬP",
+    "kanji": "十",
+    "hiragana": "じゅう",
+    "meaning": "10"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẬP NGUYỆT",
+    "kanji": "十月",
+    "hiragana": "じゅうがつ",
+    "meaning": "tháng 10"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẬP NHẬT",
+    "kanji": "十日",
+    "hiragana": "とおか",
+    "meaning": "ngày 10"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THẬP NHÂN",
+    "kanji": "十人",
+    "hiragana": "じゅうにん",
+    "meaning": "10 người"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁCH",
+    "kanji": "百",
+    "hiragana": "ひゃく",
+    "meaning": "trăm"
+  },
+  {
+    "unit": 2,
+    "hanViet": "TAM BÁCH",
+    "kanji": "三百",
+    "hiragana": "さんびゃく",
+    "meaning": "3 trăm"
+  },
+  {
+    "unit": 2,
+    "hanViet": "LỤC BÁCH",
+    "kanji": "六百",
+    "hiragana": "ろっぴゃく",
+    "meaning": "6 trăm"
+  },
+  {
+    "unit": 2,
+    "hanViet": "THIÊN",
+    "kanji": "千",
+    "hiragana": "せん",
+    "meaning": "ngàn"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT THIÊN VIÊN",
+    "kanji": "一千円",
+    "hiragana": "いっせんえん",
+    "meaning": "1 ngàn Yên"
+  },
+  {
+    "unit": 2,
+    "hanViet": "NHẤT VẠN VIÊN",
+    "kanji": "一万円",
+    "hiragana": "いちまんえん",
+    "meaning": "1 vạn Yên"
+  },
+  {
+    "unit": 2,
+    "hanViet": "BÁCH VẠN VIÊN",
+    "kanji": "百万円",
+    "hiragana": "ひゃくまんえん",
+    "meaning": "trăm vạn Yên"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NGUYỆT",
+    "kanji": "月",
+    "hiragana": "つき",
+    "meaning": "mặt trăng"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NHẤT NGUYỆT",
+    "kanji": "一月",
+    "hiragana": "いちがつ",
+    "meaning": "tháng 1"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NGUYỆT DIỆU NHẬT",
+    "kanji": "月曜日",
+    "hiragana": "げつようび",
+    "meaning": "thứ 2"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HỎA",
+    "kanji": "火",
+    "hiragana": "ひ",
+    "meaning": "lửa"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HỎA DIỆU NHẬT",
+    "kanji": "火曜日",
+    "hiragana": "かようび",
+    "meaning": "thứ 3"
+  },
+  {
+    "unit": 3,
+    "hanViet": "THỦY",
+    "kanji": "水",
+    "hiragana": "みず",
+    "meaning": "nước"
+  },
+  {
+    "unit": 3,
+    "hanViet": "THỦY DIỆU NHẬT",
+    "kanji": "水曜日",
+    "hiragana": "すいようび",
+    "meaning": "thứ 4"
+  },
+  {
+    "unit": 3,
+    "hanViet": "MỘC",
+    "kanji": "木",
+    "hiragana": "き",
+    "meaning": "cây"
+  },
+  {
+    "unit": 3,
+    "hanViet": "MỘC DIỆU NHẬT",
+    "kanji": "木曜日",
+    "hiragana": "もくようび",
+    "meaning": "thứ 5"
+  },
+  {
+    "unit": 3,
+    "hanViet": "KIM",
+    "kanji": "お金",
+    "hiragana": "おかね",
+    "meaning": "tiền"
+  },
+  {
+    "unit": 3,
+    "hanViet": "KIM DIỆU NHẬT",
+    "kanji": "金曜日",
+    "hiragana": "きんようび",
+    "meaning": "thứ 6"
+  },
+  {
+    "unit": 3,
+    "hanViet": "THỔ",
+    "kanji": "土",
+    "hiragana": "つち",
+    "meaning": "đất"
+  },
+  {
+    "unit": 3,
+    "hanViet": "THỔ DIỆU NHẬT",
+    "kanji": "土曜日",
+    "hiragana": "どようび",
+    "meaning": "thứ 7"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NHẬT DIỆU NHẬT",
+    "kanji": "日曜日",
+    "hiragana": "にちようび",
+    "meaning": "chủ nhật"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ DIỆU NHẬT",
+    "kanji": "何曜日",
+    "hiragana": "なんようび",
+    "meaning": "thứ mấy"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ NGUYỆT",
+    "kanji": "何月",
+    "hiragana": "なんがつ",
+    "meaning": "tháng mấy"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ NHẬT",
+    "kanji": "何日",
+    "hiragana": "なんにち",
+    "meaning": "ngày mấy"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ NIÊN",
+    "kanji": "何年",
+    "hiragana": "なんねん",
+    "meaning": "năm mấy"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ NIÊN SINH",
+    "kanji": "何年生",
+    "hiragana": "なんねんせい",
+    "meaning": "sinh viên năm mấy"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ TÀI",
+    "kanji": "何才",
+    "hiragana": "なんさい",
+    "meaning": "mấy tuổi"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NHẤT NIÊN",
+    "kanji": "一年",
+    "hiragana": "いちねん",
+    "meaning": "một năm"
+  },
+  {
+    "unit": 3,
+    "hanViet": "TỨ NIÊN",
+    "kanji": "四年",
+    "hiragana": "よねん",
+    "meaning": "bốn năm"
+  },
+  {
+    "unit": 3,
+    "hanViet": "SINH NIÊN NGUYỆT NHẬT",
+    "kanji": "生年月日",
+    "hiragana": "せいねんがっぴ",
+    "meaning": "ngày tháng năm sinh"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ THỜI",
+    "kanji": "何時",
+    "hiragana": "なんじ",
+    "meaning": "mấy giờ"
+  },
+  {
+    "unit": 3,
+    "hanViet": "TỨ THỜI",
+    "kanji": "四時",
+    "hiragana": "よじ",
+    "meaning": "bốn giờ"
+  },
+  {
+    "unit": 3,
+    "hanViet": "THỜI GIAN",
+    "kanji": "時間",
+    "hiragana": "じかん",
+    "meaning": "thời gian"
+  },
+  {
+    "unit": 3,
+    "hanViet": "NHÂN GIAN",
+    "kanji": "人間",
+    "hiragana": "にんげん",
+    "meaning": "nhân loại"
+  },
+  {
+    "unit": 3,
+    "hanViet": "TAM PHÂN",
+    "kanji": "三分",
+    "hiragana": "さんぷん",
+    "meaning": "ba phút"
+  },
+  {
+    "unit": 3,
+    "hanViet": "HÀ PHÂN",
+    "kanji": "何分",
+    "hiragana": "なんぷん",
+    "meaning": "mấy phút"
+  },
+  {
+    "unit": 3,
+    "hanViet": "PHÂN",
+    "kanji": "分かります",
+    "hiragana": "わかります",
+    "meaning": "hiểu"
+  }
+]

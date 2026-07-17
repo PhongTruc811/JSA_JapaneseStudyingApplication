@@ -1,0 +1,11 @@
+Tasks / Features:
+    1: Dark / light mode (switch theme)
+
+    2: Keyboard Navigation
+
+    3: Sử dụng nhiều ngôn (multi language mode)
+
+    4: Data-driven Menu (đỡ hardcode)
+
+    5:
+

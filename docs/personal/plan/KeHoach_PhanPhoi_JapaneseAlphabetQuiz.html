@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kế hoạch triển khai và phân phối Japanese Alphabet Quiz</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --panel: #fffaf2;
+      --panel-2: #fff;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --accent: #b45309;
+      --accent-2: #0f766e;
+      --border: #e6d7bf;
+      --shadow: 0 12px 30px rgba(62, 43, 18, 0.08);
+      --shadow-soft: 0 6px 18px rgba(62, 43, 18, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(180, 83, 9, 0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 24%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 250, 242, 0.98), rgba(255, 255, 255, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px 24px 18px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.76rem;
+      color: var(--accent-2);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 3vw, 2.9rem);
+      line-height: 1.08;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 900px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 14px;
+      align-self: start;
+      background: rgba(255, 250, 242, 0.94);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      padding: 14px;
+    }
+
+    .toc h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .toc a {
+      display: block;
+      text-decoration: none;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .toc a:hover {
+      transform: translateY(-1px);
+      border-color: rgba(180, 83, 9, 0.45);
+      box-shadow: 0 8px 18px rgba(180, 83, 9, 0.08);
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+
+    section {
+      background: var(--panel-2);
+      border: 1px solid #eadfcf;
+      border-radius: 20px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    section > header {
+      padding: 18px 22px 12px;
+      background: linear-gradient(180deg, rgba(255, 250, 242, 0.95), rgba(255, 255, 255, 0.98));
+      border-bottom: 1px solid #efe3d0;
+    }
+
+    section > header h2 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .content-block {
+      padding: 18px 22px 22px;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 1.05rem;
+      color: #1f2937;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    code {
+      background: #f4efe6;
+      border: 1px solid #eadfcf;
+      border-radius: 6px;
+      padding: 0 5px;
+      font-size: 0.95em;
+    }
+
+    .callout {
+      background: linear-gradient(180deg, rgba(255, 248, 236, 0.95), rgba(255, 255, 255, 1));
+      border: 1px solid #efd9b7;
+      border-left: 6px solid var(--accent);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-top: 14px;
+    }
+
+    .callout strong {
+      color: #7c2d12;
+    }
+
+    .highlight {
+      background: rgba(15, 118, 110, 0.08);
+      border-left: 4px solid var(--accent-2);
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #12352f;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      font-size: 0.92rem;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <span class="eyebrow">Phát hành thương mại</span>
+      <h1>Kế hoạch triển khai và phân phối Japanese Alphabet Quiz</h1>
+      <p class="lead">Tài liệu này chuẩn bị app cho tình huống bán cho người dùng cuối, ưu tiên offline-first, đóng gói dễ cài, và giảm tối đa yêu cầu cấu hình kỹ thuật từ người mua.</p>
+      <div class="footer-note">
+        <span class="badge">Offline-first</span>
+        <span class="badge">Java 17 LTS</span>
+        <span class="badge">License cá nhân</span>
+        <span class="badge">Windows .exe / .msi</span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="toc" aria-label="Mục lục">
+        <h2>Mục lục</h2>
+        <a href="#hientrang">Đánh giá hiện trạng</a>
+        <a href="#g1">Giai đoạn 1: Offline-first</a>
+        <a href="#g2">Giai đoạn 2: Đóng gói</a>
+        <a href="#license">Bán hàng và license</a>
+        <a href="#release">Bảo vệ bản phát hành</a>
+        <a href="#docs">Giai đoạn 3: Tài liệu</a>
+        <a href="#checklist">Checklist `.exe`</a>
+        <a href="#criteria">Tiêu chí hoàn thành</a>
+      </aside>
+
+      <main class="content">
+        <section id="hientrang">
+          <header>
+            <h2>Đánh giá hiện trạng</h2>
+          </header>
+          <div class="content-block">
+            <div class="highlight">
+              App đã có dữ liệu quiz local, nhưng phần chạy app và phát hành vẫn còn phụ thuộc vào SQL Server, OAuth, và cấu hình chưa thân thiện với người dùng phổ thông.
+            </div>
+            <ul>
+              <li>Nội dung quiz cốt lõi đã nằm trong file JSON local trong <code>src/main/resources/data</code>.</li>
+              <li>App vẫn còn phụ thuộc vào MS SQL Server qua <code>application.properties</code>, <code>DatabaseConnection</code> và <code>mssql-jdbc</code> trong <code>pom.xml</code>.</li>
+              <li>App có OAuth Google/GitHub, nên các tính năng đăng nhập này cần internet và cấu hình riêng từ nhà phát triển.</li>
+              <li>Một số dữ liệu người dùng hiện đang lưu ở thư mục <code>user_data</code> tương đối, chưa phải vị trí chuẩn theo hệ điều hành.</li>
+              <li>Project đang khai báo Java 24 trong <code>pom.xml</code>, chưa phù hợp nếu muốn phân phối rộng cho nhiều máy.</li>
+            </ul>
+            <p><strong>Kết luận ngắn:</strong> app đã có nền tảng local, nhưng để bán cho người dùng cuối và ưu tiên offline thì cần chuyển hẳn sang mô hình offline-first, không xem SQL Server và OAuth là bắt buộc.</p>
+          </div>
+        </section>
+
+        <section id="g1">
+          <header>
+            <h2>Giai đoạn 1: Chuyển app sang offline-first</h2>
+          </header>
+          <div class="content-block">
+            <h3>1. Loại bỏ phụ thuộc bắt buộc vào MS SQL Server</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Không dùng SQL Server làm yêu cầu bắt buộc khi chạy app offline.
+            </div>
+            <p><strong>Lý do:</strong> Người dùng cuối không nên phải cài database server riêng. Nếu app bán offline, mọi dữ liệu cần lưu được ngay trên máy người dùng.</p>
+            <p><strong>Các hướng khả thi:</strong></p>
+            <ul>
+              <li>Dùng H2 hoặc SQLite dạng embedded file-based.</li>
+              <li>Hoặc giữ JSON/file storage cho toàn bộ dữ liệu cục bộ nếu phạm vi dữ liệu đơn giản.</li>
+            </ul>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Xóa dependency <code>mssql-jdbc</code> khỏi <code>pom.xml</code> nếu không còn dùng.</li>
+              <li>Chọn một cơ chế lưu trữ local duy nhất cho dữ liệu người dùng.</li>
+              <li>Cập nhật <code>DatabaseConnection</code> và <code>DatabaseInitializer</code> để không còn yêu cầu SQL Server khi khởi động.</li>
+              <li>Nếu vẫn muốn giữ DB, dùng embedded DB và tạo file dữ liệu local theo máy người dùng.</li>
+            </ul>
+
+            <h3>2. Chuẩn hóa lưu dữ liệu người dùng</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Chuyển toàn bộ dữ liệu người dùng sang thư mục dữ liệu ứng dụng chuẩn của từng hệ điều hành.
+            </div>
+            <p><strong>Lý do:</strong> Không nên ghi vào thư mục làm việc hiện tại của app, vì vị trí đó có thể không có quyền ghi hoặc thay đổi theo cách cài đặt.</p>
+            <p><strong>Đề xuất vị trí:</strong></p>
+            <ul>
+              <li>Windows: <code>%APPDATA%\JapaneseAlphabetQuiz</code></li>
+              <li>Linux/macOS: <code>~/.japanese-alphabet-quiz</code></li>
+            </ul>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Tạo helper để xác định app data directory.</li>
+              <li>Cập nhật <code>VocabRepository</code>, <code>GrammarRepository</code> và các chỗ ghi file khác sang đường dẫn chuẩn.</li>
+              <li>Đảm bảo thư mục được tạo tự động nếu chưa tồn tại.</li>
+              <li>Có cơ chế backup/restore dữ liệu người dùng đơn giản để tránh mất dữ liệu khi cập nhật hoặc đổi máy.</li>
+            </ul>
+
+            <h3>3. Rà soát OAuth theo hướng tùy chọn</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Không coi Google/GitHub OAuth là tính năng bắt buộc cho bản offline.
+            </div>
+            <p><strong>Lý do:</strong> OAuth cần internet và cần developer credentials. Nếu người dùng dùng offline, app vẫn phải chạy được mà không phụ thuộc vào bên ngoài.</p>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Đưa <code>oauth-config.properties</code> ra khỏi bản phát hành nếu không cần online login.</li>
+              <li>Nếu giữ OAuth, chuyển nó thành tính năng tùy chọn và có thông báo rõ rằng cần mạng.</li>
+              <li>Không hard-code <code>client secret</code> trong repo hoặc trong file phát hành.</li>
+              <li>Cân nhắc bổ sung đăng nhập local bằng email/password hoặc chế độ guest cho bản offline.</li>
+            </ul>
+
+            <h3>4. Hạ phiên bản Java</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Chuẩn hóa về Java 17 LTS.
+            </div>
+            <p><strong>Lý do:</strong> Java 17 có độ phủ rộng hơn, dễ đóng gói và ít rủi ro cho người dùng cuối hơn Java 24.</p>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Cập nhật <code>maven.compiler.source</code> và <code>maven.compiler.target</code> về <code>17</code> trong <code>pom.xml</code>.</li>
+              <li>Kiểm tra lại các API đang dùng để bảo đảm tương thích Java 17.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="g2">
+          <header>
+            <h2>Giai đoạn 2: Đóng gói để bán cho người dùng cuối</h2>
+          </header>
+          <div class="content-block">
+            <h3>1. Tạo file JAR chạy độc lập</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Build ra một file JAR có đủ dependency cần thiết.
+            </div>
+            <p><strong>Lý do:</strong> Người dùng chỉ nên nhận một gói chạy đơn giản, không phải tự ghép thư viện.</p>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Cấu hình Maven Shade Plugin hoặc Assembly Plugin.</li>
+              <li>Kiểm tra app chạy đúng với dữ liệu local sau khi đóng gói.</li>
+              <li>Không để JAR phụ thuộc vào tài nguyên nằm ngoài gói phát hành trừ file dữ liệu người dùng.</li>
+            </ul>
+
+            <h3>2. Tạo bộ cài bằng <code>jpackage</code></h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Dùng <code>jpackage</code> để tạo installer kèm runtime.</div>
+            </div>
+            <p><strong>Lý do:</strong> Giảm yêu cầu cài đặt Java thủ công và phù hợp hơn cho người dùng phổ thông.</p>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Chuẩn bị JDK 17.</li>
+              <li>Tạo installer cho Windows trước, sau đó cân nhắc macOS/Linux nếu cần.</li>
+              <li>Bổ sung icon, tên ứng dụng và metadata cơ bản.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="license">
+          <header>
+            <h2>Mô hình bán hàng và license</h2>
+          </header>
+          <div class="content-block">
+            <div class="grid-2">
+              <div class="callout">
+                <strong>Quyết định:</strong> Bán theo một lần mua, cấp license cá nhân vĩnh viễn cho một người dùng.
+              </div>
+              <div class="callout">
+                <strong>Đánh giá giá 50k/người:</strong> Hợp lý nếu app chỉ là sản phẩm giáo dục nhỏ, offline-first, và bạn giữ phạm vi hỗ trợ vừa phải.
+              </div>
+            </div>
+            <ul>
+              <li>Đây là suy luận theo mức độ đơn giản của app hiện tại, không phải mức giá thị trường cố định.</li>
+              <li>Nếu bạn dự định hỗ trợ cập nhật lâu dài, hoặc thêm bản mobile/web sau này, nên cân nhắc mức giá cao hơn cho gói cá nhân hoặc thêm gói classroom/site license.</li>
+            </ul>
+            <p><strong>Triển khai tốt hơn so với chỉ “gửi file và thu 50k/người”:</strong></p>
+            <ul>
+              <li>Có bản dùng thử miễn phí hoặc bản demo giới hạn để người mua thử trước.</li>
+              <li>Có license key hoặc license file đơn giản để xác nhận quyền dùng.</li>
+              <li>Nếu app vẫn ưu tiên offline, tránh yêu cầu active online bắt buộc.</li>
+              <li>Có điều khoản rõ về số thiết bị được phép cài, ví dụ 1 người dùng = 1 hoặc 2 máy cá nhân.</li>
+            </ul>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Viết chính sách license ngắn gọn: personal, trial, educational hoặc classroom.</li>
+              <li>Thiết kế cơ chế kích hoạt phù hợp với offline, ví dụ file license ký số hoặc mã kích hoạt nhập một lần.</li>
+              <li>Có versioning và changelog để người mua biết họ được cập nhật gì.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="release">
+          <header>
+            <h2>Bảo vệ bản phát hành</h2>
+          </header>
+          <div class="content-block">
+            <div class="callout">
+              <strong>Quyết định:</strong> Ký số file cài đặt/JAR trước khi phân phối.
+            </div>
+            <p><strong>Lý do:</strong> Khi tải phần mềm từ Internet, người dùng cần tin rằng file đến từ đúng nhà phát hành và không bị sửa đổi. Microsoft mô tả digital signatures là cách gắn danh tính nhà phân phối và bảo đảm nội dung không bị thay đổi sau khi ký. <code>jpackage</code> cũng hỗ trợ tạo package cài đặt và runtime image cho app Java tự chứa.</p>
+            <p><strong>Các công việc cần thực hiện:</strong></p>
+            <ul>
+              <li>Ký số installer hoặc file phát hành trước khi gửi cho người mua.</li>
+              <li>Giữ khóa ký ở nơi an toàn.</li>
+              <li>Nếu phát hành trên Windows, chuẩn bị trước cho cảnh báo reputation của SmartScreen khi file mới chưa có nhiều lượt tải.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="docs">
+          <header>
+            <h2>Giai đoạn 3: Tài liệu phát hành</h2>
+          </header>
+          <div class="content-block">
+            <h3>1. Bổ sung README</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Có README rõ ràng cho người dùng cuối.
+            </div>
+            <p><strong>Nội dung cần có:</strong></p>
+            <ul>
+              <li>Yêu cầu hệ thống.</li>
+              <li>Cách cài đặt.</li>
+              <li>Cách chạy app.</li>
+              <li>Cách gỡ cài đặt hoặc xóa dữ liệu local nếu cần.</li>
+              <li>Cách import hoặc khôi phục dữ liệu người dùng.</li>
+            </ul>
+
+            <h3>2. Tài liệu cho bản offline và bản online</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Tách hướng dẫn thành 2 phần nếu vẫn giữ OAuth.
+            </div>
+            <p><strong>Nội dung cần có:</strong></p>
+            <ul>
+              <li>Bản offline: không cần internet, không cần cấu hình DB server.</li>
+              <li>Bản online tùy chọn: hướng dẫn cấu hình OAuth và giải thích yêu cầu kết nối mạng.</li>
+              <li>Không dùng từ ngữ khiến người dùng hiểu nhầm rằng mọi tính năng đều chạy offline.</li>
+            </ul>
+
+            <h3>3. Tài liệu mua hàng</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Bổ sung hướng dẫn mua và nhận license.
+            </div>
+            <p><strong>Nội dung cần có:</strong></p>
+            <ul>
+              <li>Cách thanh toán.</li>
+              <li>Cách nhận file license hoặc code kích hoạt.</li>
+              <li>Số thiết bị được phép dùng.</li>
+              <li>Cách liên hệ khi cần cấp lại license.</li>
+              <li>Chính sách hoàn tiền nếu có.</li>
+            </ul>
+
+            <h3>4. Kiểm tra bản quyền tài nguyên</h3>
+            <div class="callout">
+              <strong>Quyết định:</strong> Rà soát toàn bộ asset và thư viện trước khi bán.</div>
+            </div>
+            <p><strong>Nội dung cần kiểm tra:</strong></p>
+            <ul>
+              <li>Bạn có quyền sử dụng nội dung JSON, hình ảnh, icon và font hay không.</li>
+              <li>Các thư viện bên thứ ba có license tương thích với mục đích thương mại hay không.</li>
+              <li>Có phần nào lấy từ nguồn ngoài mà chưa ghi công hoặc chưa được phép thương mại hay không.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="checklist">
+          <header>
+            <h2>Checklist đóng gói `.exe` trên Windows bằng `jpackage`</h2>
+          </header>
+          <div class="content-block">
+            <ul>
+              <li>Chốt app chạy ổn trên Java 17.</li>
+              <li>Build ra file JAR đã đóng đủ dependency.</li>
+              <li>Chuẩn bị thư mục input chứa JAR và tài nguyên cần đóng gói.</li>
+              <li>Chạy <code>jpackage</code> trên máy Windows để tạo <code>exe</code> hoặc <code>msi</code>.</li>
+              <li>Bổ sung <code>--icon</code>, <code>--name</code>, <code>--vendor</code>, <code>--app-version</code>.</li>
+              <li>Nếu cần, tạo shortcut và launcher properties riêng.</li>
+              <li>Test trên một máy sạch không có Java cài sẵn.</li>
+              <li>Ký số file phát hành trước khi gửi khách.</li>
+              <li>Kiểm tra lại luồng đọc/ghi dữ liệu local sau khi cài đặt.</li>
+              <li>Ghi rõ trong README: người dùng Windows nhận file cài đặt <code>.exe</code> hoặc <code>.msi</code>, còn <code>.jar</code> là artifact kỹ thuật hoặc bản fallback.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="criteria">
+          <header>
+            <h2>Tiêu chí hoàn thành</h2>
+          </header>
+          <div class="content-block">
+            <ul>
+              <li>Khởi động được trên máy sạch mà không cần SQL Server.</li>
+              <li>Các chức năng cốt lõi của quiz chạy hoàn toàn offline.</li>
+              <li>Dữ liệu người dùng lưu đúng vị trí và không bị mất do thư mục làm việc thay đổi.</li>
+              <li>Không còn secrets nhạy cảm trong source code hoặc file phát hành.</li>
+              <li>File phát hành được ký số hoặc có cơ chế xác minh tin cậy.</li>
+              <li>Có license model rõ ràng cho người mua cá nhân.</li>
+              <li>Gói cài đặt có thể chạy độc lập trên máy người dùng bình thường.</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
+

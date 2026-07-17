@@ -1,0 +1,190 @@
+Kế hoạch triển khai và phân phối ứng dụng Java Swing Japanese Alphabet Quiz
+
+Mục tiêu của tài liệu này là chuẩn bị app cho tình huống phát hành thương mại, trong đó người dùng có thể cài và dùng offline trên máy của họ mà không cần cấu hình phức tạp.
+
+Đánh giá hiện trạng
+
+- Nội dung quiz cốt lõi đã nằm trong file JSON local trong `src/main/resources/data`.
+- App vẫn còn phụ thuộc vào MS SQL Server qua `application.properties`, `DatabaseConnection` và `mssql-jdbc` trong `pom.xml`.
+- App có OAuth Google/GitHub, nên các tính năng đăng nhập này cần internet và cấu hình riêng từ nhà phát triển.
+- Một số dữ liệu người dùng hiện đang lưu ở thư mục `user_data` tương đối, chưa phải vị trí chuẩn theo hệ điều hành.
+- Project đang khai báo Java 24 trong `pom.xml`, chưa phù hợp nếu muốn phân phối rộng cho nhiều máy.
+
+Kết luận ngắn: app đã có nền tảng local, nhưng để bán cho người dùng cuối và ưu tiên offline thì cần chuyển hẳn sang mô hình offline-first, không xem SQL Server và OAuth là bắt buộc.
+
+Giai đoạn 1: Chuyển app sang offline-first
+
+1. Loại bỏ phụ thuộc bắt buộc vào MS SQL Server
+
+Quyết định: Không dùng SQL Server làm yêu cầu bắt buộc khi chạy app offline.
+
+Lý do: Người dùng cuối không nên phải cài database server riêng. Nếu app bán offline, mọi dữ liệu cần lưu được ngay trên máy người dùng.
+
+Các hướng khả thi:
+- Dùng H2 hoặc SQLite dạng embedded file-based.
+- Hoặc giữ JSON/file storage cho toàn bộ dữ liệu cục bộ nếu phạm vi dữ liệu đơn giản.
+
+Các công việc cần thực hiện:
+- Xóa dependency `mssql-jdbc` khỏi `pom.xml` nếu không còn dùng.
+- Chọn một cơ chế lưu trữ local duy nhất cho dữ liệu người dùng.
+- Cập nhật `DatabaseConnection` và `DatabaseInitializer` để không còn yêu cầu SQL Server khi khởi động.
+- Nếu vẫn muốn giữ DB, dùng embedded DB và tạo file dữ liệu local theo máy người dùng.
+
+2. Chuẩn hóa lưu dữ liệu người dùng
+
+Quyết định: Chuyển toàn bộ dữ liệu người dùng sang thư mục dữ liệu ứng dụng chuẩn của từng hệ điều hành.
+
+Lý do: Không nên ghi vào thư mục làm việc hiện tại của app, vì vị trí đó có thể không có quyền ghi hoặc thay đổi theo cách cài đặt.
+
+Đề xuất vị trí:
+- Windows: `%APPDATA%\JapaneseAlphabetQuiz`
+- Linux/macOS: `~/.japanese-alphabet-quiz`
+
+Các công việc cần thực hiện:
+- Tạo helper để xác định app data directory.
+- Cập nhật `VocabRepository`, `GrammarRepository` và các chỗ ghi file khác sang đường dẫn chuẩn.
+- Đảm bảo thư mục được tạo tự động nếu chưa tồn tại.
+- Có cơ chế backup/restore dữ liệu người dùng đơn giản để tránh mất dữ liệu khi cập nhật hoặc đổi máy.
+
+3. Rà soát OAuth theo hướng tùy chọn
+
+Quyết định: Không coi Google/GitHub OAuth là tính năng bắt buộc cho bản offline.
+
+Lý do: OAuth cần internet và cần developer credentials. Nếu người dùng dùng offline, app vẫn phải chạy được mà không phụ thuộc vào bên ngoài.
+
+Các công việc cần thực hiện:
+- Đưa `oauth-config.properties` ra khỏi bản phát hành nếu không cần online login.
+- Nếu giữ OAuth, chuyển nó thành tính năng tùy chọn và có thông báo rõ rằng cần mạng.
+- Không hard-code `client secret` trong repo hoặc trong file phát hành.
+- Cân nhắc bổ sung đăng nhập local bằng email/password hoặc chế độ guest cho bản offline.
+
+4. Hạ phiên bản Java
+
+Quyết định: Chuẩn hóa về Java 17 LTS.
+
+Lý do: Java 17 có độ phủ rộng hơn, dễ đóng gói và ít rủi ro cho người dùng cuối hơn Java 24.
+
+Các công việc cần thực hiện:
+- Cập nhật `maven.compiler.source` và `maven.compiler.target` về `17` trong `pom.xml`.
+- Kiểm tra lại các API đang dùng để bảo đảm tương thích Java 17.
+
+Giai đoạn 2: Đóng gói để bán cho người dùng cuối
+
+1. Tạo file JAR chạy độc lập
+
+Quyết định: Build ra một file JAR có đủ dependency cần thiết.
+
+Lý do: Người dùng chỉ nên nhận một gói chạy đơn giản, không phải tự ghép thư viện.
+
+Các công việc cần thực hiện:
+- Cấu hình Maven Shade Plugin hoặc Assembly Plugin.
+- Kiểm tra app chạy đúng với dữ liệu local sau khi đóng gói.
+- Không để JAR phụ thuộc vào tài nguyên nằm ngoài gói phát hành trừ file dữ liệu người dùng.
+
+2. Tạo bộ cài bằng `jpackage`
+
+Quyết định: Dùng `jpackage` để tạo installer kèm runtime.
+
+Lý do: Giảm yêu cầu cài đặt Java thủ công và phù hợp hơn cho người dùng phổ thông.
+
+Các công việc cần thực hiện:
+- Chuẩn bị JDK 17.
+- Tạo installer cho Windows trước, sau đó cân nhắc macOS/Linux nếu cần.
+- Bổ sung icon, tên ứng dụng và metadata cơ bản.
+
+3. Mô hình bán hàng và license
+
+Quyết định: Bán theo một lần mua, cấp license cá nhân vĩnh viễn cho một người dùng.
+
+Đánh giá về giá 50k/người:
+- Với app giáo dục nhỏ, offline-first, giá 50k cho một license cá nhân là hợp lý nếu phạm vi tính năng vừa phải.
+- Đây là suy luận của mình theo mức độ đơn giản của app hiện tại, không phải mức giá thị trường cố định.
+- Nếu bạn dự định hỗ trợ cập nhật lâu dài, hoặc thêm bản mobile/web sau này, nên cân nhắc mức giá cao hơn cho gói cá nhân hoặc thêm gói classroom/site license.
+
+Triển khai tốt hơn so với chỉ “gửi file và thu 50k/người”:
+- Có bản dùng thử miễn phí hoặc bản demo giới hạn để người mua thử trước.
+- Có license key hoặc license file đơn giản để xác nhận quyền dùng.
+- Nếu app vẫn ưu tiên offline, tránh yêu cầu active online bắt buộc.
+- Có điều khoản rõ về số thiết bị được phép cài, ví dụ 1 người dùng = 1 hoặc 2 máy cá nhân.
+
+Các công việc cần thực hiện:
+- Viết chính sách license ngắn gọn: personal, trial, educational hoặc classroom.
+- Thiết kế cơ chế kích hoạt phù hợp với offline, ví dụ file license ký số hoặc mã kích hoạt nhập một lần.
+- Có versioning và changelog để người mua biết họ được cập nhật gì.
+
+4. Bảo vệ bản phát hành
+
+Quyết định: Ký số file cài đặt/JAR trước khi phân phối.
+
+Lý do: Khi tải phần mềm từ Internet, người dùng cần tin rằng file đến từ đúng nhà phát hành và không bị sửa đổi. Microsoft mô tả digital signatures là cách gắn danh tính nhà phân phối và bảo đảm nội dung không bị thay đổi sau khi ký. `jpackage` cũng hỗ trợ tạo package cài đặt và runtime image cho app Java tự chứa.
+
+Các công việc cần thực hiện:
+- Ký số installer hoặc file phát hành trước khi gửi cho người mua.
+- Giữ khóa ký ở nơi an toàn.
+- Nếu phát hành trên Windows, chuẩn bị trước cho cảnh báo reputation của SmartScreen khi file mới chưa có nhiều lượt tải.
+
+Giai đoạn 3: Tài liệu phát hành
+
+1. Bổ sung README
+
+Quyết định: Có README rõ ràng cho người dùng cuối.
+
+Nội dung cần có:
+- Yêu cầu hệ thống.
+- Cách cài đặt.
+- Cách chạy app.
+- Cách gỡ cài đặt hoặc xóa dữ liệu local nếu cần.
+- Cách import hoặc khôi phục dữ liệu người dùng.
+
+2. Tài liệu cho bản offline và bản online
+
+Quyết định: Tách hướng dẫn thành 2 phần nếu vẫn giữ OAuth.
+
+Nội dung cần có:
+- Bản offline: không cần internet, không cần cấu hình DB server.
+- Bản online tùy chọn: hướng dẫn cấu hình OAuth và giải thích yêu cầu kết nối mạng.
+- Không dùng từ ngữ khiến người dùng hiểu nhầm rằng mọi tính năng đều chạy offline.
+
+3. Tài liệu mua hàng
+
+Quyết định: Bổ sung hướng dẫn mua và nhận license.
+
+Nội dung cần có:
+- Cách thanh toán.
+- Cách nhận file license hoặc code kích hoạt.
+- Số thiết bị được phép dùng.
+- Cách liên hệ khi cần cấp lại license.
+- Chính sách hoàn tiền nếu có.
+
+4. Kiểm tra bản quyền tài nguyên
+
+Quyết định: Rà soát toàn bộ asset và thư viện trước khi bán.
+
+Nội dung cần kiểm tra:
+- Bạn có quyền sử dụng nội dung JSON, hình ảnh, icon và font hay không.
+- Các thư viện bên thứ ba có license tương thích với mục đích thương mại hay không.
+- Có phần nào lấy từ nguồn ngoài mà chưa ghi công hoặc chưa được phép thương mại hay không.
+
+5. Checklist đóng gói `.exe` trên Windows bằng `jpackage`
+
+- Chốt app chạy ổn trên Java 17.
+- Build ra file JAR đã đóng đủ dependency.
+- Chuẩn bị thư mục input chứa JAR và tài nguyên cần đóng gói.
+- Chạy `jpackage` trên máy Windows để tạo `exe` hoặc `msi`.
+- Bổ sung `--icon`, `--name`, `--vendor`, `--app-version`.
+- Nếu cần, tạo shortcut và launcher properties riêng.
+- Test trên một máy sạch không có Java cài sẵn.
+- Ký số file phát hành trước khi gửi khách.
+- Kiểm tra lại luồng đọc/ghi dữ liệu local sau khi cài đặt.
+- Ghi rõ trong README: người dùng Windows nhận file cài đặt `.exe` hoặc `.msi`, còn `.jar` là artifact kỹ thuật hoặc bản fallback.
+
+Tiêu chí hoàn thành
+
+App được xem là sẵn sàng phát hành khi:
+- Khởi động được trên máy sạch mà không cần SQL Server.
+- Các chức năng cốt lõi của quiz chạy hoàn toàn offline.
+- Dữ liệu người dùng lưu đúng vị trí và không bị mất do thư mục làm việc thay đổi.
+- Không còn secrets nhạy cảm trong source code hoặc file phát hành.
+- File phát hành được ký số hoặc có cơ chế xác minh tin cậy.
+- Có license model rõ ràng cho người mua cá nhân.
+- Gói cài đặt có thể chạy độc lập trên máy người dùng bình thường.

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "q1",
+    "type": "MCQ",
+    "question": "Chọn trợ từ đúng: 私__学生です。",
+    "options": [
+      "wa",
+      "ga",
+      "no"
+    ],
+    "answer": "wa"
+  },
+  {
+    "id": "q2",
+    "type": "MCQ",
+    "question": "Chọn thì quá khứ của 食べる.",
+    "options": [
+      "食べた",
+      "食べます",
+      "食べない"
+    ],
+    "answer": "食べた"
+  },
+  {
+    "id": "q3",
+    "type": "MCQ",
+    "question": "Cụm nào là cách nói lịch sự của “thì/câu trần thuật” trong tiếng Nhật?",
+    "options": [
+      "です",
+      "だ",
+      "ます"
+    ],
+    "answer": "です"
+  },
+  {
+    "id": "q6",
+    "type": "MCQ",
+    "question": "Hỏi sinh nhật của ai đó bằng tiếng Nhật?",
+    "options": [
+      "たんじょうびはいつですか",
+      "なんさいですか",
+      "どこですか"
+    ],
+    "answer": "たんじょうびはいつですか"
+  },
+  {
+    "id": "q7",
+    "type": "MCQ",
+    "question": "Hỏi tuổi của ai đó bằng tiếng Nhật?",
+    "options": [
+      "なんさいですか",
+      "いくらですか",
+      "なんかいですか"
+    ],
+    "answer": "なんさいですか"
+  },
+  {
+    "id": "q8",
+    "type": "MCQ",
+    "question": "Hỏi nghề nghiệp của ai đó bằng tiếng Nhật?",
+    "options": [
+      "しごとはなんですか",
+      "どこですか",
+      "だれのですか"
+    ],
+    "answer": "しごとはなんですか"
+  },
+  {
+    "id": "q9",
+    "type": "MCQ",
+    "question": "Hỏi địa điểm bằng tiếng Nhật?",
+    "options": [
+      "どこですか",
+      "いくらですか",
+      "なんにちですか"
+    ],
+    "answer": "どこですか"
+  },
+  {
+    "id": "q10",
+    "type": "MCQ",
+    "question": "Hỏi giá tiền bằng tiếng Nhật?",
+    "options": [
+      "いくらですか",
+      "なんえんですか",
+      "どこのですか"
+    ],
+    "answer": "いくらですか"
+  },
+  {
+    "id": "q11",
+    "type": "MCQ",
+    "question": "Hỏi số tầng bằng tiếng Nhật?",
+    "options": [
+      "なんかいですか",
+      "なんさいですか",
+      "だれのですか"
+    ],
+    "answer": "なんかいですか"
+  },
+  {
+    "id": "q12",
+    "type": "MCQ",
+    "question": "Hỏi món đồ thuộc về ai bằng tiếng Nhật?",
+    "options": [
+      "だれのですか",
+      "どこですか",
+      "なにでできていますか"
+    ],
+    "answer": "だれのですか"
+  },
+  {
+    "id": "q13",
+    "type": "MCQ",
+    "question": "Hỏi nguồn gốc hoặc xuất xứ của vật gì đó bằng tiếng Nhật?",
+    "options": [
+      "どこのですか",
+      "どこですか",
+      "いくらですか"
+    ],
+    "answer": "どこのですか"
+  },
+  {
+    "id": "q14",
+    "type": "MCQ",
+    "question": "Hỏi một vật được làm bằng gì bằng tiếng Nhật?",
+    "options": [
+      "なにでできていますか",
+      "なんのですか",
+      "どこですか"
+    ],
+    "answer": "なにでできていますか"
+  },
+  {
+    "id": "q15",
+    "type": "MCQ",
+    "question": "Hỏi một thứ có giá bao nhiêu yên bằng tiếng Nhật?",
+    "options": [
+      "なんえんですか",
+      "いくらですか",
+      "なんかいですか"
+    ],
+    "answer": "なんえんですか"
+  },
+  {
+    "id": "q16",
+    "type": "MCQ",
+    "question": "Hỏi có bao nhiêu ngày bằng tiếng Nhật?",
+    "options": [
+      "なんにちですか",
+      "なんさいですか",
+      "なんかいですか"
+    ],
+    "answer": "なんにちですか"
+  }
+]

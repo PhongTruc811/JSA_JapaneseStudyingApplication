@@ -1,0 +1,249 @@
+[
+  {
+    "kana": "ア",
+    "romaji": "a",
+    "type": "gojuuon",
+    "hira": "あ"
+  },
+  {
+    "kana": "イ",
+    "romaji": "i",
+    "type": "gojuuon",
+    "hira": "い"
+  },
+  {
+    "kana": "ウ",
+    "romaji": "u",
+    "type": "gojuuon",
+    "hira": "う"
+  },
+  {
+    "kana": "エ",
+    "romaji": "e",
+    "type": "gojuuon",
+    "hira": "え"
+  },
+  {
+    "kana": "オ",
+    "romaji": "o",
+    "type": "gojuuon",
+    "hira": "お"
+  },
+  {
+    "kana": "カ",
+    "romaji": "ka",
+    "type": "gojuuon",
+    "hira": "か"
+  },
+  {
+    "kana": "キ",
+    "romaji": "ki",
+    "type": "gojuuon",
+    "hira": "き"
+  },
+  {
+    "kana": "ク",
+    "romaji": "ku",
+    "type": "gojuuon",
+    "hira": "く"
+  },
+  {
+    "kana": "ケ",
+    "romaji": "ke",
+    "type": "gojuuon",
+    "hira": "け"
+  },
+  {
+    "kana": "コ",
+    "romaji": "ko",
+    "type": "gojuuon",
+    "hira": "こ"
+  },
+  {
+    "kana": "ナ",
+    "romaji": "na",
+    "type": "gojuuon",
+    "hira": "な"
+  },
+  {
+    "kana": "ニ",
+    "romaji": "ni",
+    "type": "gojuuon",
+    "hira": "に"
+  },
+  {
+    "kana": "ヌ",
+    "romaji": "nu",
+    "type": "gojuuon",
+    "hira": "ぬ"
+  },
+  {
+    "kana": "ネ",
+    "romaji": "ne",
+    "type": "gojuuon",
+    "hira": "ね"
+  },
+  {
+    "kana": "ノ",
+    "romaji": "no",
+    "type": "gojuuon",
+    "hira": "の"
+  },
+  {
+    "kana": "ラ",
+    "romaji": "ra",
+    "type": "gojuuon",
+    "hira": "ら"
+  },
+  {
+    "kana": "リ",
+    "romaji": "ri",
+    "type": "gojuuon",
+    "hira": "り"
+  },
+  {
+    "kana": "ル",
+    "romaji": "ru",
+    "type": "gojuuon",
+    "hira": "る"
+  },
+  {
+    "kana": "レ",
+    "romaji": "re",
+    "type": "gojuuon",
+    "hira": "れ"
+  },
+  {
+    "kana": "ロ",
+    "romaji": "ro",
+    "type": "gojuuon",
+    "hira": "ろ"
+  },
+  {
+    "kana": "ヤ",
+    "romaji": "ya",
+    "type": "gojuuon",
+    "hira": "や"
+  },
+  {
+    "kana": "ユ",
+    "romaji": "yu",
+    "type": "gojuuon",
+    "hira": "ゆ"
+  },
+  {
+    "kana": "ヨ",
+    "romaji": "yo",
+    "type": "gojuuon",
+    "hira": "よ"
+  },
+  {
+    "kana": "サ",
+    "romaji": "sa",
+    "type": "gojuuon",
+    "hira": "さ"
+  },
+  {
+    "kana": "シ",
+    "romaji": "shi",
+    "type": "gojuuon",
+    "hira": "し"
+  },
+  {
+    "kana": "ス",
+    "romaji": "su",
+    "type": "gojuuon",
+    "hira": "す"
+  },
+  {
+    "kana": "セ",
+    "romaji": "se",
+    "type": "gojuuon",
+    "hira": "せ"
+  },
+
+  {
+    "kana": "ト",
+    "romaji": "to",
+    "type": "gojuuon",
+    "hira": "と"
+  },
+  {
+    "kana": "マ",
+    "romaji": "ma",
+    "type": "gojuuon",
+    "hira": "ま"
+  },
+  {
+    "kana": "ミ",
+    "romaji": "mi",
+    "type": "gojuuon",
+    "hira": "み"
+  },
+  {
+    "kana": "ム",
+    "romaji": "mu",
+    "type": "gojuuon",
+    "hira": "む"
+  },
+  {
+    "kana": "メ",
+    "romaji": "me",
+    "type": "gojuuon",
+    "hira": "め"
+  },
+  {
+    "kana": "モ",
+    "romaji": "mo",
+    "type": "gojuuon",
+    "hira": "も"
+  },
+  {
+    "kana": "ワ",
+    "romaji": "wa",
+    "type": "gojuuon",
+    "hira": "わ"
+  },
+  {
+    "kana": "ヲ",
+    "romaji": "wo",
+    "type": "gojuuon",
+    "hira": "を"
+  },
+  {
+    "kana": "タ",
+    "romaji": "ta",
+    "type": "gojuuon",
+    "hira": "た"
+  },
+  {
+    "kana": "チ",
+    "romaji": "chi",
+    "type": "gojuuon",
+    "hira": "ち"
+  },
+  {
+    "kana": "ツ",
+    "romaji": "tsu",
+    "type": "gojuuon",
+    "hira": "つ"
+  },
+  {
+    "kana": "テ",
+    "romaji": "te",
+    "type": "gojuuon",
+    "hira": "て"
+  },
+  {
+    "kana": "ン",
+    "romaji": "n",
+    "type": "gojuuon",
+    "hira": "ん"
+  },
+  {
+    "kana": "ソ",
+    "romaji": "so",
+    "type": "gojuuon",
+    "hira": "そ"
+  }
+]
