@@ -1,0 +1,70 @@
+
+1. Mở powershell tại folder chứa source project: C:\Users\phong\Desktop\Spring26\JPD113\JapaneseAlphabetQuiz>
+
+2. Clean & Build project
+	
+	Chạy lệnh: mvn clean package
+	
+	hoặc mvn clean package -DskipTests (Nếu dự án có Test, dùng lệnh này để bỏ qua test) 
+
+3. Gom (copy) tất cả thư viện và dependency (trong pom.xml) dự án đang sử dụng vào runtime 
+
+	3.1:
+
+		mvn dependency:copy-dependencies `
+  '-DincludeScope=runtime' `
+  '-DoutputDirectory=target/package/lib'
+
+	3.2: Chép JAR chính vào thư mục đóng gói với tên JSA.jar:
+
+		Copy-Item `
+  -LiteralPath target\JSA-1.0-SNAPSHOT.jar `
+  -Destination target\package\JSA.jar `
+  -Force
+
+4. Tạo JSA.exe với icon riêng
+
+	4.1: Dùng thư mục output mới để không đụng vào bản cũ:
+
+New-Item `
+  -ItemType Directory `
+  -Force `
+  -Path output\JSA-Release-2026-07-26
+
+	4.2: Chạy jpackage:
+
+jpackage `
+  --type app-image `
+  --name JSA `
+  --input target\package `
+  --main-jar JSA.jar `
+  --main-class com.mescode.japanese.app.launch.Main `
+  --icon "$PWD\src\main\resources\icons\AppIcon.ico" `
+  --dest output\JSA-Release-2026-07-26 `
+  --vendor "MES Code" `
+  --description "JSA - Japanese Studying App" `
+  --app-version 1.0.0
+
+	=> Đoạn lệnh này dùng để biến dự án Java của bạn thành một thư mục ứng dụng hoàn chỉnh (App Image) có thể chạy trực tiếp trên Windows (chứa sẵn file .exe, biểu tượng icon, và bộ chạy Java riêng) mà máy người dùng không cần cài sẵn Java (JRE/JDK).
+
+
+5. Kiểm tra bản đóng gói (chạy từng lệnh trong pwsh)
+
+Test-Path output\JSA-Release-2026-07-26\JSA\JSA.exe
+Test-Path output\JSA-Release-2026-07-26\JSA\app\JSA.cfg
+Test-Path output\JSA-Release-2026-07-26\JSA\app\JSA.jar
+Test-Path output\JSA-Release-2026-07-26\JSA\runtime\bin\server\jvm.dll
+
+6. Lệnh chạy thử app:
+
+	Start-Process output\JSA-Release-2026-07-26\JSA\JSA.exe
+
+7. Đóng gói zip để share cho người khác
+
+Compress-Archive `
+  -LiteralPath output\JSA-Release-2026-07-26\JSA `
+  -DestinationPath output\JSA-Windows-2026-07-26.zip
+
+
+
+

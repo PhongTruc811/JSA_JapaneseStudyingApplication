@@ -1,0 +1,16 @@
+{
+  "tracks": [
+    {
+      "id": "track-01",
+      "title": "Hold My Hand",
+      "artist": "Mespeace",
+      "resource": "/music/tracks/HoldMyHand.wav"
+    },
+    {
+      "id": "track-02",
+      "title": "U already know",
+      "artist": "Stez",
+      "resource": "/music/tracks/luvdemo.wav"
+    }
+  ]
+}

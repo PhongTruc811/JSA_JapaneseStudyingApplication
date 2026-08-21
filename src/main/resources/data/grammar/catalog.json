@@ -1,0 +1,26 @@
+{
+  "chapters": [
+    {
+      "id": "chapter-1",
+      "number": 1,
+      "title": "Tự giới thiệu",
+      "description": "Làm quen với câu danh từ, câu hỏi và các trợ từ の・と・も.",
+      "available": true,
+      "contentResource": "/data/grammar/chapter-1.json"
+    },
+    {
+      "id": "chapter-2",
+      "number": 2,
+      "title": "Chapter 2",
+      "description": "Nội dung sẽ được bổ sung trong bản cập nhật tiếp theo.",
+      "available": false
+    },
+    {
+      "id": "chapter-3",
+      "number": 3,
+      "title": "Chapter 3",
+      "description": "Nội dung sẽ được bổ sung trong bản cập nhật tiếp theo.",
+      "available": false
+    }
+  ]
+}

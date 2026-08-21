@@ -65,3 +65,12 @@ tmp_pdf_page1.txt
 
 # Local generated release packages
 /output/
+
+# Bỏ qua các file được sinh ra trong quá trình đóng gói / chạy app,
+distribution/
+runtime/
+target/
+build/
+out/
+.idea/
+*.iml

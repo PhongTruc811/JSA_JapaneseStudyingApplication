@@ -1,0 +1,489 @@
+{
+  "id": "chapter-1",
+  "number": 1,
+  "title": "Tự giới thiệu",
+  "description": "Sáu mẫu câu nền tảng để giới thiệu bản thân và hỏi thông tin đơn giản.",
+  "available": true,
+  "grammarPoints": [
+    {
+      "id": "gp-1-desu",
+      "pattern": "N1 は N2 です",
+      "meaning": "N1 là N2.",
+      "explanation": "は đánh dấu chủ đề đang được nói tới. です đứng cuối câu để tạo sắc thái lịch sự.",
+      "commonMistake": "Trong vai trò trợ từ, は(ha) được đọc là わ(wa)",
+      "examples": [
+        {
+          "japanese": "パクさんは学生です。",
+          "reading": "パクさん は がくせい です。",
+          "vietnamese": "Bạn Pak là học sinh."
+        },
+        {
+          "japanese": "私は中国人です。",
+          "reading": "わたし は ちゅうごくじん です。",
+          "vietnamese": "Tôi là người Trung Quốc."
+        },
+        {
+          "japanese": "私は26歳です。",
+          "reading": "わたし は にじゅうろくさい です。",
+          "vietnamese": "Tôi 26 tuổi."
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-1-1",
+          "grammarPointId": "gp-1-desu",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Chọn trợ từ đúng: 私___学生です。",
+          "reading": "わたし ___ がくせい です。",
+          "options": ["は", "の", "も"],
+          "answer": ["は"],
+          "explanation": "私は学生です nghĩa là “Tôi là học sinh”; は đánh dấu 私 là chủ đề."
+        },
+        {
+          "id": "practice-gp-1-2",
+          "grammarPointId": "gp-1-desu",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Bạn Pak là người Hàn Quốc.",
+          "options": ["韓国人です。", "パクさんは"],
+          "answer": ["パクさんは", "韓国人です。"],
+          "explanation": "Đặt chủ đề パクさん trước は, sau đó nêu thông tin 韓国人です."
+        },
+        {
+          "id": "practice-gp-1-3",
+          "grammarPointId": "gp-1-desu",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Chọn câu đúng với nghĩa “Tôi là Carlos”.",
+          "options": ["私はカルロスです。", "私のカルロスです。", "私もカルロスですか。"],
+          "answer": ["私はカルロスです。"],
+          "explanation": "Mẫu N1 は N2 です được dùng để giới thiệu 私 là カルロス."
+        }
+      ]
+    },
+    {
+      "id": "gp-2-question",
+      "pattern": "N1 は N2 ですか",
+      "meaning": "N1 có phải là N2 không?",
+      "explanation": "Thêm か vào cuối câu lịch sự để tạo câu hỏi. Trả lời bằng はい hoặc いいえ rồi nhắc lại thông tin cần thiết.",
+      "commonMistake": "Không dùng dấu hỏi thay cho か trong cấu trúc ngữ pháp; か mới là thành phần tạo câu hỏi.",
+      "examples": [
+        {
+          "japanese": "ワンさんは学生ですか。",
+          "reading": "ワンさん は がくせい です か。",
+          "vietnamese": "Bạn Wang có phải là học sinh không?"
+        },
+        {
+          "japanese": "はい、学生です。",
+          "reading": "はい、がくせい です。",
+          "vietnamese": "Vâng, tôi là học sinh."
+        },
+        {
+          "japanese": "いいえ、学生じゃありません。",
+          "reading": "いいえ、がくせい じゃ ありません。",
+          "vietnamese": "Không, tôi không phải là học sinh."
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-2-1",
+          "grammarPointId": "gp-2-question",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Chọn câu trả lời phù hợp khi bạn không phải là học sinh.",
+          "options": ["はい、学生です。", "いいえ、学生じゃありません。", "学生ですか。"],
+          "answer": ["いいえ、学生じゃありません。"],
+          "explanation": "いいえ mở đầu câu trả lời phủ định; じゃありません là dạng phủ định lịch sự của です."
+        },
+        {
+          "id": "practice-gp-2-2",
+          "grammarPointId": "gp-2-question",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Điền câu trả lời: 山田さんは先生ですか。— ___、先生です。",
+          "reading": "やまださん は せんせい です か。— ___、せんせい です。",
+          "options": ["はい", "いいえ", "いつ"],
+          "answer": ["はい"],
+          "explanation": "Khi thông tin là đúng, dùng はい trước câu trả lời khẳng định."
+        },
+        {
+          "id": "practice-gp-2-3",
+          "grammarPointId": "gp-2-question",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu hỏi: Bạn Lan có phải là sinh viên không?",
+          "options": ["学生ですか。", "ランさんは"],
+          "answer": ["ランさんは", "学生ですか。"],
+          "explanation": "Giữ mẫu câu khẳng định rồi thêm か sau です để tạo câu hỏi lịch sự."
+        }
+      ]
+    },
+    {
+      "id": "gp-3-question-words",
+      "pattern": "N は どちら／いつ／何ですか",
+      "meaning": "Hỏi quốc gia, thời điểm hoặc nội dung của một danh từ.",
+      "explanation": "Thay phần thông tin chưa biết bằng từ để hỏi: どちら hỏi phương hướng/quốc gia, いつ hỏi thời điểm, 何 hỏi nội dung.",
+      "commonMistake": "Chọn từ để hỏi theo loại thông tin cần tìm; không thể dùng 何 cho mọi câu hỏi.",
+      "examples": [
+        {
+          "japanese": "お国はどちらですか。",
+          "reading": "おくに は どちら です か。",
+          "vietnamese": "Bạn đến từ nước nào?"
+        },
+        {
+          "japanese": "誕生日はいつですか。",
+          "reading": "たんじょうび は いつ です か。",
+          "vietnamese": "Sinh nhật của bạn là khi nào?"
+        },
+        {
+          "japanese": "趣味は何ですか。",
+          "reading": "しゅみ は なん です か。",
+          "vietnamese": "Sở thích của bạn là gì?"
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-3-1",
+          "grammarPointId": "gp-3-question-words",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Câu nào dùng để hỏi sở thích?",
+          "options": ["趣味は何ですか。", "誕生日はいつですか。", "お国はどちらですか。"],
+          "answer": ["趣味は何ですか。"],
+          "explanation": "趣味 là sở thích và 何 hỏi “là gì”."
+        },
+        {
+          "id": "practice-gp-3-2",
+          "grammarPointId": "gp-3-question-words",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Chọn từ để hỏi đúng: 誕生日は___ですか。",
+          "reading": "たんじょうび は ___ です か。",
+          "options": ["いつ", "何", "どちら"],
+          "answer": ["いつ"],
+          "explanation": "誕生日 là một thời điểm, vì vậy dùng いつ để hỏi “khi nào”."
+        },
+        {
+          "id": "practice-gp-3-3",
+          "grammarPointId": "gp-3-question-words",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Bạn đến từ nước nào?",
+          "options": ["どちらですか。", "お国は"],
+          "answer": ["お国は", "どちらですか。"],
+          "explanation": "どちら được dùng trong mẫu lịch sự お国はどちらですか để hỏi quốc gia."
+        }
+      ]
+    },
+    {
+      "id": "gp-4-no",
+      "pattern": "N1 の N2",
+      "meaning": "N2 thuộc về hoặc có quan hệ với N1.",
+      "explanation": "の nối hai danh từ. Danh từ đứng trước bổ nghĩa cho danh từ đứng sau, diễn tả sở hữu, nơi trực thuộc hoặc thuộc tính.",
+      "commonMistake": "Trật tự khác tiếng Việt: ふじみ大学の学生 là “sinh viên của Đại học Fujimi”.",
+      "examples": [
+        {
+          "japanese": "私はふじみ大学の学生です。",
+          "reading": "わたし は ふじみだいがく の がくせい です。",
+          "vietnamese": "Tôi là sinh viên của Đại học Fujimi."
+        },
+        {
+          "japanese": "私の誕生日は5月4日です。",
+          "reading": "わたし の たんじょうび は ごがつ よっか です。",
+          "vietnamese": "Sinh nhật của tôi là ngày 4 tháng 5."
+        },
+        {
+          "japanese": "私の趣味は旅行です。",
+          "reading": "わたし の しゅみ は りょこう です。",
+          "vietnamese": "Sở thích của tôi là du lịch."
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-4-1",
+          "grammarPointId": "gp-4-no",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Tôi là sinh viên Đại học Fujimi.",
+          "options": ["学生です。", "私は", "ふじみ大学の"],
+          "answer": ["私は", "ふじみ大学の", "学生です。"],
+          "explanation": "Danh từ ふじみ大学 đứng trước の để bổ nghĩa cho 学生."
+        },
+        {
+          "id": "practice-gp-4-2",
+          "grammarPointId": "gp-4-no",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Điền phần còn thiếu: これは___本です。(Đây là sách của giáo viên.)",
+          "reading": "これ は ___ ほん です。",
+          "options": ["先生の", "先生と", "先生も"],
+          "answer": ["先生の"],
+          "explanation": "先生 đứng trước の để bổ nghĩa và thể hiện quan hệ sở hữu với 本."
+        },
+        {
+          "id": "practice-gp-4-3",
+          "grammarPointId": "gp-4-no",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Đây là sách tiếng Nhật.",
+          "options": ["本です。", "日本語の", "これは"],
+          "answer": ["これは", "日本語の", "本です。"],
+          "explanation": "日本語の bổ nghĩa cho 本, tạo cụm danh từ “sách tiếng Nhật”."
+        }
+      ]
+    },
+    {
+      "id": "gp-5-to",
+      "pattern": "N1 と N2",
+      "meaning": "N1 và N2.",
+      "explanation": "と nối các danh từ trong một danh sách đầy đủ, tương đương “và” trong tiếng Việt.",
+      "commonMistake": "と trong mẫu này nối danh từ; không dùng trực tiếp để nối hai câu hoàn chỉnh.",
+      "examples": [
+        {
+          "japanese": "パクさんの趣味は旅行と映画です。",
+          "reading": "パクさん の しゅみ は りょこう と えいが です。",
+          "vietnamese": "Sở thích của bạn Pak là du lịch và phim ảnh."
+        },
+        {
+          "japanese": "趣味は料理と音楽です。",
+          "reading": "しゅみ は りょうり と おんがく です。",
+          "vietnamese": "Sở thích là nấu ăn và âm nhạc."
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-5-1",
+          "grammarPointId": "gp-5-to",
+          "type": "WORD_BANK",
+          "prompt": "Điền từ còn thiếu: 趣味は旅行___映画です。",
+          "reading": "しゅみ は りょこう ___ えいが です。",
+          "options": ["と", "も", "の"],
+          "answer": ["と"],
+          "explanation": "と nối hai danh từ 旅行 và 映画."
+        },
+        {
+          "id": "practice-gp-5-2",
+          "grammarPointId": "gp-5-to",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Chọn trợ từ đúng: パン___コーヒーをお願いします。",
+          "reading": "パン ___ コーヒー を おねがいします。",
+          "options": ["と", "の", "も"],
+          "answer": ["と"],
+          "explanation": "と nối パン và コーヒー thành danh sách hai món được yêu cầu."
+        },
+        {
+          "id": "practice-gp-5-3",
+          "grammarPointId": "gp-5-to",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Sở thích của tôi là âm nhạc và thể thao.",
+          "options": ["スポーツです。", "私の趣味は", "音楽と"],
+          "answer": ["私の趣味は", "音楽と", "スポーツです。"],
+          "explanation": "音楽 và スポーツ là hai danh từ được nối bằng と."
+        }
+      ]
+    },
+    {
+      "id": "gp-6-mo",
+      "pattern": "N も",
+      "meaning": "N cũng...",
+      "explanation": "も thay cho は khi muốn nói chủ đề mới có cùng đặc điểm với thông tin đã nêu trước đó.",
+      "commonMistake": "Không đặt は và も cạnh nhau trong mẫu cơ bản này; dùng も thay cho は.",
+      "examples": [
+        {
+          "japanese": "ワンさんの趣味は料理です。",
+          "reading": "ワンさん の しゅみ は りょうり です。",
+          "vietnamese": "Sở thích của bạn Wang là nấu ăn."
+        },
+        {
+          "japanese": "ナタポンさんの趣味も料理です。",
+          "reading": "ナタポンさん の しゅみ も りょうり です。",
+          "vietnamese": "Sở thích của bạn Natapon cũng là nấu ăn."
+        }
+      ],
+      "practice": [
+        {
+          "id": "practice-gp-6-1",
+          "grammarPointId": "gp-6-mo",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Sở thích của Natapon cũng là nấu ăn.",
+          "options": ["料理です。", "ナタポンさんの趣味も"],
+          "answer": ["ナタポンさんの趣味も", "料理です。"],
+          "explanation": "も cho biết Natapon có cùng sở thích nấu ăn với người vừa được nhắc tới."
+        },
+        {
+          "id": "practice-gp-6-2",
+          "grammarPointId": "gp-6-mo",
+          "type": "MULTIPLE_CHOICE",
+          "prompt": "Điền trợ từ đúng: 私は学生です。ワンさん___学生です。",
+          "reading": "わたし は がくせい です。ワンさん ___ がくせい です。",
+          "options": ["も", "の", "と"],
+          "answer": ["も"],
+          "explanation": "Thông tin ワンさん là học sinh giống chủ đề trước, vì vậy thay は bằng も."
+        },
+        {
+          "id": "practice-gp-6-3",
+          "grammarPointId": "gp-6-mo",
+          "type": "SENTENCE_ORDER",
+          "prompt": "Xếp thành câu: Carlos cũng là người Brazil.",
+          "options": ["ブラジル人です。", "カルロスさんも"],
+          "answer": ["カルロスさんも", "ブラジル人です。"],
+          "explanation": "も sau カルロスさん thể hiện Carlos có cùng quốc tịch với người đã nhắc trước đó."
+        }
+      ]
+    }
+  ],
+  "applications": [
+    {
+      "label": "Bài đọc tự giới thiệu",
+      "japanese": "はじめまして。私はパクです。韓国人です。あおぞら日本語学校の学生です。26歳です。趣味は旅行と映画です。どうぞよろしくお願いします。",
+      "reading": "はじめまして。わたし は パク です。かんこくじん です。あおぞら にほんごがっこう の がくせい です。にじゅうろくさい です。しゅみ は りょこう と えいが です。どうぞ よろしく おねがいします。",
+      "vietnamese": "Rất hân hạnh. Tôi là Pak, người Hàn Quốc và là học sinh Trường Nhật ngữ Aozora. Tôi 26 tuổi. Sở thích của tôi là du lịch và phim ảnh. Rất mong được giúp đỡ."
+    },
+    {
+      "label": "Pak",
+      "japanese": "はじめまして。私はパクです。韓国人です。どうぞよろしくお願いします。",
+      "reading": "はじめまして。わたし は パク です。かんこくじん です。どうぞ よろしく おねがいします。",
+      "vietnamese": "Rất hân hạnh. Tôi là Pak, người Hàn Quốc. Rất mong được giúp đỡ."
+    },
+    {
+      "label": "Carlos",
+      "japanese": "こちらこそ、どうぞよろしくお願いします。私はカルロスです。",
+      "reading": "こちらこそ、どうぞ よろしく おねがいします。わたし は カルロス です。",
+      "vietnamese": "Chính tôi cũng rất mong được giúp đỡ. Tôi là Carlos."
+    },
+    {
+      "label": "Pak",
+      "japanese": "カルロスさん、お国はどちらですか。",
+      "reading": "カルロスさん、おくに は どちら です か。",
+      "vietnamese": "Carlos, bạn đến từ nước nào?"
+    },
+    {
+      "label": "Carlos",
+      "japanese": "ブラジルです。会社員です。",
+      "reading": "ブラジル です。かいしゃいん です。",
+      "vietnamese": "Tôi đến từ Brazil và là nhân viên công ty."
+    },
+    {
+      "label": "Carlos",
+      "japanese": "パクさんの趣味は何ですか。",
+      "reading": "パクさん の しゅみ は なん です か。",
+      "vietnamese": "Sở thích của Pak là gì?"
+    },
+    {
+      "label": "Pak",
+      "japanese": "私の趣味は旅行と映画です。",
+      "reading": "わたし の しゅみ は りょこう と えいが です。",
+      "vietnamese": "Sở thích của tôi là du lịch và phim ảnh."
+    },
+    {
+      "label": "Carlos",
+      "japanese": "私の趣味も映画です。",
+      "reading": "わたし の しゅみ も えいが です。",
+      "vietnamese": "Sở thích của tôi cũng là phim ảnh."
+    }
+  ],
+  "quiz": [
+    {
+      "id": "chapter-1-q01",
+      "grammarPointId": "gp-1-desu",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Chọn trợ từ đúng: 私___学生です。",
+      "reading": "わたし ___ がくせい です。",
+      "options": ["は", "の", "も"],
+      "answer": ["は"],
+      "explanation": "は đánh dấu 私 là chủ đề của câu."
+    },
+    {
+      "id": "chapter-1-q02",
+      "grammarPointId": "gp-1-desu",
+      "type": "SENTENCE_ORDER",
+      "prompt": "Xếp thành câu: Tôi là người Việt Nam.",
+      "options": ["ベトナム人です。", "私は"],
+      "answer": ["私は", "ベトナム人です。"],
+      "explanation": "Câu danh từ cơ bản theo trật tự N1 は N2 です."
+    },
+    {
+      "id": "chapter-1-q03",
+      "grammarPointId": "gp-2-question",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Chọn câu hỏi đúng: Bạn Wang có phải là học sinh không?",
+      "options": ["ワンさんは学生ですか。", "ワンさんは学生です。", "ワンさんも学生です。"],
+      "answer": ["ワンさんは学生ですか。"],
+      "explanation": "か ở cuối câu biến câu lịch sự thành câu hỏi."
+    },
+    {
+      "id": "chapter-1-q04",
+      "grammarPointId": "gp-2-question",
+      "type": "WORD_BANK",
+      "prompt": "Bạn không phải nhân viên công ty. Chọn câu trả lời phù hợp.",
+      "options": ["はい、会社員です。", "いいえ、会社員じゃありません。", "会社員ですか。"],
+      "answer": ["いいえ、会社員じゃありません。"],
+      "explanation": "Dùng いいえ và じゃありません để trả lời phủ định lịch sự."
+    },
+    {
+      "id": "chapter-1-q05",
+      "grammarPointId": "gp-3-question-words",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Muốn hỏi sinh nhật là khi nào, bạn dùng câu nào?",
+      "options": ["誕生日はいつですか。", "誕生日は何ですか。", "誕生日はどちらですか。"],
+      "answer": ["誕生日はいつですか。"],
+      "explanation": "いつ là từ để hỏi thời điểm."
+    },
+    {
+      "id": "chapter-1-q06",
+      "grammarPointId": "gp-3-question-words",
+      "type": "WORD_BANK",
+      "prompt": "Điền từ hỏi quốc gia: お国は___ですか。",
+      "reading": "おくに は ___ です か。",
+      "options": ["どちら", "いつ", "何"],
+      "answer": ["どちら"],
+      "explanation": "どちら được dùng lịch sự để hỏi quê quán hoặc quốc gia."
+    },
+    {
+      "id": "chapter-1-q07",
+      "grammarPointId": "gp-4-no",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Điền trợ từ: ふじみ大学___学生です。",
+      "reading": "ふじみだいがく ___ がくせい です。",
+      "options": ["の", "と", "も"],
+      "answer": ["の"],
+      "explanation": "の thể hiện quan hệ “sinh viên của Đại học Fujimi”."
+    },
+    {
+      "id": "chapter-1-q08",
+      "grammarPointId": "gp-4-no",
+      "type": "SENTENCE_ORDER",
+      "prompt": "Xếp thành câu: Sinh nhật của tôi là ngày 4 tháng 5.",
+      "options": ["5月4日です。", "私の", "誕生日は"],
+      "answer": ["私の", "誕生日は", "5月4日です。"],
+      "explanation": "私の bổ nghĩa cho 誕生日."
+    },
+    {
+      "id": "chapter-1-q09",
+      "grammarPointId": "gp-5-to",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Điền trợ từ: 趣味は旅行___映画です。",
+      "reading": "しゅみ は りょこう ___ えいが です。",
+      "options": ["と", "も", "の"],
+      "answer": ["と"],
+      "explanation": "と nối hai danh từ 旅行 và 映画."
+    },
+    {
+      "id": "chapter-1-q10",
+      "grammarPointId": "gp-5-to",
+      "type": "SENTENCE_ORDER",
+      "prompt": "Xếp thành câu: Sở thích của Pak là du lịch và phim ảnh.",
+      "options": ["旅行と映画です。", "パクさんの趣味は"],
+      "answer": ["パクさんの趣味は", "旅行と映画です。"],
+      "explanation": "と liệt kê hai sở thích trong cùng một câu danh từ."
+    },
+    {
+      "id": "chapter-1-q11",
+      "grammarPointId": "gp-6-mo",
+      "type": "MULTIPLE_CHOICE",
+      "prompt": "Điền trợ từ mang nghĩa “cũng”: 私の趣味___映画です。",
+      "reading": "わたし の しゅみ ___ えいが です。",
+      "options": ["も", "は", "と"],
+      "answer": ["も"],
+      "explanation": "も thay cho は để diễn tả cùng đặc điểm với thông tin trước."
+    },
+    {
+      "id": "chapter-1-q12",
+      "grammarPointId": "gp-6-mo",
+      "type": "SENTENCE_ORDER",
+      "prompt": "Xếp thành câu: Sở thích của Natapon cũng là nấu ăn.",
+      "options": ["料理です。", "ナタポンさんの趣味も"],
+      "answer": ["ナタポンさんの趣味も", "料理です。"],
+      "explanation": "も cho biết Natapon cũng có sở thích giống người được nhắc trước."
+    }
+  ]
+}
