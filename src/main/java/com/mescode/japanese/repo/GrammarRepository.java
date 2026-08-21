@@ -1,55 +1,121 @@
 package com.mescode.japanese.repo;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.mescode.japanese.model.GrammarQuestion;
+import com.google.gson.GsonBuilder;
+import com.mescode.japanese.model.grammar.GrammarCatalog;
+import com.mescode.japanese.model.grammar.GrammarChapter;
+import com.mescode.japanese.model.grammar.GrammarProgress;
 
-import java.io.*;
-import java.lang.reflect.Type;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 public class GrammarRepository {
-    private final Gson gson = new Gson();
-    private final Type listType = new TypeToken<List<GrammarQuestion>>(){}.getType();
-    private final String userScorePath = "user_data" + File.separator + "grammar_score.json";
+    public static final String CATALOG_RESOURCE = "/data/grammar/catalog.json";
 
-    public List<GrammarQuestion> loadQuestions() {
-        try (InputStream is = GrammarRepository.class.getResourceAsStream("/data/grammar.json")) {
-            if (is == null) return Collections.emptyList();
-            try (Reader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                return gson.fromJson(r, listType);
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to load grammar questions: " + e.getMessage());
-            return Collections.emptyList();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Path progressPath;
+
+    public GrammarRepository() {
+        this(Path.of("user_data", "grammar_progress.json"));
+    }
+
+    public GrammarRepository(Path progressPath) {
+        this.progressPath = progressPath;
+    }
+
+    public GrammarCatalog loadCatalog() {
+        GrammarCatalog catalog = readResource(CATALOG_RESOURCE, GrammarCatalog.class);
+        return catalog == null ? new GrammarCatalog() : catalog;
+    }
+
+    public List<GrammarChapter> loadChapters() {
+        return loadCatalog().getChapters();
+    }
+
+    public Optional<GrammarChapter> loadChapter(String chapterId) {
+        if (chapterId == null || chapterId.isBlank()) {
+            return Optional.empty();
+        }
+        return loadChapters().stream()
+                .filter(chapter -> chapterId.equals(chapter.getId()))
+                .filter(GrammarChapter::isAvailable)
+                .findFirst()
+                .flatMap(metadata -> loadChapterContent(metadata).map(content -> {
+                    content.setAvailable(true);
+                    content.setContentResource(metadata.getContentResource());
+                    return content;
+                }));
+    }
+
+    public GrammarProgress loadProgress() {
+        if (progressPath == null || !Files.isRegularFile(progressPath)) {
+            return new GrammarProgress();
+        }
+        try (Reader reader = Files.newBufferedReader(progressPath, StandardCharsets.UTF_8)) {
+            GrammarProgress progress = gson.fromJson(reader, GrammarProgress.class);
+            return progress == null || progress.getVersion() != 1 ? new GrammarProgress() : progress;
+        } catch (Exception exception) {
+            System.err.println("Failed to read grammar progress: " + exception.getMessage());
+            return new GrammarProgress();
         }
     }
 
-    public void saveLastScore(int score) {
+    public void saveProgress(GrammarProgress progress) {
+        if (progressPath == null) {
+            return;
+        }
         try {
-            File dir = new File("user_data");
-            if (!dir.exists()) dir.mkdirs();
-            try (Writer w = new FileWriter(userScorePath, StandardCharsets.UTF_8)) {
-                gson.toJson(Collections.singletonMap("lastScore", score), w);
+            Path parent = progressPath.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
             }
-        } catch (Exception e) {
-            System.err.println("Failed to save grammar score: " + e.getMessage());
+            try (BufferedWriter writer = Files.newBufferedWriter(progressPath, StandardCharsets.UTF_8)) {
+                gson.toJson(progress == null ? new GrammarProgress() : progress, writer);
+            }
+        } catch (IOException exception) {
+            throw new IllegalStateException("Không thể lưu tiến độ ngữ pháp.", exception);
         }
     }
 
-    public int loadLastScore() {
-        File f = new File(userScorePath);
-        if (!f.exists()) return 0;
-        try (Reader r = new FileReader(f, StandardCharsets.UTF_8)) {
-            java.util.Map map = gson.fromJson(r, java.util.Map.class);
-            if (map != null && map.get("lastScore") instanceof Number) {
-                return ((Number) map.get("lastScore")).intValue();
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to read grammar score: " + e.getMessage());
+    public void resetProgress() {
+        saveProgress(new GrammarProgress());
+    }
+
+    public Path getProgressPath() {
+        return progressPath;
+    }
+
+    private Optional<GrammarChapter> loadChapterContent(GrammarChapter metadata) {
+        String resource = metadata.getContentResource();
+        if (resource == null || resource.isBlank()) {
+            return Optional.empty();
         }
-        return 0;
+        return Optional.ofNullable(readResource(resource, GrammarChapter.class));
+    }
+
+    private <T> T readResource(String resourcePath, Class<T> type) {
+        try (InputStream stream = GrammarRepository.class.getResourceAsStream(resourcePath)) {
+            if (stream == null) {
+                System.err.println("Grammar resource not found: " + resourcePath);
+                return null;
+            }
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+                return gson.fromJson(reader, type);
+            }
+        } catch (Exception exception) {
+            System.err.println("Failed to load grammar resource " + resourcePath + ": "
+                    + exception.getMessage());
+            return null;
+        }
     }
 }

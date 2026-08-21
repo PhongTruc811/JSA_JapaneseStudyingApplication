@@ -1,16 +1,16 @@
 package com.mescode.japanese.view.vocabulary;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
+import com.mescode.japanese.model.vocab.Vocabulary;
 import com.mescode.japanese.repo.VocabRepository;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class AddVocabFrame extends JFrame {
-    private final MenuNavigator navigator;
+    private final AppNavigator navigator;
     private final AppContext appContext;
 
     private final JTextField kanaField = new JTextField();
@@ -19,7 +19,7 @@ public class AddVocabFrame extends JFrame {
     private final JTextField meaningField = new JTextField();
     private final JTextArea exampleArea = new JTextArea(3, 20);
 
-    public AddVocabFrame(MenuNavigator navigator) {
+    public AddVocabFrame(AppNavigator navigator) {
         this.navigator = navigator;
         this.appContext = navigator.getAppContext();
 
@@ -62,7 +62,7 @@ public class AddVocabFrame extends JFrame {
         add(form, BorderLayout.CENTER);
 
         saveBtn.addActionListener(e -> onSave());
-        cancelBtn.addActionListener(e -> navigator.navigateTo(MenuOptions.Vocab));
+        cancelBtn.addActionListener(e -> navigator.navigateTo(AppRoute.Vocab));
     }
 
     private JPanel labeledField(String label, JComponent field) {
@@ -94,7 +94,7 @@ public class AddVocabFrame extends JFrame {
             repo.addCustomVocab(v);
             appContext.getVocabs().add(v);
             JOptionPane.showMessageDialog(this, "Vocabulary saved.", "Success", JOptionPane.INFORMATION_MESSAGE);
-            navigator.navigateTo(MenuOptions.Vocab);
+            navigator.navigateTo(AppRoute.Vocab);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Failed to save vocabulary: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

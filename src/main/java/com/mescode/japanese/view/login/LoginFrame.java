@@ -1,6 +1,6 @@
 package com.mescode.japanese.view.login;
 
-import com.mescode.japanese.controller.LoginController;
+import com.mescode.japanese.app.navigation.AppNavigator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ public class LoginFrame extends JFrame implements LoginFrame_Interface{
     private GitHubLoginPanel githubPanel;
     private GoogleLoginPanel googlePanel;
 
-    public LoginFrame(com.mescode.japanese.app.navigation.MenuNavigator navigator) {
+    public LoginFrame(AppNavigator navigator) {
         this.appContext = navigator.getAppContext();
         appContext.addThemeListener(isDark -> javax.swing.SwingUtilities.invokeLater(this::applyTheme));
         setupFrame();

@@ -1,9 +1,7 @@
-package com.mescode.japanese.view.vocabulary;
+package com.mescode.japanese.view.menu;
 
-import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
-import com.mescode.japanese.view.components.BackButton;
 import com.mescode.japanese.view.theme.UITheme;
 import com.mescode.japanese.view.components.MenuActionCard;
 
@@ -11,16 +9,17 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class VocabMenuFrame extends JFrame {
+public class AppMenuFrame extends JFrame {
     private static final int CONTENT_MAX_WIDTH = 820;
     private static final int CONTENT_MIN_WIDTH = 560;
     private static final int MENU_ITEM_HEIGHT = 64;
 
     private final AppNavigator menuNavigator;
-    private final AppContext appContext;
-
+    private final Consumer<Boolean> themeListener;
     private boolean darkMode;
+
     private Color background;
     private Color panelBackground;
     private Color cardBackground;
@@ -41,14 +40,15 @@ public class VocabMenuFrame extends JFrame {
     private final Font badgeFont = new Font("Segoe UI Semibold", Font.BOLD, 12);
     private final Font iconFont = new Font("Yu Gothic UI", Font.BOLD, 18);
 
-    public VocabMenuFrame(AppNavigator nav) {
+    public AppMenuFrame(AppNavigator nav) {
         this.menuNavigator = nav;
-        this.appContext = nav.getAppContext();
-        this.darkMode = appContext.isDarkMode();
-
-        appContext.addThemeListener(isDark -> SwingUtilities.invokeLater(() -> refreshTheme(isDark)));
-        setTitle("Vocabulary Menu");
-
+        this.darkMode = nav != null && nav.getAppContext().isDarkMode();
+        this.themeListener = isDark ->
+                SwingUtilities.invokeLater(() -> refreshTheme(isDark));
+        if (nav != null) {
+            nav.getAppContext().addThemeListener(themeListener);
+        }
+        setTitle("Menu");
         setupFrame();
         refreshTheme(darkMode);
         setupUI();
@@ -67,7 +67,7 @@ public class VocabMenuFrame extends JFrame {
     }
 
     private void refreshTheme(boolean dark) {
-        darkMode = dark;
+        this.darkMode = dark;
         background = UITheme.getBackground(dark);
         panelBackground = UITheme.getPanelBackground(dark);
         cardBackground = dark ? new Color(0x243249) : UITheme.getCardBackground(false);
@@ -99,23 +99,32 @@ public class VocabMenuFrame extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         add(scrollPane, BorderLayout.CENTER);
 
-        JPanel menuCard = new MenuCardPanel();
-        menuCard.setLayout(new BoxLayout(menuCard, BoxLayout.Y_AXIS));
-        menuCard.setBorder(new EmptyBorder(28, 32, 30, 32));
-        menuCard.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel card = new MenuCardPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBorder(new EmptyBorder(28, 32, 30, 32));
+        card.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        menuCard.add(createHeroHeader());
-        menuCard.add(Box.createVerticalStrut(18));
-        menuCard.add(createMenuSection(new MenuSection("Menu", List.of(
-                new MenuEntry("Add new word", "Thêm từ vựng mới của riêng bạn", "+", AppRoute.AddVocab),
-                new MenuEntry("Vocabulary (Chapter 1-3)", "Bảng liệt kê tất cả các từ vựng tiếng Nhật từ chapter 1-3", "語", AppRoute.ShowVocab),
-                new MenuEntry("Kanji (Chapter 1-3)", "Bảng liệt kê tất cả các từ Kanji từ chapter 1-3", "漢", AppRoute.ShowKanji),
-                new MenuEntry("Do quiz", "Practice all kanji & hiragana words from chapter 1-3", "?", AppRoute.VocabQuiz)
+        card.add(createHeroHeader());
+        card.add(Box.createVerticalStrut(18));
 
-                ))));
-        // Thêm khoảng cách
-        menuCard.add(Box.createVerticalStrut(14));
-        menuCard.add(createBackButton());
+        List<MenuSection> sections = List.of(
+                new MenuSection("Learning modules", List.of(
+                        new MenuEntry("Kana", "Bảng chư cái Hiragana & Katakana", "あ", AppRoute.Kana),
+                        new MenuEntry("Vocabulary", "Từ vựng", "語", AppRoute.Vocab),
+                        new MenuEntry("PE_Trial", "Luyện đề PE Spring 2026", "試", AppRoute.PETrialSP26),
+                        new MenuEntry("Grammar", "Ngữ pháp", "文", AppRoute.Grammar)
+                )),
+                new MenuSection("Settings", List.of(
+                        new MenuEntry("Settings", "Đổi Light/Dark theme và cấu hình app", "設", AppRoute.Settings)
+                ))
+        );
+
+        for (int i = 0; i < sections.size(); i++) {
+            card.add(createMenuSection(sections.get(i)));
+            if (i < sections.size() - 1) {
+                card.add(Box.createVerticalStrut(14));
+            }
+        }
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -123,7 +132,7 @@ public class VocabMenuFrame extends JFrame {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
-        viewport.add(menuCard, gbc);
+        viewport.add(card, gbc);
     }
 
     private JComponent createHeroHeader() {
@@ -138,29 +147,33 @@ public class VocabMenuFrame extends JFrame {
 
         JLabel badgeLabel = new JLabel("JSA - Japanese Studying Application");
         badgeLabel.setFont(badgeFont);
-        badgeLabel.setForeground(darkMode ? new Color(0xE2E8F0) : new Color(0x334155));
+        badgeLabel.setForeground(darkMode ? new Color(0xBAE6FD) : new Color(0x334155));
         badgeLabel.setBorder(new EmptyBorder(6, 12, 6, 12));
         badgeLabel.setOpaque(true);
-        badgeLabel.setBackground(darkMode ? new Color(0x1E293B) : new Color(0xE0F2FE));
+        badgeLabel.setBackground(
+                darkMode
+                        ? blend(glow, panelBackground, 0.82f)
+                        : new Color(0xE0F2FE)
+        );
         badgeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         textPanel.add(badgeLabel);
         textPanel.add(Box.createVerticalStrut(14));
 
-        JLabel title = new JLabel("Vocabulary");
+        JLabel title = new JLabel("Menu");
         title.setFont(titleFont);
         title.setForeground(titleForeground);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         textPanel.add(title);
         textPanel.add(Box.createVerticalStrut(6));
 
-        JLabel subtitle = new JLabel("Ôn tập, ghi nhớ và làm quiz về từ vựng tiếng Nhật cơ bản");
+        JLabel subtitle = new JLabel("Chọn 1 module để bắt đầu học, ôn tập và làm quiz");
         subtitle.setFont(subtitleFont);
         subtitle.setForeground(textForeground);
         subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         textPanel.add(subtitle);
 
         header.add(textPanel, BorderLayout.CENTER);
-        header.add(new VocabMark(), BorderLayout.EAST);
+        header.add(new KanaMark(), BorderLayout.EAST);
         return header;
     }
 
@@ -172,6 +185,7 @@ public class VocabMenuFrame extends JFrame {
         sectionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         sectionPanel.add(createSectionHeader(section.title()));
+
         sectionPanel.add(Box.createVerticalStrut(6));
 
         List<MenuEntry> entries = section.entries();
@@ -217,21 +231,9 @@ public class VocabMenuFrame extends JFrame {
         return card;
     }
 
-    private JComponent createBackButton() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        row.setOpaque(false);
-        row.setAlignmentX(Component.LEFT_ALIGNMENT);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-
-        // Gọi BackButton share từ Component
-        row.add(new BackButton(darkMode, () -> menuNavigator.navigateTo(AppRoute.AppMenu)));
-        return row;
-    }
-
     private record MenuSection(String title, List<MenuEntry> entries) {}
 
     private record MenuEntry(String title, String description, String mark, AppRoute option) {}
-
     private void startAnimatedBackground() {
         if (backgroundTimer != null && backgroundTimer.isRunning()) {
             return;
@@ -247,6 +249,9 @@ public class VocabMenuFrame extends JFrame {
     public void dispose() {
         if (backgroundTimer != null) {
             backgroundTimer.stop();
+        }
+        if (menuNavigator != null) {
+            menuNavigator.getAppContext().removeThemeListener(themeListener);
         }
         super.dispose();
     }
@@ -322,8 +327,8 @@ public class VocabMenuFrame extends JFrame {
         }
     }
 
-    private class VocabMark extends JComponent {
-        VocabMark() {
+    private class KanaMark extends JComponent {
+        KanaMark() {
             setPreferredSize(new Dimension(92, 92));
             setMinimumSize(new Dimension(92, 92));
         }
@@ -344,7 +349,7 @@ public class VocabMenuFrame extends JFrame {
 
             g2.setColor(Color.WHITE);
             g2.setFont(new Font("Yu Gothic UI", Font.BOLD, 33));
-            drawCenteredText(g2, "語", x, y, size, size, -2);
+            drawCenteredText(g2, "あ", x, y, size, size, -2);
             g2.dispose();
         }
     }
@@ -391,4 +396,3 @@ public class VocabMenuFrame extends JFrame {
         return new Color(r, g, b);
     }
 }
-

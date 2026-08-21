@@ -1,6 +1,6 @@
 package com.mescode.japanese.repo;
 
-import com.mescode.japanese.model.Kana;
+import com.mescode.japanese.model.kana.Kana;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 

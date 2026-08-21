@@ -1,7 +1,7 @@
 package com.mescode.japanese.app.launch;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.app.navigation.MenuNavigator;
+import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.database.DatabaseInitializer;
 import com.mescode.japanese.view.theme.AppIcon;
 
@@ -13,9 +13,10 @@ public class AppLauncher {
         DatabaseInitializer.initialize();
 
         SwingUtilities.invokeLater(() -> {
+            // Khai báo AppIcon - nằm trong /view/theme
             AppIcon.install();
             AppContext context = new AppContext();
-            MenuNavigator nav = new MenuNavigator(context);
+            AppNavigator nav = new AppNavigator(context);
             nav.firstStart(); // hiện ra menu frame
         });
     }

@@ -1,6 +1,6 @@
 package com.mescode.japanese.repo;
 
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.model.vocab.Vocabulary;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

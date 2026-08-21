@@ -1,146 +1,242 @@
 package com.mescode.japanese.view.grammar;
 
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
+import com.mescode.japanese.model.grammar.GrammarChapter;
+import com.mescode.japanese.model.grammar.GrammarChapterProgress;
+import com.mescode.japanese.service.GrammarService;
+import com.mescode.japanese.view.theme.UITheme;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class GrammarMenuFrame extends JFrame {
-    private final MenuNavigator menuNavigator;
-    private final Font titleFont = new Font("Segoe UI Semibold", Font.BOLD, 30);
-    private final Font bodyFont = new Font("Segoe UI", Font.PLAIN, 14);
-    private final Font buttonFont = new Font("Segoe UI Semibold", Font.BOLD, 15);
+    private final AppNavigator navigator;
+    private final GrammarService service;
+    private final Consumer<Boolean> themeListener;
+    private boolean darkMode;
 
-    private final Color bgTop = new Color(0x0F172A);
-    private final Color bgBottom = new Color(0x1E293B);
-    private final Color cardBg = new Color(0xF8FAFC);
-    private final Color textPrimary = new Color(0x0F172A);
-    private final Color textSecondary = new Color(0x475569);
-    private final Color accent = new Color(0x0EA5E9);
-    private final Color accentDark = new Color(0x0284C7);
-
-    public GrammarMenuFrame(MenuNavigator nav) {
-        this.menuNavigator = nav;
-        setTitle("Grammar");
-        setupFrame();
-        setupUI();
-        setVisible(true);
-    }
-
-    private void setupFrame() {
-        setSize(560, 420);
-        setMinimumSize(new Dimension(520, 380));
+    public GrammarMenuFrame(AppNavigator navigator) {
+        this.navigator = navigator;
+        this.service = navigator.getAppContext().getGrammarService();
+        this.darkMode = navigator.getAppContext().isDarkMode();
+        this.themeListener = dark -> SwingUtilities.invokeLater(() -> {
+            darkMode = dark;
+            buildUi();
+        });
+        navigator.getAppContext().addThemeListener(themeListener);
+        setTitle("Grammar Chapters");
+        setSize(980, 720);
+        setMinimumSize(new Dimension(700, 520));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
-        setLayout(new BorderLayout());
-        setContentPane(new GradientPanel());
+        buildUi();
     }
 
-    private void setupUI() {
-        JPanel root = new JPanel(new GridBagLayout());
-        root.setOpaque(false);
-        root.setBorder(new EmptyBorder(24, 28, 24, 28));
-        add(root, BorderLayout.CENTER);
+    @Override
+    public void dispose() {
+        navigator.getAppContext().removeThemeListener(themeListener);
+        super.dispose();
+    }
 
-        JPanel panel = new ShadowPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    private void buildUi() {
+        GrammarUi.GradientPanel root = new GrammarUi.GradientPanel(() -> darkMode);
+        root.setLayout(new BorderLayout());
+        setContentPane(root);
+
+        JPanel viewport = new JPanel(new GridBagLayout());
+        viewport.setOpaque(false);
+        viewport.setBorder(new EmptyBorder(28, 34, 32, 34));
+
+        JPanel content = new JPanel();
+        content.setOpaque(false);
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setPreferredSize(new Dimension(820, 620));
+        content.setMaximumSize(new Dimension(880, Integer.MAX_VALUE));
+        content.add(buildHeader());
+        content.add(Box.createVerticalStrut(20));
+
+        List<GrammarChapter> chapters = service.getChapters();
+        if (chapters.isEmpty()) {
+            content.add(buildEmptyState());
+        } else {
+            for (GrammarChapter metadata : chapters) {
+                content.add(buildChapterCard(metadata));
+                content.add(Box.createVerticalStrut(14));
+            }
+        }
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.anchor = GridBagConstraints.NORTH;
+        viewport.add(content, constraints);
+
+        JScrollPane scrollPane = new JScrollPane(viewport);
+        GrammarUi.stripScrollPane(scrollPane);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        root.add(scrollPane, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private Component buildHeader() {
+        JPanel header = new JPanel(new BorderLayout(18, 0));
+        header.setOpaque(false);
+        header.setMaximumSize(new Dimension(Integer.MAX_VALUE, 118));
+        header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel text = new JPanel();
+        text.setOpaque(false);
+        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+        JLabel eyebrow = new JLabel("GRAMMAR ROADMAP");
+        eyebrow.setFont(GrammarUi.SMALL_FONT.deriveFont(java.awt.Font.BOLD));
+        eyebrow.setForeground(UITheme.getAccent(darkMode));
+        text.add(eyebrow);
+        text.add(Box.createVerticalStrut(8));
+
+        JLabel title = new JLabel("Học ngữ pháp theo chapter");
+        title.setFont(GrammarUi.TITLE_FONT);
+        title.setForeground(UITheme.getTitleForeground(darkMode));
+        text.add(title);
+        text.add(Box.createVerticalStrut(6));
+
+        JLabel subtitle = new JLabel("Học từng mẫu câu, hoàn thành bài luyện và chinh phục quiz tổng hợp.");
+        subtitle.setFont(GrammarUi.BODY_FONT);
+        subtitle.setForeground(UITheme.getTextForeground(darkMode));
+        text.add(subtitle);
+        header.add(text, BorderLayout.CENTER);
+
+        GrammarUi.ActionButton back = new GrammarUi.ActionButton("Về Menu", () -> darkMode, false);
+        back.addActionListener(event -> navigator.navigateTo(AppRoute.AppMenu));
+        JPanel backWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        backWrap.setOpaque(false);
+        backWrap.add(back);
+        header.add(backWrap, BorderLayout.EAST);
+        return header;
+    }
+
+    private Component buildChapterCard(GrammarChapter metadata) {
+        GrammarUi.SurfacePanel card = new GrammarUi.SurfacePanel(() -> darkMode);
+        card.setLayout(new BorderLayout(20, 0));
+        card.setBorder(new EmptyBorder(22, 24, 24, 30));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 190));
+        card.setPreferredSize(new Dimension(820, 176));
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel number = new JLabel(String.format("%02d", metadata.getNumber()));
+        number.setFont(GrammarUi.TITLE_FONT.deriveFont(38f));
+        number.setForeground(metadata.isAvailable()
+                ? UITheme.getAccent(darkMode)
+                : UITheme.getBorder(darkMode));
+        number.setPreferredSize(new Dimension(72, 70));
+        card.add(number, BorderLayout.WEST);
+
+        JPanel body = new JPanel();
+        body.setOpaque(false);
+        body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
+        JLabel title = new JLabel("Chapter " + metadata.getNumber() + " · " + metadata.getTitle());
+        title.setFont(GrammarUi.HEADING_FONT);
+        title.setForeground(UITheme.getTitleForeground(darkMode));
+        body.add(title);
+        body.add(Box.createVerticalStrut(5));
+
+        JLabel description = new JLabel(GrammarUi.html(metadata.getDescription(), 490));
+        description.setFont(GrammarUi.BODY_FONT);
+        description.setForeground(UITheme.getTextForeground(darkMode));
+        body.add(description);
+        body.add(Box.createVerticalStrut(12));
+
+        JLabel progressLabel = new JLabel(progressText(metadata));
+        progressLabel.setFont(GrammarUi.SMALL_FONT.deriveFont(java.awt.Font.BOLD));
+        progressLabel.setForeground(metadata.isAvailable()
+                ? UITheme.getAccent(darkMode)
+                : UITheme.getTextForeground(darkMode));
+        body.add(progressLabel);
+        card.add(body, BorderLayout.CENTER);
+
+        JPanel actions = new JPanel();
+        actions.setOpaque(false);
+        actions.setLayout(new BoxLayout(actions, BoxLayout.Y_AXIS));
+        actions.setPreferredSize(new Dimension(170, 120));
+        if (metadata.isAvailable()) {
+            Optional<GrammarChapter> chapter = service.getChapter(metadata.getId());
+            GrammarUi.ActionButton lesson = new GrammarUi.ActionButton(
+                    completedCount(metadata) > 0 ? "Tiếp tục học" : "Bắt đầu học",
+                    () -> darkMode,
+                    true);
+            lesson.setMaximumSize(new Dimension(170, 44));
+            lesson.addActionListener(event -> navigator.openGrammarLesson(metadata.getId()));
+            actions.add(lesson);
+            actions.add(Box.createVerticalStrut(8));
+
+            GrammarUi.ActionButton quiz = new GrammarUi.ActionButton("Quiz tổng hợp", () -> darkMode, false);
+            quiz.setMaximumSize(new Dimension(170, 44));
+            quiz.setEnabled(chapter.filter(service::isQuizUnlocked).isPresent());
+            quiz.setToolTipText(quiz.isEnabled() ? null : "Hoàn thành 6 grammar point để mở quiz.");
+            quiz.addActionListener(event -> navigator.openGrammarQuiz(metadata.getId()));
+            actions.add(quiz);
+        } else {
+            GrammarUi.ActionButton comingSoon = new GrammarUi.ActionButton("Sắp ra mắt", () -> darkMode, false);
+            comingSoon.setEnabled(false);
+            comingSoon.setMaximumSize(new Dimension(170, 44));
+            actions.add(comingSoon);
+        }
+        card.add(actions, BorderLayout.EAST);
+        return card;
+    }
+
+    private Component buildEmptyState() {
+        GrammarUi.SurfacePanel panel = new GrammarUi.SurfacePanel(() -> darkMode);
+        panel.setLayout(new BorderLayout());
         panel.setBorder(new EmptyBorder(28, 30, 28, 30));
-        panel.setMaximumSize(new Dimension(460, 300));
-
-        JLabel badge = new JLabel("Grammar Exercise");
-        badge.setOpaque(true);
-        badge.setBackground(new Color(0x1E293B));
-        badge.setForeground(new Color(0xE2E8F0));
-        badge.setFont(buttonFont.deriveFont(12f));
-        badge.setBorder(new EmptyBorder(6, 12, 6, 12));
-        badge.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(badge);
-        panel.add(Box.createVerticalStrut(16));
-
-        JLabel title = new JLabel("Practice Grammar");
-        title.setFont(titleFont);
-        title.setForeground(textPrimary);
-        title.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(title);
-        panel.add(Box.createVerticalStrut(8));
-
-        JLabel description = new JLabel("Review Japanese patterns with focused multiple-choice questions.");
-        description.setFont(bodyFont);
-        description.setForeground(textSecondary);
-        description.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.add(description);
-        panel.add(Box.createVerticalStrut(24));
-
-        JButton start = createButton("Start Quiz", accent, Color.WHITE, accentDark, () -> menuNavigator.navigateTo(MenuOptions.GrammarQuiz));
-        JButton back = createButton("Back", new Color(0xE2E8F0), textPrimary, new Color(0xCBD5E1), () -> menuNavigator.navigateTo(MenuOptions.MenuHome));
-        panel.add(start);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(back);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        root.add(panel, gbc);
+        JLabel label = new JLabel("Không thể tải dữ liệu Grammar. Hãy kiểm tra resources/data/grammar.");
+        label.setFont(GrammarUi.BODY_FONT);
+        label.setForeground(GrammarUi.danger(darkMode));
+        panel.add(label);
+        return panel;
     }
 
-    private JButton createButton(String text, Color normal, Color foreground, Color hover, Runnable action) {
-        JButton button = new JButton(text);
-        button.setFont(buttonFont);
-        button.setForeground(foreground);
-        button.setBackground(normal);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(true);
-        button.setOpaque(true);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
-        button.setBorder(new EmptyBorder(12, 18, 12, 18));
-        button.addActionListener(e -> action.run());
-        button.addMouseListener(new MouseAdapter() {
-            @Override public void mouseEntered(MouseEvent e) { button.setBackground(hover); button.repaint(); }
-            @Override public void mouseExited(MouseEvent e) { button.setBackground(normal); button.repaint(); }
-        });
-        return button;
-    }
-
-    private class GradientPanel extends JPanel {
-        @Override protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            int w = getWidth(), h = getHeight();
-            g2.setPaint(new GradientPaint(0, 0, bgTop, 0, h, bgBottom));
-            g2.fillRect(0, 0, w, h);
-            g2.setColor(new Color(255, 255, 255, 14));
-            g2.fillOval(w - 160, -70, 210, 210);
-            g2.dispose();
-            super.paintComponent(g);
+    private String progressText(GrammarChapter metadata) {
+        if (!metadata.isAvailable()) {
+            return "CHƯA CÓ NỘI DUNG";
         }
+        Optional<GrammarChapter> chapter = service.getChapter(metadata.getId());
+        if (chapter.isEmpty()) {
+            return "KHÔNG THỂ TẢI CHAPTER";
+        }
+        GrammarChapter loaded = chapter.get();
+        GrammarChapterProgress progress = service.getChapterProgress(metadata.getId());
+        if (service.isChapterCompleted(loaded)) {
+            return "HOÀN THÀNH · BEST " + progress.getBestCorrect() + "/" + progress.getBestTotal();
+        }
+        String best = progress.getBestTotal() > 0
+                ? " · BEST " + progress.getBestCorrect() + "/" + progress.getBestTotal()
+                : "";
+        return progress.getCompletedPointIds().size() + "/" + loaded.getGrammarPoints().size()
+                + " MẪU ĐÃ HỌC" + best;
     }
 
-    private class ShadowPanel extends JPanel {
-        ShadowPanel() { setOpaque(false); }
-        @Override protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            int w = getWidth(), h = getHeight();
-            g2.setColor(new Color(15, 23, 42, 30));
-            g2.fillRoundRect(7, 9, w - 14, h - 14, 18, 18);
-            g2.setColor(cardBg);
-            g2.fillRoundRect(0, 0, w - 12, h - 12, 18, 18);
-            g2.setColor(new Color(255, 255, 255, 120));
-            g2.drawRoundRect(0, 0, w - 13, h - 13, 18, 18);
-            g2.dispose();
-            super.paintComponent(g);
-        }
+    private int completedCount(GrammarChapter metadata) {
+        return metadata.isAvailable()
+                ? service.getChapterProgress(metadata.getId()).getCompletedPointIds().size()
+                : 0;
     }
 }
-

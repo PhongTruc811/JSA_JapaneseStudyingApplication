@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mescode.japanese</groupId>
-    <artifactId>JapaneseAlphabetQuiz</artifactId>
+    <groupId>com.mescode.jsa</groupId>
+    <artifactId>JSA</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -22,7 +22,6 @@
             <version>2.13.2</version>
             <scope>compile</scope>
         </dependency>
-
         <!--  Lombok      -->
         <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
@@ -31,21 +30,31 @@
             <version>1.18.42</version>
             <scope>compile</scope>
         </dependency>
-
         <!-- Scribe OAuth Library -->
         <dependency>
             <groupId>com.github.scribejava</groupId>
             <artifactId>scribejava-core</artifactId>
             <version>8.3.3</version>
         </dependency>
-
-        <!-- JSON parsing for OAuth responses -->
+        <!-- Jackson - dùng để đọc và viết dữ liệu json trong Java -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
         </dependency>
-
+        <!-- MP3 Java Sound service provider used by Mizuki Music Mode. -->
+        <dependency>
+            <groupId>com.googlecode.soundlibs</groupId>
+            <artifactId>mp3spi</artifactId>
+            <version>1.9.5.4</version>
+            <exclusions>
+                <!-- MP3SPI's legacy POM exposes JUnit 3 as a compile dependency. -->
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- JUnit Jupiter API (dependency này dùng để khai báo API cho JUnit / JUnit Jupiter) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -60,7 +69,7 @@
             <version>6.0.3</version>
             <scope>test</scope>
         </dependency>
-        <!-- MS SQL Server JDBC Driver -->
+        <!-- dependency la MS SQL Server JDBC Driver -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>

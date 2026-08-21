@@ -1,10 +1,12 @@
 package com.mescode.japanese.app.context;
 
 import com.mescode.japanese.model.User;
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.model.vocab.Vocabulary;
 import com.mescode.japanese.repo.KanaRepository;
-import com.mescode.japanese.model.Kana;
+import com.mescode.japanese.model.kana.Kana;
+import com.mescode.japanese.repo.GrammarRepository;
 import com.mescode.japanese.repo.VocabRepository;
+import com.mescode.japanese.service.GrammarService;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,8 +23,8 @@ public class AppContext {
     private final List<Vocabulary> vocabularies;
     private final Set<String> favoriteVocabKeys;
     private final Set<String> learnedVocabKeys;
+    private final GrammarService grammarService;
     private boolean darkMode = true;
-    private boolean soundEnabled = true;
     private int fontSize = 14;
     private final String appVersion = "1.0.0";
     private User currentUser;
@@ -37,6 +39,7 @@ public class AppContext {
         this.kanaRepo = new KanaRepository();
         this.hiraList = kanaRepo.readHiraFromJson();
         this.kataList = kanaRepo.readKataFromJson();
+        this.grammarService = new GrammarService(new GrammarRepository());
     }
 
     public List<Kana> getHiraganaList() {
@@ -49,6 +52,10 @@ public class AppContext {
 
     public List<Vocabulary> getVocabs() {
         return vocabularies;
+    }
+
+    public GrammarService getGrammarService() {
+        return grammarService;
     }
 
     public boolean isFavoriteVocab(Vocabulary vocabulary) {
@@ -99,7 +106,6 @@ public class AppContext {
     public void resetPreferences() {
         boolean themeChanged = !this.darkMode;
         this.darkMode = true;
-        this.soundEnabled = true;
         this.fontSize = 14;
         if (themeChanged) {
             notifyThemeListeners();
@@ -122,13 +128,6 @@ public class AppContext {
         if (listener != null) themeListeners.remove(listener);
     }
 
-    public boolean isSoundEnabled() {
-        return soundEnabled;
-    }
-
-    public void setSoundEnabled(boolean enabled) {
-        this.soundEnabled = enabled;
-    }
 
     public int getFontSize() {
         return fontSize;
@@ -153,6 +152,7 @@ public class AppContext {
     public void resetProgress() {
         learnedVocabKeys.clear();
         vocabRepo.saveLearnedVocabKeys(learnedVocabKeys);
+        grammarService.resetProgress();
     }
 
     private String createVocabKey(Vocabulary vocabulary) {
@@ -168,4 +168,6 @@ public class AppContext {
         return value == null ? "" : value.trim();
     }
 }
+
+
 

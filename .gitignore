@@ -61,3 +61,7 @@ tmp_pdf_page1.txt
 
 # Ignore the complete local IntelliJ workspace.
 .idea/
+
+
+# Local generated release packages
+/output/

@@ -1,7 +1,8 @@
 package com.mescode.japanese.service;
 
-import com.mescode.japanese.model.Kana;
-import com.mescode.japanese.model.KanaType;
+import com.mescode.japanese.model.kana.Kana;
+import com.mescode.japanese.model.kana.KanaType;
+import com.mescode.japanese.model.kana.KanaQuizGroup;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -62,6 +63,22 @@ class KanaServiceTest {
         assertNotNull(result);
         assertEquals(KanaType.gojuuon, result.getType());
         assertEquals("い", result.getKana());
+    }
+
+    @Test
+    void groupConstructor_shouldOnlyReturnKanaFromSelectedGroup() {
+        List<Kana> kanaList = List.of(
+                new Kana("あ", "a", KanaType.gojuuon),
+                new Kana("が", "ga", KanaType.dakuon),
+                new Kana("ぱ", "pa", KanaType.handakuon),
+                new Kana("きゃ", "kya", KanaType.youon)
+        );
+
+        KanaService service = new KanaService(kanaList, KanaQuizGroup.YOUON);
+        Kana result = service.getRandomKana(null);
+
+        assertEquals(KanaType.youon, result.getType());
+        assertEquals("きゃ", result.getKana());
     }
 
     private List<Kana> sampleKanaList() {

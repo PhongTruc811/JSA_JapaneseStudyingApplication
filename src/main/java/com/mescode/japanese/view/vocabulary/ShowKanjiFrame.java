@@ -1,8 +1,8 @@
 package com.mescode.japanese.view.vocabulary;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.model.Kanji;
 import com.mescode.japanese.view.theme.UITheme;
 
@@ -15,58 +15,61 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class ShowKanjiFrame extends JFrame {
-    private final MenuNavigator menuNavigator;
+    private final AppNavigator navigator;
     private final AppContext appContext;
     private final List<Kanji> kanjis;
-    private final KanjiTableModel tableModel;
-    private final TableRowSorter<KanjiTableModel> sorter;
-    private final JTextField searchField = new JTextField();
-    private final JLabel visibleCountLabel = new JLabel();
-    private final List<JToggleButton> unitButtons = new ArrayList<>();
-    private final JTable table;
-    private final JPanel rootPanel = new JPanel(new BorderLayout(0, 18));
-    private final JPanel tablePanel = new JPanel(new BorderLayout(0, 12));
-    private final JScrollPane scrollPane;
 
     private boolean darkMode;
-    private Color background;
-    private Color panelBackground;
-    private Color cardBackground;
-    private Color border;
-    private Color titleForeground;
-    private Color textForeground;
-    private Color accent;
+    private boolean uiBuilt;
+    private boolean searchExpanded;
+    private boolean filterExpanded;
+    private Color background, panelBackground, cardBackground, border, hover, pressed;
+    private Color titleForeground, textForeground, accent, glow, mutedText, tableStripe, tableSelection, controlCollapsed;
 
-    public ShowKanjiFrame(MenuNavigator menuNavigator, List<Kanji> kanjis) {
-        this.menuNavigator = menuNavigator;
-        this.appContext = menuNavigator.getAppContext();
-        this.kanjis = kanjis == null ? Collections.emptyList() : new ArrayList<>(kanjis);
-        this.tableModel = new KanjiTableModel(this.kanjis);
-        this.sorter = new TableRowSorter<>(tableModel);
-        this.table = new JTable(tableModel);
-        this.scrollPane = new JScrollPane(table);
+    private JTable table;
+    private KanjiTableModel tableModel;
+    private TableRowSorter<KanjiTableModel> sorter;
+    private JTextField searchField;
+    private JLabel resultCountLabel;
+    private JToggleButton unit1Toggle, unit2Toggle, unit3Toggle;
 
+    private final Font titleFont = new Font("Segoe UI Semibold", Font.BOLD, 30);
+    private final Font subtitleFont = new Font("Segoe UI", Font.PLAIN, 14);
+    private final Font statValueFont = new Font("Segoe UI Semibold", Font.BOLD, 18);
+    private final Font statLabelFont = new Font("Segoe UI", Font.PLAIN, 12);
+    private final Font toolbarFont = new Font("Segoe UI Semibold", Font.BOLD, 14);
+    private final Font tableHeaderFont = new Font("Segoe UI Semibold", Font.BOLD, 13);
+    private final Font tableFont = new Font("Segoe UI", Font.PLAIN, 14);
+    private final Font kanjiFont = new Font("Yu Gothic UI", Font.BOLD, 24);
+    private final Font hanVietFont = new Font("Segoe UI Semibold", Font.BOLD, 15);
+    private final Font hiraganaFont = new Font("Yu Gothic UI", Font.PLAIN, 17);
+    private final Font unitFont = new Font("Segoe UI Semibold", Font.BOLD, 13);
+    private final Font controlTitleFont = new Font("Segoe UI Semibold", Font.BOLD, 13);
+
+    public ShowKanjiFrame(AppNavigator navigator, List<Kanji> kanjis) {
+        this.navigator = navigator;
+        this.appContext = navigator.getAppContext();
+        this.kanjis = kanjis == null ? List.of() : List.copyOf(kanjis);
+        darkMode = appContext.isDarkMode();
+        appContext.addThemeListener(isDark -> SwingUtilities.invokeLater(() -> refreshTheme(isDark)));
+        setupFrame();
+        configureTheme(darkMode);
+        setupUI("", false, false, false, false, false);
+    }
+
+    private void setupFrame() {
         setTitle("Danh sách Hán tự");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(920, 620));
-        setSize(1180, 760);
+        setSize(1120, 760);
+        setMinimumSize(new Dimension(900, 640));
+        setResizable(true);
         setLocationRelativeTo(null);
-
-        configureTheme(appContext.isDarkMode());
-        buildUI();
-        applyTheme();
-        installListeners();
-        applyFilters();
-        appContext.addThemeListener(isDark -> SwingUtilities.invokeLater(() -> {
-            configureTheme(isDark);
-            applyTheme();
-        }));
+        setLayout(new BorderLayout());
     }
 
     private void configureTheme(boolean dark) {
@@ -75,303 +78,197 @@ public class ShowKanjiFrame extends JFrame {
         panelBackground = UITheme.getPanelBackground(dark);
         cardBackground = UITheme.getCardBackground(dark);
         border = UITheme.getBorder(dark);
+        hover = UITheme.getHover(dark);
+        pressed = UITheme.getPressed(dark);
         titleForeground = UITheme.getTitleForeground(dark);
         textForeground = UITheme.getTextForeground(dark);
         accent = UITheme.getAccent(dark);
+        glow = UITheme.getGlow(dark);
+        mutedText = dark ? new Color(0x94A3B8) : new Color(0x64748B);
+        tableStripe = dark ? new Color(0x233047) : new Color(0xEEF4FF);
+        tableSelection = dark ? new Color(0x1E40AF) : new Color(0xBFDBFE);
+        controlCollapsed = dark ? new Color(0x172033) : new Color(0xE6EEF9);
     }
 
-    private void buildUI() {
-        rootPanel.setBorder(new EmptyBorder(24, 32, 22, 32));
-        setContentPane(rootPanel);
-
-        JPanel top = new JPanel();
-        top.setOpaque(false);
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.add(buildHeader());
-        top.add(Box.createVerticalStrut(18));
-        top.add(buildControls());
-        rootPanel.add(top, BorderLayout.NORTH);
-
-        tablePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(border),
-                new EmptyBorder(16, 18, 18, 18)));
-        tablePanel.add(buildTableHeader(), BorderLayout.NORTH);
-        configureTable();
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-        rootPanel.add(tablePanel, BorderLayout.CENTER);
-        rootPanel.add(buildFooter(), BorderLayout.SOUTH);
-    }
-
-    private JComponent buildHeader() {
-        JPanel header = new JPanel(new BorderLayout(20, 0));
-        header.setOpaque(false);
-
-        JPanel text = new JPanel();
-        text.setOpaque(false);
-        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
-        JLabel title = namedLabel("Danh sách Hán tự", "pageTitle");
-        title.setFont(new Font("Segoe UI Semibold", Font.BOLD, 30));
-        JLabel subtitle = namedLabel(
-                "Hán Việt, Kanji, Hiragana và ý nghĩa từ Unit 1 đến Unit 3.",
-                "pageSubtitle");
-        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        subtitle.setBorder(new EmptyBorder(5, 0, 0, 0));
-        text.add(title);
-        text.add(subtitle);
-        header.add(text, BorderLayout.WEST);
-
-        JLabel stat = namedLabel(kanjis.size() + " Hán tự", "statChip");
-        stat.setOpaque(true);
-        stat.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
-        stat.setBorder(new EmptyBorder(10, 16, 10, 16));
-        header.add(stat, BorderLayout.EAST);
-        return header;
-    }
-
-    private JLabel namedLabel(String text, String name) {
-        JLabel label = new JLabel(text);
-        label.setName(name);
-        return label;
-    }
-
-    private JComponent buildControls() {
-        JPanel controls = new JPanel(new BorderLayout(20, 0));
-        controls.setOpaque(false);
-
-        JPanel search = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        search.setOpaque(false);
-        JLabel searchLabel = namedLabel("Tìm kiếm", "controlLabel");
-        searchField.setPreferredSize(new Dimension(300, 38));
-        searchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        JButton resetButton = new JButton("Đặt lại");
-        resetButton.setName("commandButton");
-        resetButton.setFocusPainted(false);
-        resetButton.setPreferredSize(new Dimension(84, 38));
-        resetButton.addActionListener(event -> resetFilters());
-        search.add(searchLabel);
-        search.add(searchField);
-        search.add(resetButton);
-        controls.add(search, BorderLayout.WEST);
-
-        JPanel filters = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        filters.setOpaque(false);
-        filters.add(namedLabel("Lọc nhanh", "controlLabel"));
-        for (int unit = 1; unit <= 3; unit++) {
-            JToggleButton button = new JToggleButton("Unit " + unit);
-            button.setActionCommand(String.valueOf(unit));
-            button.setFocusPainted(false);
-            button.setPreferredSize(new Dimension(78, 38));
-            button.addActionListener(event -> applyFilters());
-            unitButtons.add(button);
-            filters.add(button);
-        }
-        controls.add(filters, BorderLayout.EAST);
-        return controls;
-    }
-
-    private JComponent buildTableHeader() {
-        JPanel header = new JPanel(new BorderLayout());
-        header.setOpaque(false);
-        JLabel title = namedLabel("Tất cả Hán tự", "sectionTitle");
-        title.setFont(new Font("Segoe UI Semibold", Font.BOLD, 16));
-        visibleCountLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        header.add(title, BorderLayout.WEST);
-        header.add(visibleCountLabel, BorderLayout.EAST);
-        return header;
-    }
-
-    private void configureTable() {
-        table.setRowSorter(sorter);
-        table.setRowHeight(50);
-        table.setFillsViewportHeight(true);
-        table.setShowVerticalLines(false);
-        table.setGridColor(border);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        table.getTableHeader().setReorderingAllowed(false);
-        table.getTableHeader().setPreferredSize(new Dimension(1, 44));
-        table.getTableHeader().setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
-
-        table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        table.getColumnModel().getColumn(0).setMaxWidth(120);
-        table.getColumnModel().getColumn(1).setPreferredWidth(210);
-        table.getColumnModel().getColumn(2).setPreferredWidth(190);
-        table.getColumnModel().getColumn(3).setPreferredWidth(220);
-        table.getColumnModel().getColumn(4).setPreferredWidth(300);
-        table.setDefaultRenderer(Object.class, new KanjiCellRenderer());
-    }
-
-    private JComponent buildFooter() {
-        JPanel footer = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        footer.setOpaque(false);
-        JButton backButton = new JButton("←  Quay lại");
-        backButton.setName("commandButton");
-        backButton.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
-        backButton.setFocusPainted(false);
-        backButton.setPreferredSize(new Dimension(120, 40));
-        backButton.addActionListener(event -> menuNavigator.navigateTo(MenuOptions.Vocab));
-        footer.add(backButton);
-        return footer;
-    }
-
-    private void installListeners() {
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent event) { applyFilters(); }
-
-            @Override
-            public void removeUpdate(DocumentEvent event) { applyFilters(); }
-
-            @Override
-            public void changedUpdate(DocumentEvent event) { applyFilters(); }
-        });
-    }
-
-    private void applyFilters() {
-        String query = searchField.getText().trim().toLowerCase(Locale.ROOT);
-        List<Integer> selectedUnits = unitButtons.stream()
-                .filter(AbstractButton::isSelected)
-                .map(button -> Integer.parseInt(button.getActionCommand()))
-                .toList();
-
-        sorter.setRowFilter(new RowFilter<>() {
-            @Override
-            public boolean include(Entry<? extends KanjiTableModel, ? extends Integer> entry) {
-                Kanji kanji = tableModel.getKanjiAt(entry.getIdentifier());
-                boolean unitMatches = selectedUnits.isEmpty() || selectedUnits.contains(kanji.getUnit());
-                boolean textMatches = query.isEmpty()
-                        || contains(kanji.getHanViet(), query)
-                        || contains(kanji.getKanji(), query)
-                        || contains(kanji.getHiragana(), query)
-                        || contains(kanji.getMeaning(), query);
-                return unitMatches && textMatches;
-            }
-        });
-        visibleCountLabel.setText(sorter.getViewRowCount() + "/" + kanjis.size() + " mục đang hiển thị");
-        styleFilterButtons();
-    }
-
-    private boolean contains(String value, String query) {
-        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
-    }
-
-    private void resetFilters() {
-        searchField.setText("");
-        unitButtons.forEach(button -> button.setSelected(false));
-        applyFilters();
-    }
-
-    private void applyTheme() {
-        rootPanel.setBackground(background);
-        tablePanel.setBackground(panelBackground);
-        tablePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(border),
-                new EmptyBorder(16, 18, 18, 18)));
-        scrollPane.getViewport().setBackground(panelBackground);
-        scrollPane.setBorder(BorderFactory.createLineBorder(border));
-        searchField.setBackground(darkMode ? new Color(0x111827) : Color.WHITE);
-        searchField.setForeground(titleForeground);
-        searchField.setCaretColor(titleForeground);
-        searchField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(border), new EmptyBorder(7, 10, 7, 10)));
-
-        colorNamedComponents(rootPanel);
-        JTableHeader tableHeader = table.getTableHeader();
-        tableHeader.setBackground(darkMode ? new Color(0x172033) : new Color(0xE0F2FE));
-        tableHeader.setForeground(titleForeground);
-        table.setForeground(titleForeground);
-        table.setBackground(panelBackground);
-        table.setSelectionBackground(darkMode ? new Color(0x1D4ED8) : new Color(0xBAE6FD));
-        table.setSelectionForeground(darkMode ? Color.WHITE : new Color(0x0F172A));
-        styleFilterButtons();
+    private void refreshTheme(boolean dark) {
+        String query = searchField == null ? "" : searchField.getText();
+        configureTheme(dark);
+        setupUI(query, isSelected(unit1Toggle), isSelected(unit2Toggle), isSelected(unit3Toggle),
+                searchExpanded, filterExpanded, true);
+        revalidate();
         repaint();
     }
 
-    private void colorNamedComponents(Container container) {
-        for (Component component : container.getComponents()) {
-            if (component instanceof JLabel label) {
-                if ("pageTitle".equals(label.getName()) || "sectionTitle".equals(label.getName())) {
-                    label.setForeground(titleForeground);
-                } else if ("statChip".equals(label.getName())) {
-                    label.setBackground(accent);
-                    label.setForeground(Color.WHITE);
-                } else {
-                    label.setForeground(textForeground);
-                }
-            }
-            if (component instanceof JButton button) {
-                button.setBackground(cardBackground);
-                button.setForeground(textForeground);
-                button.setBorder(BorderFactory.createLineBorder(border));
-            }
-            if (component instanceof Container child) {
-                colorNamedComponents(child);
-            }
-        }
+    private boolean isSelected(AbstractButton button) { return button != null && button.isSelected(); }
+
+    private void setupUI(String searchText, boolean unit1, boolean unit2, boolean unit3,
+                         boolean searchExpandedState, boolean filterExpandedState) {
+        setupUI(searchText, unit1, unit2, unit3, searchExpandedState, filterExpandedState, false);
     }
 
-    private void styleFilterButtons() {
-        for (JToggleButton button : unitButtons) {
-            button.setBackground(button.isSelected() ? accent : cardBackground);
-            button.setForeground(button.isSelected() ? Color.WHITE : textForeground);
-            button.setBorder(BorderFactory.createLineBorder(button.isSelected() ? accent : border));
+    private void setupUI(String searchText, boolean unit1, boolean unit2, boolean unit3,
+                         boolean searchExpandedState, boolean filterExpandedState, boolean themeRefresh) {
+        searchExpanded = searchExpandedState;
+        filterExpanded = filterExpandedState;
+        GradientPanel root = new GradientPanel();
+        root.setLayout(new BorderLayout(0, 18));
+        root.setBorder(new EmptyBorder(28, 32, 28, 32));
+        setContentPane(root);
+        root.add(buildHeader(), BorderLayout.NORTH);
+        root.add(buildTablePanel(searchText, unit1, unit2, unit3), BorderLayout.CENTER);
+        uiBuilt = true;
+        applyFilter();
+    }
+
+    private JComponent buildHeader() {
+        JPanel header = new JPanel();
+        header.setOpaque(false);
+        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
+        JLabel title = new JLabel("Danh sách Hán tự");
+        title.setFont(titleFont); title.setForeground(titleForeground); title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel subtitle = new JLabel("Hán Việt, Kanji, Hiragana và ý nghĩa từ Unit 1 đến Unit 3.");
+        subtitle.setFont(subtitleFont); subtitle.setForeground(mutedText); subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        header.add(title); header.add(Box.createVerticalStrut(4)); header.add(subtitle);
+        header.add(Box.createVerticalStrut(14)); header.add(buildStatsRow());
+        return header;
+    }
+
+    private JComponent buildStatsRow() {
+        JPanel stats = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        stats.setOpaque(false); stats.setAlignmentX(Component.LEFT_ALIGNMENT);
+        stats.add(new StatChip(String.valueOf(kanjis.size()), "Hán tự", true));
+        return stats;
+    }
+
+    private JComponent buildTablePanel(String searchText, boolean unit1, boolean unit2, boolean unit3) {
+        JPanel panel = new RoundedPanel(panelBackground, border, 22);
+        panel.setLayout(new BorderLayout(0, 14));
+        panel.setBorder(new EmptyBorder(18, 20, 18, 20));
+        JPanel top = new JPanel(); top.setOpaque(false); top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        JPanel toolbar = new JPanel(new BorderLayout(12, 0)); toolbar.setOpaque(false);
+        JLabel sectionTitle = new JLabel("Tất cả Hán tự"); sectionTitle.setFont(toolbarFont); sectionTitle.setForeground(titleForeground);
+        resultCountLabel = new JLabel(); resultCountLabel.setFont(statLabelFont); resultCountLabel.setForeground(mutedText);
+        toolbar.add(sectionTitle, BorderLayout.WEST); toolbar.add(resultCountLabel, BorderLayout.EAST);
+        top.add(toolbar); top.add(Box.createVerticalStrut(12));
+        top.add(buildControlsRow(searchText, unit1, unit2, unit3));
+        panel.add(top, BorderLayout.NORTH); panel.add(createTableScrollPane(), BorderLayout.CENTER); panel.add(buildFooter(), BorderLayout.SOUTH);
+        return panel;
+    }
+
+    private JComponent buildControlsRow(String searchText, boolean unit1, boolean unit2, boolean unit3) {
+        JPanel row = new JPanel(new GridLayout(1, 2, 14, 0)); row.setOpaque(false);
+        row.add(buildSearchPanel(searchText)); row.add(buildQuickFilterPanel(unit1, unit2, unit3));
+        return row;
+    }
+
+    private JComponent buildSearchPanel(String searchText) {
+        JPanel panel = new RoundedPanel(searchExpanded ? panelBackground : controlCollapsed, border, 18);
+        panel.setLayout(new BorderLayout(0, searchExpanded ? 10 : 0)); panel.setBorder(new EmptyBorder(12, 14, 12, 14));
+        panel.add(createSectionHeaderButton("Tìm kiếm", searchExpanded, () -> { searchExpanded = !searchExpanded; rebuildCurrentUI(); }), BorderLayout.NORTH);
+        if (searchExpanded) {
+            JPanel content = new JPanel(new BorderLayout(10, 0)); content.setOpaque(false);
+            searchField = new JTextField(searchText); searchField.setFont(tableFont); searchField.setForeground(titleForeground); searchField.setCaretColor(accent);
+            searchField.setBackground(darkMode ? new Color(0x111827) : Color.WHITE);
+            searchField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(border), new EmptyBorder(8, 10, 8, 10)));
+            searchField.getDocument().addDocumentListener(new DocumentListener() {
+                public void insertUpdate(DocumentEvent e) { applyFilter(); }
+                public void removeUpdate(DocumentEvent e) { applyFilter(); }
+                public void changedUpdate(DocumentEvent e) { applyFilter(); }
+            });
+            content.add(searchField, BorderLayout.CENTER);
+            JButton clear = createTextButton("Đặt lại", false); clear.addActionListener(e -> searchField.setText("") ); content.add(clear, BorderLayout.EAST);
+            panel.add(content, BorderLayout.CENTER);
+        } else { searchField = new JTextField(searchText); }
+        return panel;
+    }
+
+    private JComponent buildQuickFilterPanel(boolean unit1, boolean unit2, boolean unit3) {
+        JPanel panel = new RoundedPanel(filterExpanded ? panelBackground : controlCollapsed, border, 18);
+        panel.setLayout(new BorderLayout(0, filterExpanded ? 10 : 0)); panel.setBorder(new EmptyBorder(12, 14, 12, 14));
+        panel.add(createSectionHeaderButton("Lọc nhanh", filterExpanded, () -> { filterExpanded = !filterExpanded; rebuildCurrentUI(); }), BorderLayout.NORTH);
+        unit1Toggle = createToggleButton("Unit 1", unit1); unit2Toggle = createToggleButton("Unit 2", unit2); unit3Toggle = createToggleButton("Unit 3", unit3);
+        unit1Toggle.addActionListener(e -> applyFilter()); unit2Toggle.addActionListener(e -> applyFilter()); unit3Toggle.addActionListener(e -> applyFilter());
+        if (filterExpanded) {
+            JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0)); content.setOpaque(false);
+            content.add(unit1Toggle); content.add(unit2Toggle); content.add(unit3Toggle); panel.add(content, BorderLayout.CENTER);
         }
+        return panel;
+    }
+
+    private JScrollPane createTableScrollPane() {
+        tableModel = new KanjiTableModel(kanjis); table = new JTable(tableModel); table.setAutoCreateRowSorter(false);
+        table.setFillsViewportHeight(true); table.setRowHeight(58); table.setShowGrid(false); table.setIntercellSpacing(new Dimension(0, 0));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); table.setFont(tableFont); table.setForeground(textForeground); table.setBackground(panelBackground); table.setSelectionBackground(tableSelection); table.setSelectionForeground(titleForeground);
+        table.setDefaultRenderer(Object.class, new KanjiCellRenderer());
+        JTableHeader header = table.getTableHeader(); header.setReorderingAllowed(false); header.setResizingAllowed(true); header.setFont(tableHeaderFont); header.setForeground(darkMode ? new Color(0xE2E8F0) : new Color(0x0F172A)); header.setBackground(darkMode ? new Color(0x172033) : new Color(0xDCE8F8)); header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, border)); header.setPreferredSize(new Dimension(header.getPreferredSize().width, 42));
+        int[] widths = {90, 190, 180, 190, 300}; for (int i = 0; i < widths.length; i++) table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
+        sorter = new TableRowSorter<>(tableModel); table.setRowSorter(sorter);
+        JScrollPane scroll = new JScrollPane(table); scroll.setBorder(BorderFactory.createLineBorder(border)); scroll.getViewport().setBackground(panelBackground); scroll.setBackground(panelBackground); return scroll;
+    }
+
+    private JComponent buildFooter() {
+        JPanel footer = new JPanel(new BorderLayout()); footer.setOpaque(false);
+        JButton back = createTextButton("Quay lại", true); back.addActionListener(e -> navigator.navigateTo(AppRoute.Vocab)); footer.add(back, BorderLayout.WEST); return footer;
+    }
+
+    private JButton createSectionHeaderButton(String text, boolean expanded, Runnable action) {
+        JButton button = new JButton(text + (expanded ? "  -" : "  +")); button.setFont(controlTitleFont); button.setHorizontalAlignment(SwingConstants.LEFT); button.setFocusPainted(false); button.setBorderPainted(false); button.setContentAreaFilled(false); button.setOpaque(false); button.setForeground(titleForeground); button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); button.addActionListener(e -> action.run()); return button;
+    }
+
+    private JButton createTextButton(String text, boolean primary) {
+        JButton button = new JButton(text); button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12)); button.setFocusPainted(false); button.setBorderPainted(false); button.setContentAreaFilled(false); button.setOpaque(false); button.setForeground(primary ? Color.WHITE : titleForeground); button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); button.setUI(new RoundedButtonUI(primary ? accent : (darkMode ? new Color(0x0F172A) : new Color(0xF0F9FF)), primary ? glow : tableSelection, primary ? pressed : border)); button.setBorder(new EmptyBorder(8, 12, 8, 12)); return button;
+    }
+
+    private JToggleButton createToggleButton(String text, boolean selected) {
+        JToggleButton button = new JToggleButton(text, selected); button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12)); button.setFocusPainted(false); button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(selected ? accent : border), new EmptyBorder(8, 12, 8, 12))); updateToggleStyle(button);
+        button.addChangeListener(e -> updateToggleStyle(button)); return button;
+    }
+
+    private void updateToggleStyle(AbstractButton button) { boolean active = button.isSelected(); button.setForeground(active ? Color.WHITE : titleForeground); button.setBackground(active ? accent : (darkMode ? new Color(0x0F172A) : new Color(0xF0F9FF))); button.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(active ? accent : border), new EmptyBorder(8, 12, 8, 12))); }
+
+    private void rebuildCurrentUI() {
+        setupUI(searchField == null ? "" : searchField.getText(), isSelected(unit1Toggle), isSelected(unit2Toggle), isSelected(unit3Toggle), searchExpanded, filterExpanded);
+        revalidate(); repaint();
+    }
+
+    private void applyFilter() {
+        if (sorter == null || table == null) return;
+        String query = searchField == null ? "" : searchField.getText().trim();
+        boolean u1 = isSelected(unit1Toggle), u2 = isSelected(unit2Toggle), u3 = isSelected(unit3Toggle);
+        RowFilter<KanjiTableModel, Integer> search = query.isEmpty() ? null : RowFilter.regexFilter("(?iu)" + Pattern.quote(query), 0, 1, 2, 3, 4);
+        RowFilter<KanjiTableModel, Integer> units = (u1 || u2 || u3) ? new RowFilter<>() { public boolean include(Entry<? extends KanjiTableModel, ? extends Integer> e) { int unit = kanjis.get(e.getIdentifier()).getUnit(); return (u1 && unit == 1) || (u2 && unit == 2) || (u3 && unit == 3); } } : null;
+        java.util.ArrayList<RowFilter<KanjiTableModel, Integer>> filters = new java.util.ArrayList<>(); if (search != null) filters.add(search); if (units != null) filters.add(units);
+        sorter.setRowFilter(filters.isEmpty() ? null : RowFilter.andFilter(filters));
+        if (resultCountLabel != null) resultCountLabel.setText(String.format(Locale.ROOT, "%d/%d Hán tự đang hiển thị", table.getRowCount(), tableModel.getRowCount()));
+    }
+
+    private String safeText(String value) { return value == null || value.trim().isEmpty() ? "-" : value.trim(); }
+
+    private class KanjiTableModel extends AbstractTableModel {
+        private final String[] columns = {"Unit", "Hán Việt", "Kanji", "Hiragana", "Ý nghĩa"}; private final List<Kanji> rows;
+        KanjiTableModel(List<Kanji> rows) { this.rows = rows; }
+        public int getRowCount() { return rows.size(); } public int getColumnCount() { return columns.length; } public String getColumnName(int c) { return columns[c]; }
+        public Object getValueAt(int r, int c) { Kanji k = rows.get(r); return switch (c) { case 0 -> "Unit " + k.getUnit(); case 1 -> safeText(k.getHanViet()); case 2 -> safeText(k.getKanji()); case 3 -> safeText(k.getHiragana()); case 4 -> safeText(k.getMeaning()); default -> ""; }; }
     }
 
     private class KanjiCellRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(
-                JTable source, Object value, boolean selected, boolean focused, int row, int column) {
-            JLabel label = (JLabel) super.getTableCellRendererComponent(
-                    source, value, selected, focused, row, column);
-            label.setBorder(new EmptyBorder(0, 14, 0, 14));
-            if (!selected) {
-                label.setBackground(row % 2 == 0
-                        ? panelBackground
-                        : (darkMode ? new Color(0x243248) : new Color(0xF0F9FF)));
-                label.setForeground(titleForeground);
-            }
-            label.setHorizontalAlignment(
-                    column == 0 || column == 2 || column == 3
-                            ? SwingConstants.CENTER : SwingConstants.LEFT);
-            if (column == 2) {
-                label.setFont(new Font("Yu Gothic UI", Font.BOLD, 22));
-            } else if (column == 3) {
-                label.setFont(new Font("Yu Gothic UI", Font.PLAIN, 17));
-            } else {
-                label.setFont(new Font("Segoe UI", column == 0 ? Font.BOLD : Font.PLAIN, 15));
-            }
-            return label;
+        public Component getTableCellRendererComponent(JTable source, Object value, boolean selected, boolean focused, int row, int column) {
+            super.getTableCellRendererComponent(source, value, selected, focused, row, column); int modelColumn = source.convertColumnIndexToModel(column); setText(value == null ? "-" : value.toString()); setToolTipText(getText()); setOpaque(true); setBorder(new EmptyBorder(0, 14, 0, 14)); setBackground(selected ? tableSelection : (row % 2 == 0 ? panelBackground : tableStripe)); setForeground(modelColumn == 2 ? titleForeground : textForeground);
+            if (modelColumn == 2) { setHorizontalAlignment(SwingConstants.CENTER); setFont(kanjiFont); } else if (modelColumn == 1) { setHorizontalAlignment(SwingConstants.LEFT); setFont(hanVietFont); } else if (modelColumn == 3) { setHorizontalAlignment(SwingConstants.CENTER); setFont(hiraganaFont); } else if (modelColumn == 0) { setHorizontalAlignment(SwingConstants.CENTER); setFont(unitFont); setForeground(accent); } else { setHorizontalAlignment(SwingConstants.LEFT); setFont(tableFont); } return this;
         }
     }
 
-    private static class KanjiTableModel extends AbstractTableModel {
-        private final String[] columns = {"Unit", "Hán Việt", "Kanji", "Hiragana", "Ý nghĩa"};
-        private final List<Kanji> rows;
-
-        KanjiTableModel(List<Kanji> rows) { this.rows = rows; }
-        Kanji getKanjiAt(int row) { return rows.get(row); }
-
-        @Override
-        public int getRowCount() { return rows.size(); }
-
-        @Override
-        public int getColumnCount() { return columns.length; }
-
-        @Override
-        public String getColumnName(int column) { return columns[column]; }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Kanji kanji = rows.get(rowIndex);
-            return switch (columnIndex) {
-                case 0 -> "Unit " + kanji.getUnit();
-                case 1 -> kanji.getHanViet();
-                case 2 -> kanji.getKanji();
-                case 3 -> kanji.getHiragana();
-                case 4 -> kanji.getMeaning();
-                default -> "";
-            };
-        }
+    private class StatChip extends JPanel {
+        private final String value, label; private final boolean primary;
+        StatChip(String value, String label, boolean primary) { this.value = value; this.label = label; this.primary = primary; setOpaque(false); setBorder(new EmptyBorder(10, 16, 10, 16)); }
+        public Dimension getPreferredSize() { return new Dimension(138, 52); }
+        protected void paintComponent(Graphics g) { Graphics2D g2 = (Graphics2D) g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = getWidth(), h = getHeight(); g2.setColor(new Color(15, 23, 42, darkMode ? 28 : 10)); g2.fillRoundRect(4, 6, w - 8, h - 8, 18, 18); g2.setColor(primary ? accent : cardBackground); g2.fillRoundRect(0, 0, w - 8, h - 8, 18, 18); g2.setColor(primary ? glow : border); g2.drawRoundRect(0, 0, w - 9, h - 9, 18, 18); g2.setFont(statValueFont); g2.setColor(primary ? Color.WHITE : titleForeground); FontMetrics fm = g2.getFontMetrics(); int x = 16, y = 22 + fm.getAscent() / 2; g2.drawString(value, x, y); g2.setFont(statLabelFont); g2.setColor(primary ? new Color(255, 255, 255, 220) : mutedText); g2.drawString(label, x + fm.stringWidth(value) + 8, y - 1); g2.dispose(); }
     }
+
+    private class GradientPanel extends JPanel { GradientPanel() { setOpaque(false); } protected void paintComponent(Graphics g) { Graphics2D g2 = (Graphics2D) g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = getWidth(), h = getHeight(); g2.setPaint(new GradientPaint(0, 0, darkMode ? new Color(0x0F172A) : new Color(0xEAF2FF), 0, h, darkMode ? new Color(0x111827) : new Color(0xF8F4EC))); g2.fillRect(0, 0, w, h); g2.setColor(darkMode ? new Color(59, 130, 246, 28) : new Color(255, 255, 255, 120)); g2.fillOval(w - 260, -80, 300, 240); g2.setColor(darkMode ? new Color(14, 165, 233, 18) : new Color(191, 219, 254, 90)); g2.fillOval(-140, h - 240, 320, 260); g2.dispose(); super.paintComponent(g); } }
+
+    private static class RoundedPanel extends JPanel { private final Color fill, stroke; private final int arc; RoundedPanel(Color fill, Color stroke, int arc) { this.fill = fill; this.stroke = stroke; this.arc = arc; setOpaque(false); } protected void paintComponent(Graphics g) { Graphics2D g2 = (Graphics2D) g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = getWidth(), h = getHeight(); g2.setColor(new Color(15, 23, 42, 16)); g2.fillRoundRect(4, 6, w - 8, h - 8, arc, arc); g2.setColor(fill); g2.fillRoundRect(0, 0, w - 8, h - 8, arc, arc); g2.setColor(stroke); g2.drawRoundRect(0, 0, w - 9, h - 9, arc, arc); g2.dispose(); super.paintComponent(g); } }
+
+    private static class RoundedButtonUI extends javax.swing.plaf.basic.BasicButtonUI { private final Color fill, hoverFill, border; RoundedButtonUI(Color fill, Color hoverFill, Color border) { this.fill = fill; this.hoverFill = hoverFill; this.border = border; } public void paint(Graphics g, JComponent c) { AbstractButton b = (AbstractButton) c; Graphics2D g2 = (Graphics2D) g.create(); g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); int w = c.getWidth(), h = c.getHeight(); g2.setColor(b.getModel().isRollover() ? hoverFill : fill); g2.fillRoundRect(0, 0, w - 1, h - 1, 16, 16); g2.setColor(border); g2.drawRoundRect(0, 0, w - 1, h - 1, 16, 16); g2.dispose(); super.paint(g, c); } }
 }

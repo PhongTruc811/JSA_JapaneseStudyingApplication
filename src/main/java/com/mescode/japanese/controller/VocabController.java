@@ -1,95 +1,101 @@
 package com.mescode.japanese.controller;
 
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.model.vocab.VocabQuizAnswerResult;
+import com.mescode.japanese.model.vocab.VocabQuizConfig;
+import com.mescode.japanese.model.vocab.VocabQuizQuestion;
 import com.mescode.japanese.service.VocabService;
 import com.mescode.japanese.view.vocabulary.VocabQuizFrame_Interface;
-import lombok.NoArgsConstructor;
 
-import java.text.Normalizer;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
-@NoArgsConstructor
 public class VocabController {
-    private VocabQuizFrame_Interface view;
-    private VocabService service;
-    private Vocabulary currentVocab;
-    private int score;
+    private final VocabQuizFrame_Interface view;
+    private final VocabService service;
+    private final VocabQuizConfig config;
+    private final Consumer<List<VocabQuizAnswerResult>> finishHandler;
+    private final Map<Integer, String> answersByQuestion = new HashMap<>();
+    private List<VocabQuizQuestion> questions = List.of();
+    private int currentIndex;
 
-    public VocabController(VocabQuizFrame_Interface view, VocabService service) {
+    public VocabController(VocabQuizFrame_Interface view, VocabService service, VocabQuizConfig config,
+                           Consumer<List<VocabQuizAnswerResult>> finishHandler) {
         this.view = view;
         this.service = service;
+        this.config = config;
+        this.finishHandler = finishHandler;
         init();
     }
 
     private void init() {
-        currentVocab = service.getRandomVocab(currentVocab);
-        if (currentVocab != null) {
-            view.showVocab(currentVocab);
-        } else {
-            view.showResult("No vocabulary found.");
+        questions = service.getQuizQuestions();
+        if (questions.isEmpty()) {
+            view.showUnavailable("This selection does not contain enough different answers to build a quiz.");
             return;
         }
-        view.setOnSubmit(this::handleSubmit);
-        view.setOnShowAnswer(this::handleShowAnswer);
+        view.showQuiz(config, questions);
+        view.setOnAnswerSelected(this::saveAnswer);
+        view.setOnQuestionSelected(this::showQuestion);
+        view.setOnNext(this::showNextQuestion);
+        view.setOnFinish(this::finishQuiz);
+        if (config.difficulty().isAnswerRevealEnabled()) {
+            view.setOnCheckAnswer(this::checkAnswer);
+        }
+        showQuestion(0);
     }
 
-    private void handleSubmit() {
-        if (currentVocab == null) {
-            view.showResult("No vocabulary found.");
+    private void saveAnswer(String answer) {
+        answersByQuestion.put(currentIndex, answer);
+        view.clearFeedback();
+        renderCurrentQuestion();
+    }
+
+    private void showQuestion(int index) {
+        if (index < 0 || index >= questions.size()) {
             return;
         }
-        String romaji = view.getRomajiInput();
-        String meaning = view.getMeaningInput();
+        currentIndex = index;
+        view.clearFeedback();
+        renderCurrentQuestion();
+    }
 
-        boolean correctRomaji = normalizeRomajiAnswer(romaji)
-                .equals(normalizeRomajiAnswer(currentVocab.getRomaji()));
-        boolean correctMeaning = normalizeMeaningAnswer(meaning)
-                .equals(normalizeMeaningAnswer(currentVocab.getMeaning()));
-
-        if (correctRomaji && correctMeaning) {
-            score += 1;
-            currentVocab = service.getRandomVocab(currentVocab);
-            view.updateScore(score);
-            view.resetInput();
-            view.resetResult();
-            view.resetCorrectAnswer();
-            if (currentVocab != null) {
-                view.showVocab(currentVocab);
-            }
-        } else {
-            score -= 1;
-            view.updateScore(score);
-            view.showResult("Wrong answer, please try again.");
+    private void showNextQuestion() {
+        if (currentIndex < questions.size() - 1) {
+            showQuestion(currentIndex + 1);
         }
     }
 
-    private void handleShowAnswer() {
-        if (currentVocab == null) {
-            view.showCorrectAnswer("No vocabulary found.");
+    private void renderCurrentQuestion() {
+        view.showQuestion(currentIndex, questions.get(currentIndex), answersByQuestion.get(currentIndex));
+        List<Boolean> answered = new ArrayList<>();
+        for (int index = 0; index < questions.size(); index++) {
+            answered.add(answersByQuestion.containsKey(index));
+        }
+        view.updateQuestionNavigation(currentIndex, answered);
+    }
+
+    private void checkAnswer() {
+        String selected = answersByQuestion.get(currentIndex);
+        if (selected == null) {
+            view.showFeedback("Choose an answer before checking.", false);
             return;
         }
-        String answer = currentVocab.getRomaji() + " - " + currentVocab.getMeaning();
-        view.showCorrectAnswer(answer);
+        boolean correct = questions.get(currentIndex).isCorrect(selected);
+        view.showFeedback(correct ? "Correct answer." : "Not quite. Try another answer or review it.", correct);
     }
 
-    private String normalizeRomajiAnswer(String value) {
-        return normalizeCommon(value).replace("-", "").replace(" ", "");
-    }
-
-    private String normalizeMeaningAnswer(String value) {
-        String normalized = normalizeCommon(value);
-        normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}+", "");
-        return normalized.replace('đ', 'd');
-    }
-
-    private String normalizeCommon(String value) {
-        if (value == null) {
-            return "";
+    private void finishQuiz() {
+        if (answersByQuestion.size() != questions.size()) {
+            view.showIncompleteWarning(questions.size() - answersByQuestion.size());
+            return;
         }
-        String normalized = Normalizer.normalize(value, Normalizer.Form.NFC)
-                .toLowerCase(Locale.ROOT)
-                .trim();
-        return normalized.replaceAll("\\s+", " ");
+        List<VocabQuizAnswerResult> results = new ArrayList<>();
+        for (int index = 0; index < questions.size(); index++) {
+            results.add(new VocabQuizAnswerResult(questions.get(index), answersByQuestion.get(index)));
+        }
+        finishHandler.accept(List.copyOf(results));
     }
 }

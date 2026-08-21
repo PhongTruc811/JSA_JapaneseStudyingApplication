@@ -1,8 +1,8 @@
 package com.mescode.japanese.view.settings;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.model.User;
 import com.mescode.japanese.view.theme.UITheme;
 
@@ -12,8 +12,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SettingsFrame extends JFrame {
-    private final MenuNavigator menuNavigator;
+public class SettingFrame extends JFrame {
+    private final AppNavigator menuNavigator;
     private final AppContext appContext;
 
     private Color background;
@@ -33,7 +33,7 @@ public class SettingsFrame extends JFrame {
     private final Font bodyFont = new Font("Segoe UI", Font.PLAIN, 13);
     private final Font smallFont = new Font("Segoe UI", Font.PLAIN, 12);
 
-    public SettingsFrame(MenuNavigator menuNavigator, AppContext appContext) {
+    public SettingFrame(AppNavigator menuNavigator, AppContext appContext) {
         this.menuNavigator = menuNavigator;
         this.appContext = appContext;
         setTitle("Settings");
@@ -47,7 +47,7 @@ public class SettingsFrame extends JFrame {
         boolean darkMode = appContext.isDarkMode();
         background = UITheme.getBackground(darkMode);
         panelBackground = UITheme.getPanelBackground(darkMode);
-        cardBackground = darkMode ? new Color(0x253247) : new Color(0xF8FBFF);
+        cardBackground = darkMode ? new Color(0x253247) : UITheme.getCardBackground(false);
         border = UITheme.getBorder(darkMode);
         hover = UITheme.getHover(darkMode);
         pressed = UITheme.getPressed(darkMode);
@@ -131,7 +131,7 @@ public class SettingsFrame extends JFrame {
 
         RoundedButton back = new RoundedButton("Back to Menu", false, false);
         back.setPreferredSize(new Dimension(126, 36));
-        back.addActionListener(e -> menuNavigator.navigateTo(MenuOptions.MenuHome));
+        back.addActionListener(e -> menuNavigator.navigateTo(AppRoute.AppMenu));
 
         JPanel backWrap = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         backWrap.setOpaque(false);
@@ -168,18 +168,6 @@ public class SettingsFrame extends JFrame {
             refreshScreen();
         });
         panel.add(createSettingRow("Color theme", currentThemeText(), themeButton));
-        panel.add(Box.createVerticalStrut(10));
-
-        JCheckBox soundCheckBox = new JCheckBox("Enabled");
-        soundCheckBox.setSelected(appContext.isSoundEnabled());
-        soundCheckBox.setFont(labelFont);
-        soundCheckBox.setForeground(titleForeground);
-        soundCheckBox.setBackground(cardBackground);
-        soundCheckBox.setOpaque(false);
-        soundCheckBox.setFocusPainted(false);
-        soundCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        soundCheckBox.addActionListener(e -> appContext.setSoundEnabled(soundCheckBox.isSelected()));
-        panel.add(createSettingRow("Sound effects", "Play feedback sounds during quizzes.", soundCheckBox));
         panel.add(Box.createVerticalStrut(10));
 
         JComboBox<String> fontSizeCombo = new JComboBox<>(new String[]{"Small", "Medium", "Large"});
@@ -238,15 +226,7 @@ public class SettingsFrame extends JFrame {
                 false,
                 this::showAboutDialog));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createActionRow(
-                "R",
-                "Reset preferences",
-                "Restore dark mode, sound effects, and medium font size.",
-                "Reset",
-                false,
-                false,
-                this::confirmResetPreferences));
-        panel.add(Box.createVerticalStrut(8));
+
         panel.add(createActionRow(
                 "P",
                 "Reset progress",
@@ -371,24 +351,10 @@ public class SettingsFrame extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void confirmResetPreferences() {
-        int result = JOptionPane.showConfirmDialog(this,
-                "This will restore theme, sound, and font size defaults. Continue?",
-                "Reset Preferences",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
-        if (result == JOptionPane.YES_OPTION) {
-            appContext.resetPreferences();
-            refreshScreen();
-            JOptionPane.showMessageDialog(this,
-                    "Preferences have been reset.",
-                    "Reset",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
+
     private void confirmResetProgress() {
         int result = JOptionPane.showConfirmDialog(this,
-                "This will clear your learned vocabulary progress. Continue?",
+                "This will clear your vocabulary and grammar progress. Continue?",
                 "Confirm Reset",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -424,7 +390,7 @@ public class SettingsFrame extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int w = getWidth();
             int h = getHeight();
-            Color top = appContext.isDarkMode() ? new Color(0x0B1220) : new Color(0xF8FBFF);
+            Color top = appContext.isDarkMode() ? new Color(0x0B1220) : new Color(0xD4E0EC);
             g2.setPaint(new GradientPaint(0, 0, top, 0, h, background));
             g2.fillRect(0, 0, w, h);
             g2.setColor(appContext.isDarkMode() ? new Color(56, 189, 248, 18) : new Color(14, 165, 233, 16));
@@ -562,3 +528,6 @@ public class SettingsFrame extends JFrame {
         }
     }
 }
+
+
+

@@ -1,7 +1,8 @@
 package com.mescode.japanese.service;
 
-import com.mescode.japanese.model.Kana;
-import com.mescode.japanese.model.KanaType;
+import com.mescode.japanese.model.kana.Kana;
+import com.mescode.japanese.model.kana.KanaType;
+import com.mescode.japanese.model.kana.KanaQuizGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,10 @@ public class KanaService {
 
     public KanaService(List<Kana> kanaList) {
         this(kanaList, new Random(), true);
+    }
+
+    public KanaService(List<Kana> kanaList, KanaQuizGroup group) {
+        this(filterByGroup(kanaList, group), new Random(), true);
     }
 
     public KanaService(List<Kana> kanaList, Random random) {
@@ -37,6 +42,9 @@ public class KanaService {
     }
 
     public Kana getRandomKana(Kana previousKana){
+        if (kanaList.size() == 1) {
+            return kanaList.getFirst();
+        }
         Kana currentKana;
         if(previousKana == null) {
             return kanaList.get((random.nextInt(kanaList.size())));
@@ -50,6 +58,19 @@ public class KanaService {
         System.out.println("---------------------------------------------------");
 
         return currentKana;
+    }
+
+    private static List<Kana> filterByGroup(List<Kana> kanaList, KanaQuizGroup group) {
+        if (group == null) {
+            throw new IllegalArgumentException("Kana quiz group is required");
+        }
+        List<Kana> filtered = kanaList.stream()
+                .filter(kana -> kana != null && group.matches(kana.getType()))
+                .toList();
+        if (filtered.isEmpty()) {
+            throw new IllegalArgumentException("No kana available for group " + group.getDisplayName());
+        }
+        return filtered;
     }
 
     public Kana getRandomGojuon(Kana previousGojuuon){

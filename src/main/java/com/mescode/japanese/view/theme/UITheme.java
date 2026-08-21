@@ -18,11 +18,11 @@ public final class UITheme {
     private static final Color DARK_GLOW = new Color(0x38BDF8);
 
     // Light palette
-    private static final Color LIGHT_BACKGROUND = new Color(0xF0F9FF);
-    private static final Color LIGHT_PANEL = new Color(0xFFFFFF);
-    private static final Color LIGHT_CARD = new Color(0xE0F2FE);
-    private static final Color LIGHT_BORDER = new Color(0xBAE6FD);
-    private static final Color LIGHT_HOVER = new Color(0x38BDF8);
+    private static final Color LIGHT_BACKGROUND = new Color(0xB9CADC);
+    private static final Color LIGHT_PANEL = new Color(0xF7F9FC);
+    private static final Color LIGHT_CARD = new Color(0xE7EFF7);
+    private static final Color LIGHT_BORDER = new Color(0x9CB3CA);
+    private static final Color LIGHT_HOVER = new Color(0xD9EAF7);
     private static final Color LIGHT_PRESSED = new Color(0x0EA5E9);
     private static final Color LIGHT_TITLE = new Color(0x0F172A);
     private static final Color LIGHT_TEXT = new Color(0x1E293B);
@@ -98,3 +98,4 @@ public final class UITheme {
         return SECTION_FONT;
     }
 }
+

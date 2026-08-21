@@ -1,25 +1,26 @@
 package com.mescode.japanese.view.activate;
 
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.view.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.Arrays;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class AccessKeyFrame extends JFrame {
-    private static final String DEFAULT_ACCESS_KEY = "8112005";
+    private static final String DEFAULT_ACCESS_KEY = "IA2005_SU26"; //IA2005_SU26
 
-    private final MenuNavigator navigator;
+    private final AppNavigator navigator;
     private final boolean darkMode;
 
-    private JTextField keyField;
+    private JPasswordField keyField;
     private JLabel statusLabel;
 
-    public AccessKeyFrame(MenuNavigator navigator) {
+    public AccessKeyFrame(AppNavigator navigator) {
         this.navigator = navigator;
         this.darkMode = navigator.getAppContext().isDarkMode();
 
@@ -78,10 +79,10 @@ public class AccessKeyFrame extends JFrame {
         gbc.insets = new Insets(0, 0, 26, 0);
         card.add(subtitle, gbc);
 
-        keyField = createKeyField();
+        JPanel keyInput = createKeyInput();
         gbc.gridy = 3;
         gbc.insets = new Insets(0, 0, 14, 0);
-        card.add(keyField, gbc);
+        card.add(keyInput, gbc);
 
         JButton continueButton = createPrimaryButton("Tiếp tục");
         continueButton.addActionListener(e -> validateKey());
@@ -100,36 +101,66 @@ public class AccessKeyFrame extends JFrame {
         root.add(card, new GridBagConstraints());
     }
 
-    private JTextField createKeyField() {
-        JTextField field = new JTextField();
+    private JPanel createKeyInput() {
+        JPanel input = new JPanel(new BorderLayout());
+        Color inputBackground = darkMode ? new Color(0x0F172A) : new Color(0xF8FBFF);
+        input.setBackground(inputBackground);
+        updateKeyInputBorder(input, false);
+
+        keyField = createKeyField(input, inputBackground);
+        input.add(keyField, BorderLayout.CENTER);
+        input.add(createVisibilityButton(), BorderLayout.EAST);
+        return input;
+    }
+
+    private JPasswordField createKeyField(JPanel input, Color inputBackground) {
+        JPasswordField field = new JPasswordField();
         field.setHorizontalAlignment(SwingConstants.CENTER);
+        field.setEchoChar('\u2022');
         field.setFont(new Font("Segoe UI Semibold", Font.BOLD, 20));
         field.setForeground(UITheme.getTitleForeground(darkMode));
-        field.setBackground(darkMode ? new Color(0x0F172A) : new Color(0xF8FBFF));
+        field.setBackground(inputBackground);
         field.setCaretColor(UITheme.getAccent(darkMode));
-        field.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UITheme.getBorder(darkMode), 1, true),
-                new EmptyBorder(13, 16, 13, 16)
-        ));
+        field.setBorder(new EmptyBorder(13, 16, 13, 0));
         field.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
                 field.selectAll();
-                field.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(UITheme.getAccent(darkMode), 1, true),
-                        new EmptyBorder(13, 16, 13, 16)
-                ));
+                updateKeyInputBorder(input, true);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                field.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(UITheme.getBorder(darkMode), 1, true),
-                        new EmptyBorder(13, 16, 13, 16)
-                ));
+                updateKeyInputBorder(input, false);
             }
         });
         return field;
+    }
+
+    private JButton createVisibilityButton() {
+        JButton button = new JButton(new EyeIcon(false));
+        button.setToolTipText("Hiện key");
+        button.getAccessibleContext().setAccessibleName("Hiện key");
+        button.setBackground(keyField.getBackground());
+        button.setBorder(new EmptyBorder(0, 8, 0, 16));
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addActionListener(e -> {
+            boolean isHidden = keyField.getEchoChar() != (char) 0;
+            keyField.setEchoChar(isHidden ? (char) 0 : '\u2022');
+            button.setIcon(new EyeIcon(isHidden));
+            String action = isHidden ? "Ẩn key" : "Hiện key";
+            button.setToolTipText(action);
+            button.getAccessibleContext().setAccessibleName(action);
+            keyField.requestFocusInWindow();
+        });
+        return button;
+    }
+
+    private void updateKeyInputBorder(JPanel input, boolean focused) {
+        input.setBorder(BorderFactory.createLineBorder(
+                focused ? UITheme.getAccent(darkMode) : UITheme.getBorder(darkMode), 1, true));
     }
 
     private JButton createPrimaryButton(String text) {
@@ -145,9 +176,12 @@ public class AccessKeyFrame extends JFrame {
     }
 
     private void validateKey() {
-        String value = keyField.getText().trim();
-        if (DEFAULT_ACCESS_KEY.equals(value)) {
-            navigator.navigateTo(MenuOptions.Activate);
+        char[] enteredKey = keyField.getPassword();
+        boolean isValid = Arrays.equals(enteredKey, DEFAULT_ACCESS_KEY.toCharArray());
+        Arrays.fill(enteredKey, '\0');
+        if (isValid) {
+            // nếu nhập đúng DEFAULT_ACCESS_KEY, chuyển sang trang tiếp theo
+            navigator.navigateTo(AppRoute.Activate);
             return;
         }
 
@@ -157,6 +191,43 @@ public class AccessKeyFrame extends JFrame {
         keyField.selectAll();
     }
 
+    private class EyeIcon implements Icon {
+        private static final int SIZE = 22;
+
+        private final boolean hidden;
+
+        EyeIcon(boolean hidden) {
+            this.hidden = hidden;
+        }
+
+        @Override
+        public int getIconWidth() {
+            return SIZE;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return SIZE;
+        }
+
+        @Override
+        public void paintIcon(Component component, Graphics graphics, int x, int y) {
+            Graphics2D g2 = (Graphics2D) graphics.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(UITheme.getTextForeground(darkMode));
+            g2.setStroke(new BasicStroke(1.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            int centerX = x + SIZE / 2;
+            int centerY = y + SIZE / 2;
+            g2.drawOval(x + 2, y + 6, SIZE - 4, SIZE - 12);
+            g2.fillOval(centerX - 3, centerY - 3, 6, 6);
+            if (hidden) {
+                g2.drawLine(x + 3, y + SIZE - 3, x + SIZE - 3, y + 3);
+            }
+            g2.dispose();
+        }
+    }
+
     private class GradientPanel extends JPanel {
         @Override
         protected void paintComponent(Graphics g) {
@@ -164,7 +235,7 @@ public class AccessKeyFrame extends JFrame {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int h = getHeight();
-            Color top = darkMode ? new Color(0x111827) : new Color(0xF8FBFF);
+            Color top = darkMode ? new Color(0x111827) : new Color(0xD4E0EC);
             Color bottom = UITheme.getBackground(darkMode);
             g2.setPaint(new GradientPaint(0, 0, top, 0, h, bottom));
             g2.fillRect(0, 0, getWidth(), h);
@@ -195,4 +266,5 @@ public class AccessKeyFrame extends JFrame {
         }
     }
 }
+
 

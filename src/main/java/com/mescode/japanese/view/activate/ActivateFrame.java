@@ -1,7 +1,7 @@
 package com.mescode.japanese.view.activate;
 
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.view.theme.UITheme;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class ActivateFrame extends JFrame {
-    private final MenuNavigator navigator;
+    private final AppNavigator navigator;
     private final boolean darkMode;
 
     private JTextField emailField;
@@ -20,7 +20,7 @@ public class ActivateFrame extends JFrame {
     private JLabel statusLabel;
     private JButton activateButton;
 
-    public ActivateFrame(MenuNavigator navigator) {
+    public ActivateFrame(AppNavigator navigator) {
         this.navigator = navigator;
         this.darkMode = navigator.getAppContext().isDarkMode();
 
@@ -29,7 +29,7 @@ public class ActivateFrame extends JFrame {
     }
 
     private void setupFrame() {
-        setTitle("Login / Activate - Japanese Alphabet Quiz");
+        setTitle("Activate");
         setSize(1100, 720);
         setMinimumSize(new Dimension(920, 620));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,13 +84,14 @@ public class ActivateFrame extends JFrame {
         panel.add(logo);
         panel.add(Box.createVerticalStrut(30));
 
-        JLabel title = new JLabel("<html>/Activate Account</html>");
-        title.setFont(new Font("    Segoe UI Semibold", Font.BOLD, 34));
+        JLabel title = new JLabel("<html>Activate Account</html>");
+        title.setFont(new Font("Segoe UI Semibold", Font.BOLD, 34));
         title.setForeground(UITheme.getTitleForeground(darkMode));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(title);
         panel.add(Box.createVerticalStrut(14));
 
+        // dùng html hiển thị text xuống dòng khi thu nhỏ cửa sổ app
         JLabel subtitle = new JLabel("<html>Đăng nhập, nhập license key và kích hoạt quyền sử dụng.</html>");
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         subtitle.setForeground(UITheme.getTextForeground(darkMode));
@@ -133,14 +134,12 @@ public class ActivateFrame extends JFrame {
         panel.add(subtitle, gbc);
 
         emailField = createTextField("Email");
-        passwordField = createPasswordField("Password");
         licenseField = createTextField("License key");
 
         gbc.insets = new Insets(0, 0, 12, 0);
         gbc.gridy = 2;
         panel.add(createLabeledField("Email", emailField), gbc);
         gbc.gridy = 3;
-        panel.add(createLabeledField("Password", passwordField), gbc);
         gbc.gridy = 4;
         panel.add(createLabeledField("License key", licenseField), gbc);
 
@@ -167,7 +166,7 @@ public class ActivateFrame extends JFrame {
         panel.add(statusLabel, gbc);
 
         JButton continueButton = createTextButton("Skip for development");
-        continueButton.addActionListener(e -> navigator.navigateTo(MenuOptions.MenuHome));
+        continueButton.addActionListener(e -> navigator.navigateTo(AppRoute.AppMenu));
         gbc.gridy = 7;
         gbc.insets = new Insets(0, 0, 0, 0);
         panel.add(continueButton, gbc);
@@ -302,9 +301,6 @@ public class ActivateFrame extends JFrame {
         return emailField;
     }
 
-    public JPasswordField getPasswordField() {
-        return passwordField;
-    }
 
     public JTextField getLicenseField() {
         return licenseField;
@@ -321,7 +317,7 @@ public class ActivateFrame extends JFrame {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int h = getHeight();
-            Color top = darkMode ? new Color(0x111827) : new Color(0xF8FBFF);
+            Color top = darkMode ? new Color(0x111827) : new Color(0xD4E0EC);
             Color bottom = UITheme.getBackground(darkMode);
             g2.setPaint(new GradientPaint(0, 0, top, 0, h, bottom));
             g2.fillRect(0, 0, getWidth(), h);
@@ -352,4 +348,5 @@ public class ActivateFrame extends JFrame {
         }
     }
 }
+
 

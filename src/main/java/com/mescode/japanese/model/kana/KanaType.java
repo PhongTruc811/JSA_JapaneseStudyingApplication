@@ -1,4 +1,4 @@
-package com.mescode.japanese.model;
+package com.mescode.japanese.model.kana;
 
 public enum KanaType {
     gojuuon,

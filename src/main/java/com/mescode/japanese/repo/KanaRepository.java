@@ -2,7 +2,7 @@ package com.mescode.japanese.repo;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mescode.japanese.model.Kana;
+import com.mescode.japanese.model.kana.Kana;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

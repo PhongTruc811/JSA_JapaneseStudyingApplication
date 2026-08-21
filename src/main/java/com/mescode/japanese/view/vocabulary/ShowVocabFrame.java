@@ -1,9 +1,9 @@
 package com.mescode.japanese.view.vocabulary;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.app.navigation.MenuNavigator;
-import com.mescode.japanese.app.navigation.MenuOptions;
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.app.navigation.AppNavigator;
+import com.mescode.japanese.app.navigation.AppRoute;
+import com.mescode.japanese.model.vocab.Vocabulary;
 import com.mescode.japanese.view.theme.UITheme;
 
 import javax.swing.*;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public class ShowVocabularyFrame extends JFrame {
+public class ShowVocabFrame extends JFrame {
 
-    private final MenuNavigator navigator;
+    private final AppNavigator navigator;
     private final AppContext appContext;
     private final List<Vocabulary> vocabularies;
 
@@ -75,7 +75,7 @@ public class ShowVocabularyFrame extends JFrame {
     private final Font learnedFont = new Font("Segoe UI Symbol", Font.PLAIN, 18);
     private final Font controlTitleFont = new Font("Segoe UI Semibold", Font.BOLD, 13);
 
-    public ShowVocabularyFrame(MenuNavigator navigator, List<Vocabulary> vocabularies) {
+    public ShowVocabFrame(AppNavigator navigator, List<Vocabulary> vocabularies) {
         this.navigator = navigator;
         this.appContext = navigator.getAppContext();
         this.vocabularies = vocabularies == null ? List.of() : vocabularies;
@@ -166,7 +166,7 @@ public class ShowVocabularyFrame extends JFrame {
         title.setForeground(titleForeground);
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel subtitle = new JLabel("Tổng hợp tất cả các từ vựng chapter 1-15 trong sách Dekiru Nihongo");
+        JLabel subtitle = new JLabel("Tổng hợp từ chapter 1-3 trong sách Dekiru Nihongo");
         subtitle.setFont(subtitleFont);
         subtitle.setForeground(mutedText);
         subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -299,10 +299,23 @@ public class ShowVocabularyFrame extends JFrame {
     private JComponent buildStatsRow() {
         JPanel stats = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         stats.setOpaque(false);
+        stats.setAlignmentX(Component.LEFT_ALIGNMENT);
         stats.add(new StatChip(String.valueOf(vocabularies.size()), "từ vựng", true));
-        stats.add(new StatChip(String.valueOf(appContext.getFavoriteVocabCount()), "đã gắn sao", false));
-        stats.add(new StatChip(String.valueOf(appContext.getLearnedVocabCount()), "đã học", false));
+        stats.add(new StatChip(String.valueOf(countFavoriteVocabs()), "đã gắn sao", false));
+        stats.add(new StatChip(String.valueOf(countLearnedVocabs()), "đã học", false));
         return stats;
+    }
+
+    private long countFavoriteVocabs() {
+        return vocabularies.stream()
+                .filter(appContext::isFavoriteVocab)
+                .count();
+    }
+
+    private long countLearnedVocabs() {
+        return vocabularies.stream()
+                .filter(appContext::isLearnedVocab)
+                .count();
     }
 
     private JComponent buildTablePanel(String searchText, boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
@@ -343,7 +356,7 @@ public class ShowVocabularyFrame extends JFrame {
         footer.setOpaque(false);
 
         JButton backButton = createTextButton("Quay lại", true);
-        backButton.addActionListener(e -> navigator.navigateTo(MenuOptions.Vocab));
+        backButton.addActionListener(e -> navigator.navigateTo(AppRoute.Vocab));
         footer.add(backButton, BorderLayout.WEST);
         return footer;
     }
@@ -383,10 +396,9 @@ public class ShowVocabularyFrame extends JFrame {
         table.getColumnModel().getColumn(1).setMaxWidth(82);
         table.getColumnModel().getColumn(2).setPreferredWidth(170);
         table.getColumnModel().getColumn(3).setPreferredWidth(170);
-        table.getColumnModel().getColumn(4).setPreferredWidth(170);
-        table.getColumnModel().getColumn(5).setPreferredWidth(110);
-        table.getColumnModel().getColumn(5).setMaxWidth(130);
-        table.getColumnModel().getColumn(6).setPreferredWidth(280);
+        table.getColumnModel().getColumn(4).setPreferredWidth(110);
+        table.getColumnModel().getColumn(4).setMaxWidth(130);
+        table.getColumnModel().getColumn(5).setPreferredWidth(280);
 
         sorter = new TableRowSorter<>(tableModel);
         sorter.setSortable(0, false);
@@ -482,7 +494,7 @@ public class ShowVocabularyFrame extends JFrame {
 
         RowFilter<VocabularyTableModel, Integer> searchFilter = query.isEmpty()
                 ? null
-                : RowFilter.regexFilter("(?iu)" + Pattern.quote(query), 2, 3, 4, 5, 6);
+                : RowFilter.regexFilter("(?iu)" + Pattern.quote(query), 2, 3, 4, 5);
 
         RowFilter<VocabularyTableModel, Integer> favoritesFilter = favoritesOnly
                 ? new RowFilter<>() {
@@ -514,7 +526,7 @@ public class ShowVocabularyFrame extends JFrame {
                 ? new RowFilter<>() {
                     @Override
                     public boolean include(Entry<? extends VocabularyTableModel, ? extends Integer> entry) {
-                        String chapterValue = String.valueOf(entry.getValue(5));
+                        String chapterValue = String.valueOf(entry.getValue(4));
                         return (chapter1Only && "Chương 1".equals(chapterValue))
                                 || (chapter2Only && "Chương 2".equals(chapterValue))
                                 || (chapter3Only && "Chương 3".equals(chapterValue));
@@ -545,15 +557,10 @@ public class ShowVocabularyFrame extends JFrame {
     }
 
     private String chapterText(Integer lesson) {
-        Integer chapter = chapterNumber(lesson);
-        return chapter == null ? "-" : "Chương " + chapter;
-    }
-
-    private Integer chapterNumber(Integer lesson) {
         if (lesson == null || lesson <= 0) {
-            return null;
+            return "-";
         }
-        return ((lesson - 1) / 5) + 1;
+        return "Chương " + lesson;
     }
 
     private boolean isBlank(String value) {
@@ -561,7 +568,7 @@ public class ShowVocabularyFrame extends JFrame {
     }
 
     private class VocabularyTableModel extends AbstractTableModel {
-        private final String[] columns = {"★", "✓", "Kana", "Kanji", "Romaji", "Chương", "Tiếng Việt"};
+        private final String[] columns = {"Lưu ý", "Đã học", "Kana (hiragana/katana)", "Romaji", "Chapter", "Tiếng Việt"};
         private final List<Vocabulary> rows;
 
         VocabularyTableModel(List<Vocabulary> rows) {
@@ -600,10 +607,9 @@ public class ShowVocabularyFrame extends JFrame {
                 case 0 -> appContext.isFavoriteVocab(vocab);
                 case 1 -> appContext.isLearnedVocab(vocab);
                 case 2 -> safeText(vocab == null ? null : vocab.getKana());
-                case 3 -> safeText(vocab == null ? null : vocab.getKanji());
-                case 4 -> safeText(vocab == null ? null : vocab.getRomaji());
-                case 5 -> chapterText(vocab == null ? null : vocab.getLesson());
-                case 6 -> safeText(vocab == null ? null : vocab.getMeaning());
+                case 3 -> safeText(vocab == null ? null : vocab.getRomaji());
+                case 4 -> chapterText(vocab == null ? null : vocab.getLesson());
+                case 5 -> safeText(vocab == null ? null : vocab.getMeaning());
                 default -> "";
             };
         }
@@ -638,15 +644,15 @@ public class ShowVocabularyFrame extends JFrame {
             setOpaque(true);
             setBorder(new EmptyBorder(0, 14, 0, 14));
             setBackground(isSelected ? tableSelection : (row % 2 == 0 ? panelBackground : tableStripe));
-            setForeground((modelColumn == 2 || modelColumn == 3) ? titleForeground : textForeground);
+            setForeground(modelColumn == 2 ? titleForeground : textForeground);
 
-            if (modelColumn == 2 || modelColumn == 3) {
+            if (modelColumn == 2) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setFont(kanaFont);
-            } else if (modelColumn == 4) {
+            } else if (modelColumn == 3) {
                 setHorizontalAlignment(SwingConstants.LEFT);
                 setFont(romajiFont);
-            } else if (modelColumn == 5) {
+            } else if (modelColumn == 4) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setFont(chapterFont);
                 setForeground(accent);
@@ -905,9 +911,6 @@ public class ShowVocabularyFrame extends JFrame {
         }
     }
 }
-
-
-
 
 
 

@@ -2,7 +2,7 @@ package com.mescode.japanese.repo;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mescode.japanese.model.Vocabulary;
+import com.mescode.japanese.model.vocab.Vocabulary;
 
 import java.io.*;
 import java.lang.reflect.Type;
