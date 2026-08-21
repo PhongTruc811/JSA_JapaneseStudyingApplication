@@ -1,7 +1,8 @@
 package com.mescode.japanese.view.grammar;
 
 import com.mescode.japanese.model.grammar.GrammarQuestion;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
+
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

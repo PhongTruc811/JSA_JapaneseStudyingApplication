@@ -1,11 +1,11 @@
 package com.mescode.japanese.app.context;
 
-import com.mescode.japanese.model.User;
+import com.mescode.japanese.model.user.User;
 import com.mescode.japanese.model.vocab.Vocabulary;
-import com.mescode.japanese.repo.KanaRepository;
+import com.mescode.japanese.repository.KanaRepository;
 import com.mescode.japanese.model.kana.Kana;
-import com.mescode.japanese.repo.GrammarRepository;
-import com.mescode.japanese.repo.VocabRepository;
+import com.mescode.japanese.repository.GrammarRepository;
+import com.mescode.japanese.repository.VocabRepository;
 import com.mescode.japanese.service.GrammarService;
 
 import java.util.LinkedHashSet;
@@ -16,6 +16,7 @@ import java.util.Set;
 // AppContext CHỈ tồn tại trong Navigator
 
 public class AppContext {
+    public final String appVersion = "1.0.1";
     private final KanaRepository kanaRepo;
     private final List<Kana> hiraList;
     private final List<Kana> kataList;
@@ -25,9 +26,7 @@ public class AppContext {
     private final Set<String> learnedVocabKeys;
     private final GrammarService grammarService;
     private boolean darkMode = true;
-    private int fontSize = 14;
-    private final String appVersion = "1.0.0";
-    private User currentUser;
+    private int fontSize = 14;private User currentUser;
 
     private final java.util.List<java.util.function.Consumer<Boolean>> themeListeners = new java.util.ArrayList<>();
 
@@ -137,10 +136,6 @@ public class AppContext {
         this.fontSize = size;
     }
 
-    public String getAppVersion() {
-        return appVersion;
-    }
-
     public User getCurrentUser() {
         return currentUser;
     }
@@ -167,6 +162,7 @@ public class AppContext {
     private String safePart(String value) {
         return value == null ? "" : value.trim();
     }
+
 }
 
 

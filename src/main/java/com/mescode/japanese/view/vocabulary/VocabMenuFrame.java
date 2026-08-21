@@ -4,7 +4,8 @@ import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.view.components.BackButton;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
+
 import com.mescode.japanese.view.components.MenuActionCard;
 
 import javax.swing.*;

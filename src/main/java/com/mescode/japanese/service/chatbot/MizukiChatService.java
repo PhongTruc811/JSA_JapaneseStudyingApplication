@@ -1,6 +1,6 @@
 package com.mescode.japanese.service.chatbot;
 
-import com.mescode.japanese.model.Kanji;
+import com.mescode.japanese.model.kanji.Kanji;
 import com.mescode.japanese.model.kana.Kana;
 import com.mescode.japanese.model.vocab.Vocabulary;
 

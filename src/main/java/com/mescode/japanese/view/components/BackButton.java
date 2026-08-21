@@ -1,6 +1,6 @@
 package com.mescode.japanese.view.components;
 
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

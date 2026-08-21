@@ -4,7 +4,8 @@ import com.mescode.japanese.model.kana.KanaQuizDifficulty;
 import com.mescode.japanese.model.kana.KanaQuizCountdown;
 import com.mescode.japanese.model.kana.KanaQuizGroup;
 import com.mescode.japanese.model.kana.KanaQuizOptions;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

@@ -1,7 +1,7 @@
 package com.mescode.japanese.view.petrial;
 
 import com.mescode.japanese.model.petrial.PeTrialConfig;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

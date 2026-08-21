@@ -1,7 +1,7 @@
 package com.mescode.japanese.app.navigation;
 
 import com.mescode.japanese.model.vocab.Vocabulary;
-import com.mescode.japanese.repo.VocabRepository;
+import com.mescode.japanese.repository.VocabRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

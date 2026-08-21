@@ -4,7 +4,7 @@ import com.mescode.japanese.model.grammar.GrammarChapter;
 import com.mescode.japanese.model.grammar.GrammarChapterProgress;
 import com.mescode.japanese.model.grammar.GrammarQuestion;
 import com.mescode.japanese.model.grammar.GrammarQuizResult;
-import com.mescode.japanese.repo.GrammarRepository;
+import com.mescode.japanese.repository.GrammarRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

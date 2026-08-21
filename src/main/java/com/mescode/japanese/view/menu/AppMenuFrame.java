@@ -2,7 +2,7 @@ package com.mescode.japanese.view.menu;
 
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 import com.mescode.japanese.view.components.MenuActionCard;
 
 import javax.swing.*;

@@ -2,7 +2,6 @@ package com.mescode.japanese.app.navigation;
 
 import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.controller.KanaController;
-import com.mescode.japanese.controller.LoginController;
 import com.mescode.japanese.controller.PeTrialController;
 import com.mescode.japanese.controller.VocabController;
 import com.mescode.japanese.model.kana.KanaQuizOptions;
@@ -11,17 +10,16 @@ import com.mescode.japanese.model.petrial.PeTrialConfig;
 import com.mescode.japanese.model.vocab.VocabQuizAnswerResult;
 import com.mescode.japanese.model.vocab.VocabQuizConfig;
 import com.mescode.japanese.model.vocab.Vocabulary;
-import com.mescode.japanese.repo.KanjiRepository;
-import com.mescode.japanese.repo.PeTrialRepository;
+import com.mescode.japanese.repository.KanjiRepository;
+import com.mescode.japanese.repository.PeTrialRepository;
 import com.mescode.japanese.service.KanaService;
 import com.mescode.japanese.service.PeTrialService;
-import com.mescode.japanese.service.UserService;
 import com.mescode.japanese.service.VocabService;
 import com.mescode.japanese.service.music.JavaSoundMusicPlayer;
 import com.mescode.japanese.service.music.MusicPlayer;
 import com.mescode.japanese.service.music.PlaylistLoader;
-import com.mescode.japanese.view.activate.AccessKeyFrame;
-import com.mescode.japanese.view.activate.ActivateFrame;
+import com.mescode.japanese.view.auth.AccessKeyFrame;
+import com.mescode.japanese.view.auth.ActivateFrame;
 import com.mescode.japanese.view.chatbot.MizukiChatAssistant;
 import com.mescode.japanese.view.grammar.GrammarLessonFrame;
 import com.mescode.japanese.view.grammar.GrammarMenuFrame;
@@ -29,7 +27,6 @@ import com.mescode.japanese.view.grammar.GrammarQuizFrame;
 import com.mescode.japanese.view.kana.KanaDifficultyDialog;
 import com.mescode.japanese.view.kana.KanaMenuFrame;
 import com.mescode.japanese.view.kana.KanaQuizFrame;
-import com.mescode.japanese.view.login.LoginFrame;
 import com.mescode.japanese.view.menu.AppMenuFrame;
 import com.mescode.japanese.view.petrial.PeTrialDifficultyDialog;
 import com.mescode.japanese.view.petrial.PeTrialQuizFrame;
@@ -110,11 +107,6 @@ public class AppNavigator implements AutoCloseable {
         switch (appRoute) {
             case AccessKey -> currentFrame = new AccessKeyFrame(this);
             case Activate -> currentFrame = new ActivateFrame(this);
-            case Login -> {
-                LoginFrame view = new LoginFrame(this);
-                currentFrame = view;
-                new LoginController(view, new UserService());
-            }
             case AppMenu -> currentFrame = new AppMenuFrame(this);
             // Kana Module
             case Kana -> currentFrame = new KanaMenuFrame(this);
@@ -325,10 +317,9 @@ public class AppNavigator implements AutoCloseable {
 
     // Kiểm tra xem frame hiện tại có hỗ trợ chat assistant không
     private boolean supportsChatAssistant(JFrame currentFrame) {
-        // return false nếu frame hiện tại là AccessKeyFrame, ActivateFrame hoặc LoginFrame
-        return !(currentFrame instanceof AccessKeyFrame)
-                && !(currentFrame instanceof ActivateFrame)
-                && !(currentFrame instanceof LoginFrame);
+        // return false nếu frame hiện tại là AccessKeyFrame, ActivateFrame
+        return !(currentFrame instanceof ActivateFrame)
+                && !(currentFrame instanceof AccessKeyFrame);
     }
 
     private void closeChatAssistant() {

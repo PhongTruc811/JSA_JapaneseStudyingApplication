@@ -4,7 +4,7 @@ import com.mescode.japanese.model.vocab.VocabQuizConfig;
 import com.mescode.japanese.model.vocab.VocabQuizDifficulty;
 import com.mescode.japanese.model.vocab.Vocabulary;
 import com.mescode.japanese.service.VocabService;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
