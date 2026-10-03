@@ -1,4 +1,4 @@
-package com.mescode.japanese.view.vocabulary;
+package com.mescode.japanese.view.vocabulary.quiz;
 
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.model.vocab.VocabQuizConfig;

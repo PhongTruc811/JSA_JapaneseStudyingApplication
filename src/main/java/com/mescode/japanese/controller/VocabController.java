@@ -4,7 +4,7 @@ import com.mescode.japanese.model.vocab.VocabQuizAnswerResult;
 import com.mescode.japanese.model.vocab.VocabQuizConfig;
 import com.mescode.japanese.model.vocab.VocabQuizQuestion;
 import com.mescode.japanese.service.VocabService;
-import com.mescode.japanese.view.vocabulary.VocabQuizFrame_Interface;
+import com.mescode.japanese.view.vocabulary.quiz.VocabQuizFrame_Interface;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -60,7 +60,7 @@ public class VocabMenuFrame extends JFrame {
     private void setupFrame() {
         setSize(900, 680);
         setMinimumSize(new Dimension(580, 480));
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -109,9 +109,9 @@ public class VocabMenuFrame extends JFrame {
         menuCard.add(Box.createVerticalStrut(18));
         menuCard.add(createMenuSection(new MenuSection("Menu", List.of(
                 new MenuEntry("Add new word", "Thêm từ vựng mới của riêng bạn", "+", AppRoute.AddVocab),
-                new MenuEntry("Vocabulary (Chapter 1-3)", "Bảng liệt kê tất cả các từ vựng tiếng Nhật từ chapter 1-3", "語", AppRoute.ShowVocab),
-                new MenuEntry("Kanji (Chapter 1-3)", "Bảng liệt kê tất cả các từ Kanji từ chapter 1-3", "漢", AppRoute.ShowKanji),
-                new MenuEntry("Do quiz", "Practice all kanji & hiragana words from chapter 1-3", "?", AppRoute.VocabQuiz)
+                new MenuEntry("Vocabulary", "Bảng liệt kê tất cả các từ vựng tiếng Nhật", "語", AppRoute.ShowVocab),
+                new MenuEntry("Kanji", "Bảng liệt kê tất cả các từ Kanji", "漢", AppRoute.ShowKanji),
+                new MenuEntry("Do quiz", "Practice all kanji & hiragana vocabularies", "?", AppRoute.VocabQuiz)
 
                 ))));
         // Thêm khoảng cách
@@ -212,7 +212,7 @@ public class VocabMenuFrame extends JFrame {
         MenuActionCard card = new MenuActionCard(
                 entry.title(), entry.description(), new MenuMark(entry.mark()),
                 () -> darkMode,
-                () -> menuNavigator.navigateTo(entry.option())
+                () -> menuNavigator.navigateTo(entry.option()) // xử lý logic điều hướng khi các option ở MenuFrame được click
         );
         card.setAlignmentX(Component.LEFT_ALIGNMENT);
         return card;

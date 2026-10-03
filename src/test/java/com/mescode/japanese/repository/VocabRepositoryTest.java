@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class VocabRepositoryTest {
 
     private final VocabRepository repository = new VocabRepository();
+    //   - Test 1: kiểm tra repository đọc được danh sách từ vựng.
 
     @Test
     void getVocabs_shouldLoadVocabularyData() {
@@ -22,17 +23,16 @@ class VocabRepositoryTest {
         assertFalse(vocabs.isEmpty());
         assertTrue(vocabs.stream().allMatch(this::isValidVocabulary));
     }
-
+    //  - Test 2: kiểm tra đọc dữ liệu từ file JSON và dữ liệu hợp lệ.
     @Test
     void readVocabFromJson_shouldLoadVocabularyData() {
         List<Vocabulary> vocabs = repository.readVocabFromJson("/data/vocab.json");
-
         assertNotNull(vocabs);
         assertFalse(vocabs.isEmpty());
         assertTrue(vocabs.stream().allMatch(this::isValidVocabulary));
-        assertTrue(vocabs.stream().anyMatch(vocabulary -> vocabulary.getLesson() != null && vocabulary.getLesson() > 0));
+        assertTrue(vocabs.stream().anyMatch(vocabulary -> vocabulary.getChapter() != null && vocabulary.getChapter() > 0));
     }
-
+    //  - Test 3: kiểm tra khi file không tồn tại thì chương trình ném ra RuntimeException như mong đợi.
     @Test
     void readVocabFromJson_shouldThrowWhenFileMissing() {
         assertThrows(RuntimeException.class, () -> repository.readVocabFromJson("/data/does-not-exist.json"));

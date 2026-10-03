@@ -9,6 +9,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class VocabRepository {
@@ -20,16 +21,28 @@ public class VocabRepository {
     private final String favoritesPath = "user_data" + System.getProperty("file.separator") + "favorite_vocab.json";
     private final String learnedPath = "user_data" + System.getProperty("file.separator") + "learned_vocab.json";
 
-    /**
-     * Load built-in vocabs and merge with any user-added vocabs from user_data/user_vocab.json
-     */
+    public VocabRepository() {
+    }
+
     public List<Vocabulary> getVocabs() {
-        List<Vocabulary> base = readVocabFromJson("/data/vocab.json");
-        List<Vocabulary> custom = readCustomVocabs();
-        if (custom != null && !custom.isEmpty()) {
-            base.addAll(custom);
-        }
-        return base;
+        List<Vocabulary> originalData = readVocabFromJson("/data/vocab.json");
+        return originalData;
+    }
+    // Hàm này giúp lọc dư liệu vocab theo chapter tùy ý
+    public List<Vocabulary> defaultFilterVocabs(List<Vocabulary> original) {
+        List<Vocabulary> filtered = original.stream()
+                .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
+                .filter(vocabulary -> vocabulary.getChapter() >=1 && vocabulary.getChapter() <=5)
+                .toList();
+        return filtered;
+    }
+
+    public List<Vocabulary> customFilterVocabs(List<Vocabulary> original, Integer customChapter) {
+        List<Vocabulary> filtered = original.stream()
+                .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
+                .filter(vocabulary -> Objects.equals(vocabulary.getKana(), customChapter))
+                .toList();
+        return filtered;
     }
 
     public List<Vocabulary> readVocabFromJson(String filePath){
@@ -47,11 +60,11 @@ public class VocabRepository {
     }
 
     private List<Vocabulary> readCustomVocabs() {
-        File f = new File(customPath);
-        if (!f.exists()) {
+        File file = new File(customPath);
+        if (!file.exists()) {
             return Collections.emptyList();
         }
-        try (Reader r = new FileReader(f, StandardCharsets.UTF_8)) {
+        try (Reader r = new FileReader(file, StandardCharsets.UTF_8)) {
             return gson.fromJson(r, type);
         } catch (Exception e) {
             // if corrupted, ignore custom file

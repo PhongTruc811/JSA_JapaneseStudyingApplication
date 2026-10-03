@@ -9,7 +9,6 @@ import com.mescode.japanese.model.petrial.PeTrialAnswerResult;
 import com.mescode.japanese.model.petrial.PeTrialConfig;
 import com.mescode.japanese.model.vocab.VocabQuizAnswerResult;
 import com.mescode.japanese.model.vocab.VocabQuizConfig;
-import com.mescode.japanese.model.vocab.Vocabulary;
 import com.mescode.japanese.repository.KanjiRepository;
 import com.mescode.japanese.repository.PeTrialRepository;
 import com.mescode.japanese.service.KanaService;
@@ -34,11 +33,13 @@ import com.mescode.japanese.view.petrial.PeTrialResultFrame;
 import com.mescode.japanese.view.settings.SettingFrame;
 import com.mescode.japanese.view.splash.SplashFrame;
 import com.mescode.japanese.view.vocabulary.*;
+import com.mescode.japanese.view.vocabulary.quiz.DoVocabQuizFrame;
+import com.mescode.japanese.view.vocabulary.quiz.VocabQuizResultFrame;
+import com.mescode.japanese.view.vocabulary.quiz.VocabQuizTypeDialog;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 // Navigator + Bootstrap
@@ -69,16 +70,6 @@ public class AppNavigator implements AutoCloseable {
     }
 
     public void navigateTo(AppRoute appRoute) {
-        if (appRoute == AppRoute.AddVocab) {
-            JOptionPane.showMessageDialog(
-                    currentFrame,
-                    "This feature is out of scope for now and will be available in a future update.",
-                    "Coming Soon",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            return;
-        }
-
         VocabQuizConfig vocabularyQuizConfig = null;
         KanaQuizOptions kanaQuizOptions = null;
         PeTrialConfig peTrialConfig = null;
@@ -108,12 +99,13 @@ public class AppNavigator implements AutoCloseable {
             case AccessKey -> currentFrame = new AccessKeyFrame(this);
             case Activate -> currentFrame = new ActivateFrame(this);
             case AppMenu -> currentFrame = new AppMenuFrame(this);
-            // Kana Module
+            // AddVocab Module (out of scope)
+            case AddVocab -> JOptionPane.showMessageDialog(currentFrame, "This module will be available soon", "Not availabe now", JOptionPane.INFORMATION_MESSAGE);
             case Kana -> currentFrame = new KanaMenuFrame(this);
             case HiraQuiz, KataQuiz -> createKanaQuiz(appRoute, kanaQuizOptions);
             // Vocabulary Module
             case Vocab -> currentFrame = new VocabMenuFrame(this);
-                case ShowVocab -> currentFrame = new ShowVocabFrame(this, filterChapterVocabs(appContext.getVocabs()));
+                case ShowVocab -> currentFrame = new ShowVocabFrame(this, appContext.getVocabs());
                 case ShowKanji -> currentFrame = new ShowKanjiFrame(this, new KanjiRepository().getKanjis());
                 case VocabQuiz -> createVocabQuiz(vocabularyQuizConfig);
             // Grammar Module
@@ -259,15 +251,6 @@ public class AppNavigator implements AutoCloseable {
         return VocabQuizTypeDialog.showDialog(currentFrame, appContext.isDarkMode(), appContext.getVocabs());
     }
 
-    static List<Vocabulary> filterChapterVocabs(List<Vocabulary> vocabularies) {
-        if (vocabularies == null) {
-            return new ArrayList<>();
-        }
-        return new ArrayList<>(vocabularies.stream()
-                .filter(vocab -> vocab != null && vocab.getLesson() != null)
-                .filter(vocab -> vocab.getLesson() >= 1 && vocab.getLesson() <= 3)
-                .toList());
-    }
 
     // Mở frame với chế độ full screen, và thêm window listener để đóng app khi frame đóng
     private void openMaximized(JFrame frame) {

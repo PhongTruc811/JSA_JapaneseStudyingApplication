@@ -1,4 +1,4 @@
-package com.mescode.japanese.view.vocabulary;
+package com.mescode.japanese.view.vocabulary.quiz;
 
 import com.mescode.japanese.model.vocab.VocabQuizConfig;
 import com.mescode.japanese.model.vocab.VocabQuizDifficulty;
@@ -74,12 +74,12 @@ public final class VocabQuizTypeDialog extends JDialog {
 
     private void showTypeStep() {
         JPanel body = body("Step 1 of 3", "Select quiz type", "Chọn loại nội dung mà bạn muốn làm quiz");
-        body.add(choiceButton("語", "Vocabulary", "Từ vựng (chapter 1-3)", () -> {
+        body.add(choiceButton("語", "Vocabulary", "Từ vựng", () -> {
             showKanji = false;
             showChapterStep();
         }));
         body.add(Box.createVerticalStrut(10));
-        body.add(choiceButton("漢", "Kanji", "Kanji Hán Tự (chapter 1-3)", () -> {
+        body.add(choiceButton("漢", "Kanji", "Kanji Hán Tự", () -> {
             showKanji = true;
             showChapterStep();
         }));
@@ -93,7 +93,8 @@ public final class VocabQuizTypeDialog extends JDialog {
         chaptersPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         chaptersPanel.setPreferredSize(new Dimension(CONTENT_WIDTH, 76));
         chaptersPanel.setMaximumSize(new Dimension(CONTENT_WIDTH, 76));
-        for (int chapter = 1; chapter <= 3; chapter++) {
+        //
+        for (int chapter = 1; chapter <= 5; chapter++) {
             final int chapterNumber = chapter;
             JToggleButton button = new JToggleButton("Chapter " + chapter);
             button.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));

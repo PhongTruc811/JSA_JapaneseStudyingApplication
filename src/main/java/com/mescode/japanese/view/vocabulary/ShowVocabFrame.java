@@ -60,7 +60,8 @@ public class ShowVocabFrame extends JFrame {
     private JToggleButton chapter1Toggle;
     private JToggleButton chapter2Toggle;
     private JToggleButton chapter3Toggle;
-
+    private JToggleButton chapter4Toggle;
+    
     private final Font titleFont = new Font("Segoe UI Semibold", Font.BOLD, 30);
     private final Font subtitleFont = new Font("Segoe UI", Font.PLAIN, 14);
     private final Font statValueFont = new Font("Segoe UI Semibold", Font.BOLD, 18);
@@ -85,7 +86,7 @@ public class ShowVocabFrame extends JFrame {
 
         setupFrame();
         configureTheme(darkMode);
-        setupUI("", false, false, false, false, false, false, false, false);
+        setupUI("", false, false, false, false, false, false, false, false, false);
     }
 
     private void setupFrame() {
@@ -128,17 +129,18 @@ public class ShowVocabFrame extends JFrame {
         boolean chapter1Only = chapter1Toggle != null && chapter1Toggle.isSelected();
         boolean chapter2Only = chapter2Toggle != null && chapter2Toggle.isSelected();
         boolean chapter3Only = chapter3Toggle != null && chapter3Toggle.isSelected();
+        boolean chapter4Only = chapter4Toggle != null && chapter4Toggle.isSelected();
         configureTheme(dark);
         if (uiBuilt) {
             setupUI(currentSearch, favoritesOnly, learnedOnly, unlearnedOnly,
-                    chapter1Only, chapter2Only, chapter3Only, searchExpanded, filterExpanded);
+                    chapter1Only, chapter2Only, chapter3Only, chapter4Only, searchExpanded, filterExpanded);
             revalidate();
         }
         repaint();
     }
 
     private void setupUI(String searchText, boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
-                         boolean chapter1Only, boolean chapter2Only, boolean chapter3Only,
+                         boolean chapter1Only, boolean chapter2Only, boolean chapter3Only, boolean chapter4Only,
                          boolean searchExpandedState, boolean filterExpandedState) {
         this.searchExpanded = searchExpandedState;
         this.filterExpanded = filterExpandedState;
@@ -150,7 +152,7 @@ public class ShowVocabFrame extends JFrame {
 
         root.add(buildHeader(), BorderLayout.NORTH);
         root.add(buildTablePanel(searchText, favoritesOnly, learnedOnly, unlearnedOnly,
-                chapter1Only, chapter2Only, chapter3Only), BorderLayout.CENTER);
+                chapter1Only, chapter2Only, chapter3Only, chapter4Only), BorderLayout.CENTER);
 
         uiBuilt = true;
         applyFilter();
@@ -180,12 +182,12 @@ public class ShowVocabFrame extends JFrame {
     }
 
     private JComponent buildControlsRow(String searchText, boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
-                                        boolean chapter1Only, boolean chapter2Only, boolean chapter3Only) {
+                                        boolean chapter1Only, boolean chapter2Only, boolean chapter3Only, boolean chapter4Only) {
         JPanel row = new JPanel(new GridLayout(1, 2, 14, 0));
         row.setOpaque(false);
         row.add(buildSearchPanel(searchText));
-        row.add(buildQuickFilterPanel(favoritesOnly, learnedOnly, unlearnedOnly,
-                chapter1Only, chapter2Only, chapter3Only));
+        row.add(buildFilterPanel(favoritesOnly, learnedOnly, unlearnedOnly,
+                chapter1Only, chapter2Only, chapter3Only, chapter4Only));
         return row;
     }
 
@@ -234,25 +236,25 @@ public class ShowVocabFrame extends JFrame {
         return panel;
     }
 
-    private JComponent buildQuickFilterPanel(boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
-                                             boolean chapter1Only, boolean chapter2Only, boolean chapter3Only) {
+    private JComponent buildFilterPanel(boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
+                                        boolean chapter1Only, boolean chapter2Only, boolean chapter3Only, boolean chapter4Only) {
         JPanel panel = new RoundedPanel(filterExpanded ? panelBackground : controlCollapsed, border, 18);
         panel.setLayout(new BorderLayout(0, filterExpanded ? 10 : 0));
         panel.setBorder(new EmptyBorder(12, 14, 12, 14));
 
-        JButton headerButton = createSectionHeaderButton("Lọc nhanh", filterExpanded, () -> {
+        JButton headerButton = createSectionHeaderButton("Chọn Lọc", filterExpanded, () -> {
             filterExpanded = !filterExpanded;
             rebuildCurrentUI();
         });
         panel.add(headerButton, BorderLayout.NORTH);
 
         if (filterExpanded) {
-            JPanel content = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-            content.setOpaque(false);
+            JPanel filterContent = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+            filterContent.setOpaque(false);
 
             favoritesOnlyToggle = createToggleButton("Từ đã gắn sao", favoritesOnly);
             favoritesOnlyToggle.addActionListener(e -> applyFilter());
-            content.add(favoritesOnlyToggle);
+            filterContent.add(favoritesOnlyToggle);
 
             learnedOnlyToggle = createToggleButton("Đã học", learnedOnly);
             learnedOnlyToggle.addActionListener(e -> {
@@ -261,7 +263,7 @@ public class ShowVocabFrame extends JFrame {
                 }
                 applyFilter();
             });
-            content.add(learnedOnlyToggle);
+            filterContent.add(learnedOnlyToggle);
 
             unlearnedOnlyToggle = createToggleButton("Chưa học", unlearnedOnly);
             unlearnedOnlyToggle.addActionListener(e -> {
@@ -270,21 +272,25 @@ public class ShowVocabFrame extends JFrame {
                 }
                 applyFilter();
             });
-            content.add(unlearnedOnlyToggle);
+            filterContent.add(unlearnedOnlyToggle);
 
             chapter1Toggle = createToggleButton("Chương 1", chapter1Only);
             chapter1Toggle.addActionListener(e -> applyFilter());
-            content.add(chapter1Toggle);
+            filterContent.add(chapter1Toggle);
 
             chapter2Toggle = createToggleButton("Chương 2", chapter2Only);
             chapter2Toggle.addActionListener(e -> applyFilter());
-            content.add(chapter2Toggle);
+            filterContent.add(chapter2Toggle);
 
             chapter3Toggle = createToggleButton("Chương 3", chapter3Only);
             chapter3Toggle.addActionListener(e -> applyFilter());
-            content.add(chapter3Toggle);
+            filterContent.add(chapter3Toggle);
 
-            panel.add(content, BorderLayout.CENTER);
+            chapter4Toggle = createToggleButton("Chương 4", chapter4Only);
+            chapter4Toggle.addActionListener(e -> applyFilter());
+            filterContent.add(chapter4Toggle);
+
+            panel.add(filterContent, BorderLayout.CENTER);
         } else {
             favoritesOnlyToggle = createToggleButton("Từ đã gắn sao", favoritesOnly);
             learnedOnlyToggle = createToggleButton("Đã học", learnedOnly);
@@ -292,6 +298,7 @@ public class ShowVocabFrame extends JFrame {
             chapter1Toggle = createToggleButton("Chương 1", chapter1Only);
             chapter2Toggle = createToggleButton("Chương 2", chapter2Only);
             chapter3Toggle = createToggleButton("Chương 3", chapter3Only);
+            chapter4Toggle = createToggleButton("Chương 4", chapter4Only);
         }
 
         return panel;
@@ -319,7 +326,7 @@ public class ShowVocabFrame extends JFrame {
     }
 
     private JComponent buildTablePanel(String searchText, boolean favoritesOnly, boolean learnedOnly, boolean unlearnedOnly,
-                                       boolean chapter1Only, boolean chapter2Only, boolean chapter3Only) {
+                                       boolean chapter1Only, boolean chapter2Only, boolean chapter3Only, boolean chapter4Only) {
         JPanel panel = new RoundedPanel(panelBackground, border, 22);
         panel.setLayout(new BorderLayout(0, 14));
         panel.setBorder(new EmptyBorder(18, 20, 18, 20));
@@ -343,7 +350,7 @@ public class ShowVocabFrame extends JFrame {
 
         top.add(toolbar);
         top.add(Box.createVerticalStrut(12));
-        top.add(buildControlsRow(searchText, favoritesOnly, learnedOnly, unlearnedOnly, chapter1Only, chapter2Only, chapter3Only));
+        top.add(buildControlsRow(searchText, favoritesOnly, learnedOnly, unlearnedOnly, chapter1Only, chapter2Only, chapter3Only, chapter4Only));
 
         panel.add(top, BorderLayout.NORTH);
         panel.add(createTableScrollPane(), BorderLayout.CENTER);
@@ -473,8 +480,9 @@ public class ShowVocabFrame extends JFrame {
         boolean chapter1Only = chapter1Toggle != null && chapter1Toggle.isSelected();
         boolean chapter2Only = chapter2Toggle != null && chapter2Toggle.isSelected();
         boolean chapter3Only = chapter3Toggle != null && chapter3Toggle.isSelected();
+        boolean chapter4Only = chapter4Toggle != null && chapter4Toggle.isSelected();
         setupUI(currentSearch, favoritesOnly, learnedOnly, unlearnedOnly,
-                chapter1Only, chapter2Only, chapter3Only, searchExpanded, filterExpanded);
+                chapter1Only, chapter2Only, chapter3Only, chapter4Only, searchExpanded, filterExpanded);
         revalidate();
         repaint();
     }
@@ -491,11 +499,13 @@ public class ShowVocabFrame extends JFrame {
         boolean chapter1Only = chapter1Toggle != null && chapter1Toggle.isSelected();
         boolean chapter2Only = chapter2Toggle != null && chapter2Toggle.isSelected();
         boolean chapter3Only = chapter3Toggle != null && chapter3Toggle.isSelected();
+        boolean chapter4Only = chapter4Toggle != null && chapter4Toggle.isSelected();
 
         RowFilter<VocabularyTableModel, Integer> searchFilter = query.isEmpty()
                 ? null
                 : RowFilter.regexFilter("(?iu)" + Pattern.quote(query), 2, 3, 4, 5);
 
+        // logic xử lý filter "từ được đánh dấu sao"
         RowFilter<VocabularyTableModel, Integer> favoritesFilter = favoritesOnly
                 ? new RowFilter<>() {
                     @Override
@@ -504,7 +514,7 @@ public class ShowVocabFrame extends JFrame {
                     }
                 }
                 : null;
-
+        // logic xử lý filter "từ đã học"
         RowFilter<VocabularyTableModel, Integer> learnedFilter = null;
         if (learnedOnly) {
             learnedFilter = new RowFilter<>() {
@@ -521,15 +531,16 @@ public class ShowVocabFrame extends JFrame {
                 }
             };
         }
-
-        RowFilter<VocabularyTableModel, Integer> chapterFilter = (chapter1Only || chapter2Only || chapter3Only)
+        // logic xử lý filter cho từng chapter
+        RowFilter<VocabularyTableModel, Integer> chapterFilter = (chapter1Only || chapter2Only || chapter3Only || chapter4Only)
                 ? new RowFilter<>() {
                     @Override
                     public boolean include(Entry<? extends VocabularyTableModel, ? extends Integer> entry) {
                         String chapterValue = String.valueOf(entry.getValue(4));
                         return (chapter1Only && "Chương 1".equals(chapterValue))
                                 || (chapter2Only && "Chương 2".equals(chapterValue))
-                                || (chapter3Only && "Chương 3".equals(chapterValue));
+                                || (chapter3Only && "Chương 3".equals(chapterValue))
+                                || (chapter4Only && "Chương 4".equals(chapterValue));
                     }
                 }
                 : null;
@@ -555,7 +566,7 @@ public class ShowVocabFrame extends JFrame {
     private String safeText(String value) {
         return isBlank(value) ? "-" : value.trim();
     }
-
+    
     private String chapterText(Integer lesson) {
         if (lesson == null || lesson <= 0) {
             return "-";
@@ -608,7 +619,7 @@ public class ShowVocabFrame extends JFrame {
                 case 1 -> appContext.isLearnedVocab(vocab);
                 case 2 -> safeText(vocab == null ? null : vocab.getKana());
                 case 3 -> safeText(vocab == null ? null : vocab.getRomaji());
-                case 4 -> chapterText(vocab == null ? null : vocab.getLesson());
+                case 4 -> chapterText(vocab == null ? null : vocab.getChapter());
                 case 5 -> safeText(vocab == null ? null : vocab.getMeaning());
                 default -> "";
             };

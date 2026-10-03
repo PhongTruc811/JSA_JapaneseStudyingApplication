@@ -35,11 +35,18 @@
             <artifactId>scribejava-core</artifactId>
             <version>8.3.3</version>
         </dependency>
-        <!-- Jackson - dùng để đọc và viết dữ liệu json trong Java -->
+        <!-- Jackson-Databind -> dùng để đọc và viết dữ liệu từ file .json trong Java -->
+        <!-- dependency này cung cấp ObjectMapper -> giúp chuyen đổi dư liệu từ json sang java và ngược lại -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
+        </dependency>
+        <!-- jackson-core (Bổ sung nếu chưa có) - nền tảng của jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.17.2</version>
         </dependency>
         <!-- MP3 Java Sound service provider used by Mizuki Music Mode. -->
         <dependency>
@@ -67,12 +74,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>6.0.3</version>
             <scope>test</scope>
-        </dependency>
-        <!-- dependency la MS SQL Server JDBC Driver -->
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <version>12.6.1.jre11</version>
         </dependency>
     </dependencies>
 </project>
