@@ -26,10 +26,14 @@ public class VocabRepository {
 
     public List<Vocabulary> getVocabs() {
         List<Vocabulary> originalData = readVocabFromJson("/data/vocab.json");
-        return originalData;
+
+        // data của vocab được hiển thị trong app
+        List<Vocabulary> outputData = custom_VocabFilter(originalData);
+        return outputData;
     }
+
     // Hàm này giúp lọc dư liệu vocab theo chapter tùy ý
-    public List<Vocabulary> defaultFilterVocabs(List<Vocabulary> original) {
+    private List<Vocabulary> custom_VocabFilter(List<Vocabulary> original) {
         List<Vocabulary> filtered = original.stream()
                 .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
                 .filter(vocabulary -> vocabulary.getChapter() >=1 && vocabulary.getChapter() <=5)
@@ -37,7 +41,7 @@ public class VocabRepository {
         return filtered;
     }
 
-    public List<Vocabulary> customFilterVocabs(List<Vocabulary> original, Integer customChapter) {
+    public List<Vocabulary> getVocabsByChapter(List<Vocabulary> original, Integer customChapter) {
         List<Vocabulary> filtered = original.stream()
                 .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
                 .filter(vocabulary -> Objects.equals(vocabulary.getKana(), customChapter))

@@ -563,11 +563,14 @@ public class ShowVocabFrame extends JFrame {
         resultCountLabel.setText(String.format(Locale.ROOT, "%d/%d từ đang hiển thị", visibleRows, totalRows));
     }
 
-    private String safeText(String value) {
-        return isBlank(value) ? "-" : value.trim();
+    private String check_BlankValue(String inputValue) {
+        boolean isBlank = isBlank(inputValue);
+        String outputValue = isBlank ? "- " : inputValue.trim();
+        return outputValue;
+        // ngắn gọn hơn: return isBlank(inputValue) ? "- " : inputValue.trim();
     }
     
-    private String chapterText(Integer lesson) {
+    private String handle_ChapterCollumn(Integer lesson) {
         if (lesson == null || lesson <= 0) {
             return "-";
         }
@@ -612,15 +615,15 @@ public class ShowVocabFrame extends JFrame {
         }
 
         @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Vocabulary vocab = rows.get(rowIndex);
-            return switch (columnIndex) {
+        public Object getValueAt(int rowNumber, int collumnNumber) {
+            Vocabulary vocab = rows.get(rowNumber);
+            return switch (collumnNumber) {
                 case 0 -> appContext.isFavoriteVocab(vocab);
                 case 1 -> appContext.isLearnedVocab(vocab);
-                case 2 -> safeText(vocab == null ? null : vocab.getKana());
-                case 3 -> safeText(vocab == null ? null : vocab.getRomaji());
-                case 4 -> chapterText(vocab == null ? null : vocab.getChapter());
-                case 5 -> safeText(vocab == null ? null : vocab.getMeaning());
+                case 2 -> check_BlankValue(vocab == null ? null : vocab.getKana());
+                case 3 -> check_BlankValue(vocab == null ? null : vocab.getRomaji());
+                case 4 -> handle_ChapterCollumn(vocab == null ? null : vocab.getChapter());
+                case 5 -> check_BlankValue(vocab == null ? null : vocab.getMeaning());
                 default -> "";
             };
         }
