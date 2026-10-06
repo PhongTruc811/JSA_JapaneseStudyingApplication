@@ -2,49 +2,49 @@
   {
     "kana": "はじめまして",
     "meaning": "Xin chào (lần đầu gặp mặt)",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "hajimemashite"
   },
   {
     "kana": "（どうぞ）よろしくおねがいします。",
     "kanji": "（どうぞ）よろしくお願いします。",
     "meaning": "Rất mong nhận được sự giúp đỡ của bạn",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "(douzo)yoroshikuonegaishimasu"
   },
   {
     "kana": "おくにはどちらですか。",
     "kanji": "お国はどちらですか。",
     "meaning": "Đất nước của bạn là nước nào?",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "okunihadochiradesuka"
   },
   {
     "kana": "こちらこそ",
     "kanji": "",
     "meaning": "Tôi cũng vậy!",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "kochirakoso"
   },
   {
     "kana": "あのう",
     "kanji": "",
     "meaning": "Anh / chị ơi...",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "anou"
   },
   {
     "kana": "すみません",
     "kanji": "",
     "meaning": "Xin lỗi... cho tôi hỏi...",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "sumimasen"
   },
   {
     "kana": "あのう、すみません。",
     "kanji": "",
     "meaning": "Anh / chị ơi, xin lỗi cho tôi hỏi 1 chút...",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "anou sumimasen"
   },
 
@@ -52,7 +52,7 @@
     "kana": "そうですか。",
     "kanji": "",
     "meaning": "Thế à!",
-    "lesson": 1,
+    "chapter": 1,
     "romaji": "soudesuka"
   },
 
@@ -60,21 +60,21 @@
     "kana": "ちゅうもんをおねがいします",
     "kanji": "注文をお願いします",
     "meaning": "Cho tôi gọi đồ.",
-    "lesson": 2,
+    "chapter": 2,
     "romaji": "chuumono onegaishimasu"
   },
   {
     "kana": "どうぞ",
     "kanji": "",
     "meaning": "Xin mời",
-    "lesson": 2,
+    "chapter": 2,
     "romaji": "douzo"
   },
   {
     "kana": "いらっしゃいませ",
     "kanji": "",
     "meaning": "Kính chào quý khách",
-    "lesson": 2,
+    "chapter": 2,
     "romaji": "irasshaimase"
   }
 ]

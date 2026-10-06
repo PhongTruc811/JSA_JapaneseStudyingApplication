@@ -1,40 +1,33 @@
 package com.mescode.japanese.model.vocab;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Vocabulary {
     private String kana;
     private String kanji;
     private String meaning;
     private String romaji;
-    private String example;
-    private Integer lesson;
+
+    private Integer chapter;
 
     public Vocabulary(String kana, String meaning, String romaji, String example) {
         this(kana, null, meaning, romaji, example, null);
     }
 
-    public Vocabulary(String kana, String meaning, String romaji, String example, Integer lesson) {
-        this(kana, null, meaning, romaji, example, lesson);
+    public Vocabulary(String kana, String meaning, String romaji, String example, Integer chapter) {
+        this(kana, null, meaning, romaji, example, chapter);
     }
 
     public Vocabulary(String kana, String kanji, String meaning, String romaji, String example) {
         this(kana, kanji, meaning, romaji, example, null);
     }
 
-    public Vocabulary(String kana, String kanji, String meaning, String romaji, String example, Integer lesson) {
+    public Vocabulary(String kana, String kanji, String meaning, String romaji, String example, Integer chapter) {
         this.kana = kana;
         this.kanji = kanji;
         this.meaning = meaning;
         this.romaji = romaji;
-        this.example = example;
-        this.lesson = lesson;
-    }
-
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
+        this.chapter = chapter;
     }
 
     public String getRomaji() {
@@ -69,12 +62,12 @@ public class Vocabulary {
         this.kanji = kanji;
     }
 
-    public Integer getLesson() {
-        return lesson;
+    public Integer getChapter() {
+        return chapter;
     }
 
-    public void setLesson(Integer lesson) {
-        this.lesson = lesson;
+    public void setChapter(Integer chapter) {
+        this.chapter = chapter;
     }
 
     @Override
@@ -84,8 +77,7 @@ public class Vocabulary {
                 ", kanji='" + kanji + '\'' +
                 ", meaning='" + meaning + '\'' +
                 ", roumaji='" + romaji + '\'' +
-                ", example='" + example + '\'' +
-                ", lesson='" + lesson + '\'' +
+                ", lesson='" + chapter + '\'' +
                 '}';
     }
 }

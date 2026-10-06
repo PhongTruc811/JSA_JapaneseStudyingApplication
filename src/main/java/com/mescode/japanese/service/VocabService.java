@@ -19,17 +19,11 @@ public class VocabService {
     private final Random random = new Random();
     private final List<VocabQuizQuestion> quizQuestions;
 
-    public VocabService(List<Vocabulary> vocabularies) {
-        this.vocabularies = vocabularies == null ? new ArrayList<>() : new ArrayList<>(vocabularies);
-        Collections.shuffle(this.vocabularies);
-        this.quizQuestions = Collections.emptyList();
-        loadVocabs();
-    }
-
     public VocabService(List<Vocabulary> allVocabs, VocabQuizConfig config) {
         this.vocabularies = filterVocabs(allVocabs, config);
         Collections.shuffle(this.vocabularies);
         this.quizQuestions = buildQuestions(this.vocabularies, config.showKanji(), random);
+        loadVocabs();
     }
     private void loadVocabs() {
         for (Vocabulary vocabulary : vocabularies) {
@@ -75,8 +69,8 @@ public class VocabService {
             return new ArrayList<>();
         }
         return allVocabs.stream()
-                .filter(vocab -> vocab != null && vocab.getLesson() != null)
-                .filter(vocab -> config.chapters().contains(vocab.getLesson()))
+                .filter(vocab -> vocab != null && vocab.getChapter() != null)
+                .filter(vocab -> config.chapters().contains(vocab.getChapter()))
                 .filter(vocab -> hasText(getAnswerText(vocab, config.showKanji())))
                 .collect(Collectors.toCollection(ArrayList::new));
     }

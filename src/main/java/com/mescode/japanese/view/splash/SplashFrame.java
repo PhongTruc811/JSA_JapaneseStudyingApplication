@@ -3,7 +3,8 @@ package com.mescode.japanese.view.splash;
 import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -124,7 +125,7 @@ public class SplashFrame extends JFrame {
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         content.add(progressBar);
 
-        footerLabel = new AnimatedLabel("V1.0.0 - by MesCode (Trúc Nguyễn)");
+        footerLabel = new AnimatedLabel(appContext.appVersion +"- by MesCode (Trúc Nguyễn)");
         footerLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         footerLabel.setForeground(UITheme.getTextForeground(darkMode));
         footerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

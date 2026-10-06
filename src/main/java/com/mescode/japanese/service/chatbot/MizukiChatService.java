@@ -1,6 +1,6 @@
 package com.mescode.japanese.service.chatbot;
 
-import com.mescode.japanese.model.Kanji;
+import com.mescode.japanese.model.kanji.Kanji;
 import com.mescode.japanese.model.kana.Kana;
 import com.mescode.japanese.model.vocab.Vocabulary;
 
@@ -395,17 +395,14 @@ public class MizukiChatService implements ChatService {
         StringBuilder text = new StringBuilder(display)
                 .append("\n• Romaji: ").append(safe(vocabulary.getRomaji()))
                 .append("\n• Nghĩa: ").append(safe(vocabulary.getMeaning()));
-        if (hasText(vocabulary.getExample())) {
-            text.append("\n• Ví dụ: ").append(vocabulary.getExample().trim());
-        }
-        if (vocabulary.getLesson() != null) {
-            text.append("\n• Bài học: ").append(vocabulary.getLesson());
+        if (vocabulary.getChapter() != null) {
+            text.append("\n• Bài học: ").append(vocabulary.getChapter());
         }
         return new MizukiReply(
                 text.toString(),
-                vocabulary.getLesson() == null
+                vocabulary.getChapter() == null
                         ? "Dữ liệu Vocabulary JSA"
-                        : "Dữ liệu Vocabulary JSA • Bài " + vocabulary.getLesson(),
+                        : "Dữ liệu Vocabulary JSA • Bài " + vocabulary.getChapter(),
                 List.of("Đố mình từ này", "Tra từ khác", "Xem tiến độ")
         );
     }

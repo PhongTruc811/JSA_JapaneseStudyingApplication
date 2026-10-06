@@ -4,7 +4,8 @@ import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.model.petrial.PeTrialAnswerResult;
 import com.mescode.japanese.model.petrial.PeTrialConfig;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
+
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -4,7 +4,7 @@ import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.model.vocab.Vocabulary;
-import com.mescode.japanese.repo.VocabRepository;
+import com.mescode.japanese.repository.VocabRepository;
 
 import javax.swing.*;
 import java.awt.*;

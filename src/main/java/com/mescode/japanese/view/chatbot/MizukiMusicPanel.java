@@ -2,7 +2,7 @@ package com.mescode.japanese.view.chatbot;
 
 import com.mescode.japanese.service.music.MusicPlayer;
 import com.mescode.japanese.service.music.MusicState;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;

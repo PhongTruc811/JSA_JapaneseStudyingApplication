@@ -3,8 +3,8 @@ package com.mescode.japanese.view.settings;
 import com.mescode.japanese.app.context.AppContext;
 import com.mescode.japanese.app.navigation.AppNavigator;
 import com.mescode.japanese.app.navigation.AppRoute;
-import com.mescode.japanese.model.User;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.model.user.User;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -220,7 +220,7 @@ public class SettingFrame extends JFrame {
         panel.add(createActionRow(
                 "i",
                 "Japanese Alphabet Quiz",
-                "Version " + appContext.getAppVersion() + " | Kana, vocabulary, and grammar practice.",
+                "Version " + appContext.appVersion,
                 "About",
                 false,
                 false,
@@ -345,7 +345,7 @@ public class SettingFrame extends JFrame {
 
     private void showAboutDialog() {
         JOptionPane.showMessageDialog(this,
-                "Japanese Alphabet Quiz\nVersion " + appContext.getAppVersion()
+                "Japanese Alphabet Quiz\nVersion " + appContext.appVersion
                         + "\nPractice kana, vocabulary, and grammar in one desktop app.",
                 "About",
                 JOptionPane.INFORMATION_MESSAGE);

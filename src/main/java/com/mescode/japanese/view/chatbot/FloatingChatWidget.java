@@ -5,7 +5,7 @@ import com.mescode.japanese.service.chatbot.ChatService;
 import com.mescode.japanese.service.chatbot.MizukiAction;
 import com.mescode.japanese.service.music.MusicPlayer;
 import com.mescode.japanese.service.music.RepeatMode;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

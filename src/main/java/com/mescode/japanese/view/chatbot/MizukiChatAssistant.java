@@ -1,8 +1,8 @@
 package com.mescode.japanese.view.chatbot;
 
 import com.mescode.japanese.app.context.AppContext;
-import com.mescode.japanese.model.Kanji;
-import com.mescode.japanese.repo.KanjiRepository;
+import com.mescode.japanese.model.kanji.Kanji;
+import com.mescode.japanese.repository.KanjiRepository;
 import com.mescode.japanese.service.chatbot.MizukiChatService;
 import com.mescode.japanese.service.music.MusicPlayer;
 

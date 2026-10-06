@@ -7,7 +7,7 @@ import com.mescode.japanese.model.grammar.GrammarPoint;
 import com.mescode.japanese.model.grammar.GrammarProgress;
 import com.mescode.japanese.model.grammar.GrammarQuestion;
 import com.mescode.japanese.model.grammar.GrammarQuizResult;
-import com.mescode.japanese.repo.GrammarRepository;
+import com.mescode.japanese.repository.GrammarRepository;
 
 import java.text.Normalizer;
 import java.time.Instant;

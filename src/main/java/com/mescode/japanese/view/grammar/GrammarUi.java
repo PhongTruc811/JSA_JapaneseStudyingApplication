@@ -1,10 +1,9 @@
 package com.mescode.japanese.view.grammar;
 
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.AlphaComposite;

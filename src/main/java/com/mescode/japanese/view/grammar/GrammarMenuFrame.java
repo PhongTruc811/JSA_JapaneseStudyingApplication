@@ -5,7 +5,7 @@ import com.mescode.japanese.app.navigation.AppRoute;
 import com.mescode.japanese.model.grammar.GrammarChapter;
 import com.mescode.japanese.model.grammar.GrammarChapterProgress;
 import com.mescode.japanese.service.GrammarService;
-import com.mescode.japanese.view.theme.UITheme;
+import com.mescode.japanese.util.theme.UITheme;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

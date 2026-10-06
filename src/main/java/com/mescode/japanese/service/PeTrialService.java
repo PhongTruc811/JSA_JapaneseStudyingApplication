@@ -1,7 +1,7 @@
 package com.mescode.japanese.service;
 
 import com.mescode.japanese.model.petrial.PeTrialQuestion;
-import com.mescode.japanese.repo.PeTrialRepository;
+import com.mescode.japanese.repository.PeTrialRepository;
 
 import java.util.List;
 

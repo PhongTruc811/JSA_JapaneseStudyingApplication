@@ -1,106 +1,44 @@
 package com.mescode.japanese.service;
 
-import com.mescode.japanese.model.kana.Kana;
-import com.mescode.japanese.model.kana.KanaType;
-import com.mescode.japanese.model.kana.KanaQuizGroup;
+import com.mescode.japanese.model.kana.*;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Chọn câu hỏi Kana")
 class KanaServiceTest {
-
     @Test
-    void getRandomKana_whenPreviousIsNull_shouldReturnKanaFromList() {
-        List<Kana> kanaList = sampleKanaList();
-        KanaService service = new KanaService(kanaList, new SequenceRandom(1), false);
-
-        Kana result = service.getRandomKana(null);
-
-        assertNotNull(result);
-        assertSame(kanaList.get(1), result);
+    @DisplayName("Không lặp lại kana vừa hỏi khi còn lựa chọn khác")
+    void avoidsPreviousKana() {
+        var first = new Kana("あ", "a", KanaType.gojuuon);
+        var second = new Kana("い", "i", KanaType.gojuuon);
+        var service = new KanaService(List.of(first, second), new Random(12), false);
+        assertSame(second, service.getRandomKana(first));
     }
 
     @Test
-    void getRandomKana_shouldNotReturnPreviousKana() {
-        List<Kana> kanaList = sampleKanaList();
-        KanaService service = new KanaService(kanaList, new SequenceRandom(0, 1), false);
-
-        Kana previous = kanaList.get(0);
-        Kana result = service.getRandomKana(previous);
-
-        assertNotNull(result);
-        assertNotNull(previous);
-        assertNotNull(result.getKana());
-        assertNotNull(previous.getKana());
-        assertEquals("い", result.getKana());
+    @DisplayName("Nhóm chỉ có một kana vẫn trả lời được nhiều lượt")
+    void supportsSingleKana() {
+        var kana = new Kana("ん", "n", KanaType.gojuuon);
+        var service = new KanaService(List.of(kana), new Random(1), false);
+        assertSame(kana, service.getRandomKana(null));
+        assertSame(kana, service.getRandomKana(kana));
     }
 
     @Test
-    void getRandomGojuon_whenPreviousIsNull_shouldReturnGojuonKana() {
-        List<Kana> kanaList = sampleKanaList();
-        KanaService service = new KanaService(kanaList, new SequenceRandom(2), false);
-
-        Kana result = service.getRandomGojuon(null);
-
-        assertNotNull(result);
-        assertEquals(KanaType.gojuuon, result.getType());
-        assertEquals("う", result.getKana());
-    }
-
-    @Test
-    void getRandomGojuon_shouldNotReturnPreviousKana() {
-        List<Kana> kanaList = sampleKanaList();
-        KanaService service = new KanaService(kanaList, new SequenceRandom(0, 1), false);
-
-        Kana previous = kanaList.get(0);
-        Kana result = service.getRandomGojuon(previous);
-
-        assertNotNull(result);
-        assertEquals(KanaType.gojuuon, result.getType());
-        assertEquals("い", result.getKana());
-    }
-
-    @Test
-    void groupConstructor_shouldOnlyReturnKanaFromSelectedGroup() {
-        List<Kana> kanaList = List.of(
-                new Kana("あ", "a", KanaType.gojuuon),
-                new Kana("が", "ga", KanaType.dakuon),
-                new Kana("ぱ", "pa", KanaType.handakuon),
-                new Kana("きゃ", "kya", KanaType.youon)
-        );
-
-        KanaService service = new KanaService(kanaList, KanaQuizGroup.YOUON);
-        Kana result = service.getRandomKana(null);
-
-        assertEquals(KanaType.youon, result.getType());
-        assertEquals("きゃ", result.getKana());
-    }
-
-    private List<Kana> sampleKanaList() {
-        return List.of(
-                new Kana("あ", "a", KanaType.gojuuon),
-                new Kana("い", "i", KanaType.gojuuon),
-                new Kana("う", "u", KanaType.gojuuon)
-        );
-    }
-
-    private static final class SequenceRandom extends Random {
-        private final int[] values;
-        private int index = 0;
-
-        private SequenceRandom(int... values) {
-            this.values = values;
-        }
-
-        @Override
-        public int nextInt(int bound) {
-            int value = index < values.length ? values[index++] : 0;
-            return Math.floorMod(value, bound);
-        }
+    @DisplayName("Lọc đúng nhóm và báo lỗi khi nhóm không có dữ liệu")
+    void filtersSelectedGroup() {
+        var plain = new Kana("あ", "a", KanaType.gojuuon);
+        var combined = new Kana("きゃ", "kya", KanaType.youon);
+        var service = new KanaService(List.of(plain, combined), KanaQuizGroup.YOUON);
+        assertSame(combined, service.getRandomKana(null));
+        assertThrows(IllegalArgumentException.class,
+                () -> new KanaService(List.of(plain), KanaQuizGroup.YOUON));
+        assertTrue(KanaQuizGroup.DAKUON.matches(KanaType.handakuon));
+        assertFalse(KanaQuizGroup.GOJUUON.matches(KanaType.youon));
     }
 }
