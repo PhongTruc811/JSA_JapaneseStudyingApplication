@@ -7,6 +7,7 @@ import com.mescode.japanese.model.vocab.Vocabulary;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -17,11 +18,20 @@ public class VocabRepository {
     private final Type type = new TypeToken<List<Vocabulary>>(){}.getType();
     private final Type keySetType = new TypeToken<Set<String>>(){}.getType();
     private final Gson gson = new Gson();
-    private final String customPath = "user_data" + System.getProperty("file.separator") + "user_vocab.json";
-    private final String favoritesPath = "user_data" + System.getProperty("file.separator") + "favorite_vocab.json";
-    private final String learnedPath = "user_data" + System.getProperty("file.separator") + "learned_vocab.json";
+    private final Path userDataDirectory;
+    private final String customPath;
+    private final String favoritesPath;
+    private final String learnedPath;
 
     public VocabRepository() {
+        this(Path.of("user_data"));
+    }
+
+    public VocabRepository(Path userDataDirectory) {
+        this.userDataDirectory = Objects.requireNonNull(userDataDirectory);
+        customPath = userDataDirectory.resolve("user_vocab.json").toString();
+        favoritesPath = userDataDirectory.resolve("favorite_vocab.json").toString();
+        learnedPath = userDataDirectory.resolve("learned_vocab.json").toString();
     }
 
     public List<Vocabulary> getVocabs() {
@@ -44,7 +54,7 @@ public class VocabRepository {
     public List<Vocabulary> getVocabsByChapter(List<Vocabulary> original, Integer customChapter) {
         List<Vocabulary> filtered = original.stream()
                 .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
-                .filter(vocabulary -> Objects.equals(vocabulary.getKana(), customChapter))
+                .filter(vocabulary -> Objects.equals(vocabulary.getChapter(), customChapter))
                 .toList();
         return filtered;
     }
@@ -135,7 +145,7 @@ public class VocabRepository {
     }
 
     private void ensureUserDataDirectory() {
-        File dir = new File("user_data");
+        File dir = userDataDirectory.toFile();
         if (!dir.exists()) {
             dir.mkdirs();
         }

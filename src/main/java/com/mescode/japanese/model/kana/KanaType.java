@@ -4,5 +4,6 @@ public enum KanaType {
     gojuuon,
     dakuon,
     youon,
-    handakuon
+    handakuon,
+    sokuon
 }
