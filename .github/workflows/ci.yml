@@ -1,0 +1,89 @@
+# ============================NOTE================================
+# CI - Continuous Integration
+#
+# Mục đích:
+# - Checkout source code
+# - Thiết lập đúng phiên bản JDK của project
+# - Compile source code
+# - Chạy automated tests
+# - Package / verify project bằng Maven
+# - Lưu JUnit test reports
+# - Lưu executable fat JAR dưới dạng GitHub Actions artifact
+#
+# Lưu ý:
+# Workflow này hiện chỉ thực hiện CI.
+# Chưa thực hiện CD / release / jpackage.
+# ================================================================
+
+
+# define các sự kiện sẽ kích hoạt workflow
+name: CI (Continuous Integration)
+on:
+  # cho phép vòa github -> Actions -> CI -> Run workflow
+  # và chạy CI thủ công mà không cần tạo commit/push mới
+  workflow_dispatch:
+  # Chạy CI sau mỗi lần push trực tiếp lên master và các branch có tên bắt đầu bằng ci/
+  push:
+    branches:
+      - master
+      - 'ci/**'
+  # Chạy CI khi Pull Request có đích (base branch) là master.
+  # Mặc định GitHub sẽ chạy khi:
+  # - PR được mở
+  # - Có commit mới được push vào PR
+  # - PR được mở lại
+  pull_request: # Nhớ chọn setup default branch trong repository là -master
+    branches:
+      - master # Chạy workflow này khi push lần đầu lên `master` hoặc nhánh `ci/**`, có kết quả ngay
+
+# cấp quyền đọc code cho CI trong rep, hiện chưa cần quyền ghi / chỉnh sửa
+permissions:
+  contents: read
+jobs:
+  # job duy nhất này chịu trách nhiệm build + test toàn bộ project
+  build-and-test:
+    name: build-and-test # Tên hiển thị của job trên GitHub Actions
+    runs-on: ubuntu-24.04 # GitHub sẽ tạo một runner Ubuntu 24.04 mới để thực thi job này
+    timeout-minutes: 10
+
+    steps:
+      # Clone/checkout source code của commit hiện tại vào Gihub Actions Runner
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      # Cài Temurin JDK 24 để đồng bộ hóa với JDK có trong pom.xml của dự án
+      - name: Set up Java 24
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '24'
+          cache: maven
+
+      # In phiên bản của Java và Maven vào log.
+      - name: Show tool versions
+        # có thể thêm allure -version sau này
+        run: |
+          java -version
+          mvn -version
+
+      # tái hiện bước verification (tạo Baseline ở B2) đã kiểm tra ở local
+      # lifecycle: clean -> compile -> test -> package -> verify
+      - name: Compile, test, and package
+        run: mvn -B -ntp clean verify
+
+      - name: Upload JUnit reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: junit-reports
+          path: target/surefire-reports/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload executable JAR
+        uses: actions/upload-artifact@v7
+        with:
+          name: japanese-alphabet-quiz
+          path: target/*-all.jar
+          if-no-files-found: error
+          retention-days: 14
