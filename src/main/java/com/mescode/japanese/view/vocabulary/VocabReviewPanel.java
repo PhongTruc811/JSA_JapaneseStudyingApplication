@@ -25,7 +25,7 @@ public final class VocabReviewPanel extends JPanel {
     private final JMenuItem shuffle = new JMenuItem("Xáo trộn thẻ");
     private final JMenuItem reset = new JMenuItem("Ôn lại chapter từ đầu");
     private final JPopupMenu settings = new JPopupMenu();
-    private final JLabel title = new JLabel("Ôn từ vựng");
+    private final JLabel title = new JLabel("Chọn chapter và ôn tập với thẻ từ vựng");
     private final JLabel position = new JLabel("", SwingConstants.CENTER);
     private final JProgressBar progress = new JProgressBar();
     private final ReviewButton card = new ReviewButton("", false, true);

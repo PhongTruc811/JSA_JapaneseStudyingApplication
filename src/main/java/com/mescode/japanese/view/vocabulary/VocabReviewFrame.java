@@ -13,7 +13,7 @@ public final class VocabReviewFrame extends JFrame {
     private final Consumer<Boolean> themeListener;
 
     public VocabReviewFrame(AppNavigator navigator) {
-        super("Ôn tập từ vựng theo chapter");
+        super();
         context = navigator.getAppContext();
         VocabReviewPanel panel = new VocabReviewPanel(context.getVocabs(), context.isDarkMode(),
                 () -> navigator.navigateTo(AppRoute.Vocab));
