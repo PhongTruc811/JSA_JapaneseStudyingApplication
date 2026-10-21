@@ -46,7 +46,7 @@ public class VocabRepository {
     private List<Vocabulary> custom_VocabFilter(List<Vocabulary> original) {
         List<Vocabulary> filtered = original.stream()
                 .filter(vocabulary -> vocabulary!= null && vocabulary.getChapter() != null)
-                .filter(vocabulary -> vocabulary.getChapter() >=1 && vocabulary.getChapter() <=5)
+                .filter(vocabulary -> vocabulary.getChapter() >=1 && vocabulary.getChapter() <=6)
                 .toList();
         return filtered;
     }

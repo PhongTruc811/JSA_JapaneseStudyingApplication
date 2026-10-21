@@ -32,9 +32,9 @@ on:
   # - PR được mở
   # - Có commit mới được push vào PR
   # - PR được mở lại
-  pull_request: # Nhớ chọn setup default branch trong repository là -master
+  pull_request: # nếu setup default branch trong repository là -master
     branches:
-      - master # Chạy workflow này khi push lần đầu lên `master` hoặc nhánh `ci/**`, có kết quả ngay
+      - master
 
 # cấp quyền đọc code cho CI trong rep, hiện chưa cần quyền ghi / chỉnh sửa
 permissions:
@@ -42,6 +42,7 @@ permissions:
 jobs:
   # job duy nhất này chịu trách nhiệm build + test toàn bộ project
   build-and-test:
+    # name; runs-on; timeout-minutes là những thuộc tính nhằm setup cấu hình cho job
     name: build-and-test # Tên hiển thị của job trên GitHub Actions
     runs-on: ubuntu-24.04 # GitHub sẽ tạo một runner Ubuntu 24.04 mới để thực thi job này
     timeout-minutes: 10

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 public class PeTrialRepository {
-    public static final String DATA_RESOURCE = "/data/pe_trial/pe_trial.json";
+    public static final String DATA_RESOURCE = "/data/quiz/minitest.json";
     private static final List<String> EXPECTED_OPTIONS = List.of("A", "B", "C", "D");
     private static final int EXPECTED_QUESTION_COUNT = 30;
     private final Gson gson = new Gson();

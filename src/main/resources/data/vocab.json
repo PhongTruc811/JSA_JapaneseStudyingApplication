@@ -1928,7 +1928,7 @@
   {
     "kana": "ゲーム",
     "kanji": "",
-    "meaning": "Trò chơi",
+    "meaning": "Trò chơi (game)",
     "chapter": 5,
     "romaji": "geemu"
   },
@@ -2406,14 +2406,14 @@
     "kanji": "横浜で野球の試合があります",
     "meaning": "Có trận đấu bóng chày ở Yokohama",
     "chapter": 6,
-    "romaji": "yokohamadeyakyuunoshiaigaarimasu"
+    "romaji": "yokohama de yakyuu no shiai ga arimasu"
   },
   {
     "kana": "チケットがにまいあります",
     "kanji": "チケットが２枚あります",
     "meaning": "Tôi có 2 vé",
     "chapter": 6,
-    "romaji": "chikettoganimaiarimasu"
+    "romaji": "chiketto ga nimai arimasu"
   },
   {
     "kana": "ざんねん",
@@ -2432,7 +2432,7 @@
   {
     "kana": "いいですね",
     "kanji": "",
-    "meaning": "Hay đấy, được đấy",
+    "meaning": "Hay đấy / được đấy",
     "chapter": 6,
     "romaji": "iidesune"
   },

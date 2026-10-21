@@ -45,7 +45,8 @@ public class FloatingChatWidget extends JPanel implements AutoCloseable {
             "Chào bạn, mình là Mizuki san!",
             "^3^",
             "Học tiếng Nhật cùng mình nhé ^v^",
-            "Bạn cần tra từ vựng? Mizuki có thể giúp nha ^v^",
+            "Bạn cần tra từ vựng?",
+            "Mizuki sẽ giúp bạn",
             "Mình sẽ giúp bạn làm quiz về từ vựng :3"
     };
     private static final String CONTENT_FONT = selectContentFont();
@@ -1076,11 +1077,17 @@ public class FloatingChatWidget extends JPanel implements AutoCloseable {
             messageBubbles.clear();
             typingBubble = null;
             addMessage(
-                    "こんにちは! Mình là Mizuki — người bạn học tiếng Nhật của bạn.\n"
-                            + "Mình có thể tra Kana, Kanji, từ vựng, tạo mini quiz và xem tiến độ học. "
-                            + "Chọn một gợi ý bên dưới hoặc hỏi “Cách dùng Mizuki” để xem hướng dẫn đầy đủ.",
+                    "こんにちは!\n"
+                            + "Mình là Mizuki — trợ lý AI hỗ trợ học tiếng Nhật\n"
+                            + "\n"
+                            + "Mình sẽ hỗ trợ bạn:\n"
+                            + "1. từ vựng / Kana / Kanji\n"
+                            + "2. tạo mini quiz\n"
+                            + "3. Xem tiến độ học của bạn.\n"
+                            + ""
+                            + "Click chọn một gợi ý bên dưới hoặc nhập “Cách dùng Mizuki” để xem hướng dẫn đầy đủ nhé",
                     false,
-                    "MIZUKI • DỮ LIỆU LOCAL"
+                    "MIZUKI • LOCAL DATA"
             );
             setSuggestions(List.of("Cách dùng Mizuki", "Phát nhạc", "Tạo quiz nhanh"));
             inputArea.setText("");

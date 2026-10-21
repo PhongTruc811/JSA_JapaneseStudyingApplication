@@ -163,7 +163,7 @@ public class MizukiChatService implements ChatService {
         // Đoạn reply của Mizuki  đầu tiên khi gui tin nhắn chào hỏi (hi, chao ban,
         if (isGreeting(command)) {
             return new MizukiReply(
-                    "こんにちは! Mình là Mizuki — người bạn học tiếng Nhật của bạn. "
+                    "こんにちは! Mình là Mizuki — trợ lý AI hỗ trợ bạn trong việc học tiếng Nhật"
                             + "Mình có thể tra trực tiếp "
                             + kanaEntries.size() + " Kana, " + vocabularies.size() + " từ vựng và "
                             + kanjis.size() + " Kanji đang có trong ứng dụng, hoàn toàn offline. "

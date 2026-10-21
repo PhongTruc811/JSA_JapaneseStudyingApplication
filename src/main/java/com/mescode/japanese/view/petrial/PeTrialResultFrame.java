@@ -121,7 +121,7 @@ public class PeTrialResultFrame extends JFrame {
         JButton changeMode = button("Change mode", false, card, border, title, accent);
         JButton retry = button("Try again", true, card, border, title, accent);
         menu.addActionListener(event -> navigator.navigateTo(AppRoute.AppMenu));
-        changeMode.addActionListener(event -> navigator.navigateTo(AppRoute.PETrialSP26));
+        changeMode.addActionListener(event -> navigator.navigateTo(AppRoute.MiniTest));
         retry.addActionListener(event -> navigator.restartPeTrialQuiz(difficulty));
         actions.add(menu);
         actions.add(changeMode);

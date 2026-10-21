@@ -85,7 +85,7 @@ public class AppNavigator implements AutoCloseable {
                 return;
             }
         }
-        if (appRoute == AppRoute.PETrialSP26) {
+        if (appRoute == AppRoute.MiniTest) {
             peTrialConfig = PeTrialDifficultyDialog.showDialog(currentFrame, appContext.isDarkMode());
             if (peTrialConfig == null) {
                 return;
@@ -105,6 +105,7 @@ public class AppNavigator implements AutoCloseable {
             case HiraQuiz, KataQuiz -> createKanaQuiz(appRoute, kanaQuizOptions);
             // Vocabulary Module
             case Vocab -> currentFrame = new VocabMenuFrame(this);
+                case VocabReview -> currentFrame = new VocabReviewFrame(this);
                 case ShowVocab -> currentFrame = new ShowVocabFrame(this, appContext.getVocabs());
                 case ShowKanji -> currentFrame = new ShowKanjiFrame(this, new KanjiRepository().getKanjis());
                 case VocabQuiz -> createVocabQuiz(vocabularyQuizConfig);
@@ -113,7 +114,7 @@ public class AppNavigator implements AutoCloseable {
                 case GrammarLesson -> currentFrame = new GrammarLessonFrame(this, "chapter-1");
                 case GrammarQuiz -> currentFrame = new GrammarQuizFrame(this, "chapter-1");
             // PE Module
-            case PETrialSP26 -> createPeTrialQuiz(peTrialConfig);
+            case MiniTest -> createPeTrialQuiz(peTrialConfig);
             case Settings -> currentFrame = new SettingFrame(this, appContext);
             default -> throw new IllegalArgumentException("Unknown screen");
         }
