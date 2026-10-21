@@ -38,13 +38,9 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-/**
- * Compact full-featured controller for the application-wide Mizuki playlist.
- * Transport icons are painted with Graphics2D so they render consistently
- * without relying on symbol fonts installed on the operating system.
- */
+
+// Panel sẽ được hiện ra khi user nhấn vào hộp nhạc
 final class MizukiMusicPanel extends JPanel {
-    private static final Font UI_FONT = new Font("Segoe UI", Font.PLAIN, 12);
     private static final Font UI_FONT_MEDIUM = new Font("Segoe UI Semibold", Font.BOLD, 12);
     private static final BufferedImage MIZUKI_MUSIC_PET = loadPetImage();
 
@@ -56,7 +52,6 @@ final class MizukiMusicPanel extends JPanel {
     private final RoundedSurface playerCard = new RoundedSurface(18);
     private final MiniMizukiPet artwork = new MiniMizukiPet();
     private final JLabel titleLabel = new JLabel("Chưa có nhạc");
-    private final JLabel artistLabel = new JLabel("Playlist của Mizuki");
     private final JLabel elapsedLabel = timeLabel("0:00", SwingConstants.LEFT);
     private final JLabel durationLabel = timeLabel("0:00", SwingConstants.RIGHT);
     private final JSlider seekSlider = new JSlider(0, 1000, 0);
@@ -106,13 +101,10 @@ final class MizukiMusicPanel extends JPanel {
         JPanel metadata = transparentPanel();
         metadata.setLayout(new BoxLayout(metadata, BoxLayout.Y_AXIS));
         titleLabel.setFont(new Font("Segoe UI Semibold", Font.BOLD, 15));
-        artistLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        artistLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         metadata.add(Box.createVerticalGlue());
         metadata.add(titleLabel);
         metadata.add(Box.createVerticalStrut(3));
-        metadata.add(artistLabel);
         metadata.add(Box.createVerticalGlue());
         nowPlaying.add(metadata, BorderLayout.CENTER);
 
@@ -226,8 +218,6 @@ final class MizukiMusicPanel extends JPanel {
             boolean available = nextState != null && nextState.available();
             if (available) {
                 titleLabel.setText(nextState.track().title());
-                String artist = nextState.track().artist();
-                artistLabel.setText(artist.isBlank() ? "Playlist của Mizuki" : artist);
                 elapsedLabel.setText(formatTime(nextState.positionMillis()));
                 durationLabel.setText(formatTime(nextState.durationMillis()));
                 int seekValue = nextState.durationMillis() <= 0L
@@ -250,7 +240,6 @@ final class MizukiMusicPanel extends JPanel {
                 artwork.setPlaying(nextState.playing());
             } else {
                 titleLabel.setText("Chưa có nhạc");
-                artistLabel.setText("Thêm WAV/MP3 vào playlist của Mizuki");
                 elapsedLabel.setText("0:00");
                 durationLabel.setText("0:00");
                 seekSlider.setValue(0);
@@ -297,7 +286,6 @@ final class MizukiMusicPanel extends JPanel {
         playerCard.setSurface(card, border);
         artwork.setPalette(accent, glow, card);
         titleLabel.setForeground(title);
-        artistLabel.setForeground(secondary);
         elapsedLabel.setForeground(secondary);
         durationLabel.setForeground(secondary);
         volumeLabel.setForeground(secondary);

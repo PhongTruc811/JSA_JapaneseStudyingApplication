@@ -41,8 +41,8 @@ class MusicServiceTest {
     @DisplayName("Thay đổi trạng thái nhạc không tự phát âm thanh")
     void changesStateWithoutStartingPlayback() {
         var player = new JavaSoundMusicPlayer(List.of(
-                new MusicTrack("one", "Một", "Mizuki", "/missing-one.wav"),
-                new MusicTrack("two", "Hai", "Mizuki", "/missing-two.mp3")));
+                new MusicTrack("1", "Mizuki", "/missing-one.wav"),
+                new MusicTrack("2", "Mizuki", "/missing-two.mp3")));
         try {
             assertEquals(PlaybackStatus.STOPPED, player.snapshot().status());
             player.setVolume(0.6f);

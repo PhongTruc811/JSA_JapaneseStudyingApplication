@@ -63,7 +63,7 @@ public final class PlaylistLoader {
                 continue;
             }
             MusicTrack track = new MusicTrack(
-                    entry.id(), entry.title(), entry.artist(), entry.resource()
+                    entry.id(), entry.title(), entry.resource()
             );
             String label = track.id().isBlank() ? "#" + (index + 1) : track.id();
             if (track.id().isBlank() || track.title().isBlank() || track.resource().isBlank()) {

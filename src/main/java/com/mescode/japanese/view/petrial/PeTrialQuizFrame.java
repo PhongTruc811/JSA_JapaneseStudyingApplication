@@ -27,7 +27,7 @@ public class PeTrialQuizFrame extends JFrame implements PeTrialQuizView {
     private final List<JButton> navigationButtons = new ArrayList<>();
     private final Map<String, JButton> answerButtons = new LinkedHashMap<>();
     private final QuestionImagePanel imagePanel = new QuestionImagePanel();
-    private final JLabel titleLabel = new JLabel("PE Trial Spring 2026");
+    private final JLabel titleLabel = new JLabel("Mini Test");
     private final JLabel metadataLabel = new JLabel();
     private final JLabel progressLabel = new JLabel("Question 0 / 30");
     private final JLabel timerLabel = new JLabel();

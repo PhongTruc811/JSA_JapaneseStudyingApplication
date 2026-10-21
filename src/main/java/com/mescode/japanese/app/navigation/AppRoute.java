@@ -12,10 +12,11 @@ public enum AppRoute {
     Vocab,
         AddVocab,
         VocabQuiz,
+        VocabReview,
         ShowVocab,
         ShowKanji,
     Grammar,
         GrammarLesson,
         GrammarQuiz,
-    PETrialSP26,
+    MiniTest,
 }

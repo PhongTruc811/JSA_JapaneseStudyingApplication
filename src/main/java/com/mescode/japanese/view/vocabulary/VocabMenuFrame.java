@@ -111,6 +111,7 @@ public class VocabMenuFrame extends JFrame {
                 new MenuEntry("Add new word", "Thêm từ vựng mới của riêng bạn", "+", AppRoute.AddVocab),
                 new MenuEntry("Vocabulary", "Bảng liệt kê tất cả các từ vựng tiếng Nhật", "語", AppRoute.ShowVocab),
                 new MenuEntry("Kanji", "Bảng liệt kê tất cả các từ Kanji", "漢", AppRoute.ShowKanji),
+                new MenuEntry("Ôn tập theo chapter", "Lật thẻ từ vựng và ôn lại những từ chưa nhớ", "↻", AppRoute.VocabReview),
                 new MenuEntry("Do quiz", "Practice all kanji & hiragana vocabularies", "?", AppRoute.VocabQuiz)
 
                 ))));

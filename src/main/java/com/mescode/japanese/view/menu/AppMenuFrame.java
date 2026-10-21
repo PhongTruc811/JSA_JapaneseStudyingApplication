@@ -111,7 +111,7 @@ public class AppMenuFrame extends JFrame {
                 new MenuSection("Learning modules", List.of(
                         new MenuEntry("Kana", "Bảng chư cái Hiragana & Katakana", "あ", AppRoute.Kana),
                         new MenuEntry("Vocabulary", "Từ vựng", "語", AppRoute.Vocab),
-                        new MenuEntry("PE_Trial", "Luyện đề PE Spring 2026", "試", AppRoute.PETrialSP26),
+                        new MenuEntry("Mini Test", "Làm bài kiểm tra", "試", AppRoute.MiniTest),
                         new MenuEntry("Grammar", "Ngữ pháp", "文", AppRoute.Grammar)
                 )),
                 new MenuSection("Settings", List.of(

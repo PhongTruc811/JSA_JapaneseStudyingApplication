@@ -3,13 +3,11 @@ package com.mescode.japanese.service.music;
 public record MusicTrack(
         String id,
         String title,
-        String artist,
         String resource
 ) {
     public MusicTrack {
         id = clean(id);
         title = clean(title);
-        artist = clean(artist);
         resource = normalizeResource(resource);
     }
 
