@@ -1,21 +1,31 @@
 # CD = Continuous Delivery: tag a verified version to publish its Windows installer.
 # Manual runs and pull requests build the MSI for review without publishing a release.
+# workflow này chạy test, đóng gói Windows MSI và tạo GitHub Release khi push tag v*.*.*
+
+# Tên workflow hiển thị trong tab Actions (Github)
 name: CD (Windows Release)
 
 on:
+  # Chỉ push tag mới kích hoạt phát hành; push/merge vào master không tự phát hành.
+  # Đây là bộ lọc glob; bước Validate bên dưới mới kiểm tra phiên bản chính xác.
   push:
     tags:
       - 'v*.*.*'
+  # PR vào master chỉ chạy thử khi thay đổi workflow này hoặc script đóng gói.
   pull_request:
     branches: [master]
     paths:
       - '.github/workflows/release.yml'
       - 'scripts/Package-Windows.ps1'
+  # Cho phép Run workflow thủ công để test và tạo MSI, không tạo GitHub Release.
   workflow_dispatch:
 
+# Mặc định chỉ đọc repository; riêng job publish-release được cấp quyền ghi.
 permissions:
   contents: read
 
+# Các lần chạy cùng một ref (nhánh/tag/PR) dùng chung nhóm, tránh chạy đồng thời.
+# Không tự hủy lần đang chạy khi có lần chạy mới trong cùng nhóm.
 concurrency:
   group: windows-release-${{ github.ref }}
   cancel-in-progress: false
@@ -23,6 +33,7 @@ concurrency:
 jobs:
   build-installer:
     name: Test and package Windows MSI
+    # jpackage cần môi trường Windows và WiX để tạo bộ cài .msi.
     runs-on: windows-2022
     timeout-minutes: 30
     defaults:
@@ -30,12 +41,17 @@ jobs:
         shell: pwsh
 
     steps:
+      # Step này tải source code về máy chạy của GitHub
       - name: Checkout source
         uses: actions/checkout@v7
         with:
+          # Lấy toàn bộ lịch sử để kiểm tra commit của tag có thuộc master không.
           fetch-depth: 0
+          # Không lưu token xác thực vào cấu hình Git sau checkout.
           persist-credentials: false
 
+      # Mọi lần chạy đều yêu cầu pom.xml có version X.Y.Z, không dùng -SNAPSHOT.
+      # Riêng push tag còn yêu cầu tag = vX.Y.Z và commit đã nằm trong master.
       - name: Validate release version
         id: version
         run: |
@@ -53,16 +69,19 @@ jobs:
               git merge-base --is-ancestor HEAD origin/master
               if ($LASTEXITCODE -ne 0) { throw 'Release tag must point to a commit on master.' }
           }
+          # Xuất version để bước tạo MSI dùng lại qua steps.version.outputs.version.
           "version=$version" >> $env:GITHUB_OUTPUT
-
+      # Chuẩn bị java 24
       - name: Set up Java 24
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '24'
           architecture: x64
+          # Cache dependency Maven để giảm thời gian tải ở các lần chạy sau.
           cache: maven
 
+      # Kiểm tra Java, Maven, jpackage và WiX
       - name: Show tool versions and locate WiX
         run: |
           $ErrorActionPreference = 'Stop'
@@ -81,18 +100,26 @@ jobs:
               -not (Test-Path -LiteralPath (Join-Path $wixBin 'light.exe'))) {
               throw 'WiX candle.exe/light.exe are missing.'
           }
+          # Bổ sung PATH cho các bước tiếp theo để jpackage tìm thấy công cụ WiX.
           $wixBin >> $env:GITHUB_PATH
 
+      # Build lại từ đầu và chạy test; chỉ đóng gói MSI nếu Maven verify thành công (BUILD SUCCESS).
       - name: Compile, test, and package JAR
         run: |
           mvn -B -ntp clean verify
           if ($LASTEXITCODE -ne 0) { throw 'Maven verification failed; installer will not be built.' }
 
+      # Truyền version đã kiểm tra vào script đóng gói của dự án.
+      # Bước này gọi script Package-Windows.ps1 để:
+        #Tạo ứng dụng gồm JSA.exe, JAR và Java runtime đi kèm.
+        #Đóng gói ứng dụng thành bộ cài .msi.
+        #Tạo file .sha256 để kiểm tra tính toàn vẹn của bộ cài.
       - name: Create Windows installer
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
         run: ./scripts/Package-Windows.ps1 -Version $env:RELEASE_VERSION
 
+      # Vẫn cố lưu báo cáo khi bước trước thất bại, giúp xem nguyên nhân lỗi test.
       - name: Upload JUnit reports
         if: always()
         uses: actions/upload-artifact@v7
@@ -102,6 +129,8 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      # Artifact là file đính kèm lần chạy Actions, chưa phải GitHub Release.
+      # MSI và checksum SHA-256 được lưu 14 ngày và chuyển sang job publish.
       - name: Upload installer and checksum
         uses: actions/upload-artifact@v7
         with:
@@ -114,21 +143,26 @@ jobs:
 
   publish-release:
     name: Publish GitHub Release
+    # Chỉ chạy tiếp khi job test và đóng gói hoàn tất thành công.
     needs: build-installer
     # PR/manual runs never publish. This job only receives a write token for tag pushes.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    # Job này cần quyền ghi để tạo Release và tải các file đính kèm lên repository.
     permissions:
       contents: write
 
     steps:
+      # Job chạy trên runner mới nên phải tải lại artifact do job Windows tạo ra.
       - name: Download verified Windows installer
         uses: actions/download-artifact@v8
         with:
           name: windows-installer
           path: release
 
+      # Kiểm tra file tải xuống khớp checksum trước khi phát hành.
+      # --verify-tag yêu cầu tag đã tồn tại; --generate-notes tự tạo release notes.
       - name: Verify checksum and publish
         working-directory: release
         env:
