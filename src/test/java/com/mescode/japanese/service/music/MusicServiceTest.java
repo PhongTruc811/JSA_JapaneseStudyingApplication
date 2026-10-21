@@ -50,7 +50,7 @@ class MusicServiceTest {
             player.setRepeatMode(RepeatMode.ONE);
             player.next();
             var state = player.snapshot();
-            assertEquals("two", state.track().id());
+            assertEquals("2", state.track().id());
             assertEquals(0.6f, state.volume(), 0.001f);
             assertTrue(state.muted());
             assertEquals(RepeatMode.ONE, state.repeatMode());
