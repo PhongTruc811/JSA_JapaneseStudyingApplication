@@ -172,4 +172,4 @@ jobs:
         run: |
           sha256sum --check -- *.sha256
           gh release create "$RELEASE_TAG" ./*.msi ./*.sha256 \
-            --verify-tag --title "JSA $RELEASE_TAG" --generate-notes
+            --verify-tag --title "JSA $RELEASE_TAG" --generate-notes --draft
