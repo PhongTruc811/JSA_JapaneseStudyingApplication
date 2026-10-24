@@ -91,6 +91,7 @@ $imageArgs = @(
     '--main-jar', 'JSA.jar',
     '--main-class', 'com.mescode.japanese.app.launch.Main',
     '--icon', $iconPath,
+    # vendor - đặt tên nhà phát triển (publisher) của app
     '--vendor', 'MES Code',
     '--description', 'JSA - Japanese Studying App',
     '--dest', $imageDirectory
@@ -126,7 +127,12 @@ $msiArgs = @(
     '--vendor', 'MES Code',
     '--description', 'JSA - Japanese Studying App',
     '--dest', $msiDirectory,
+    # Tùy chọn này yêu cầu cài cho tài khoản Windows hiện tại.
+    # Bộ cài sẽ mặc định cài các tệp cài đặt của app vào:
+    # C:\Users\<tên tài khoản>\AppData\Local\JSA
     '--win-per-user-install',
+    # --win-dir-chooser, bật màn hình cho người dùng chọn thư mục cài đặt app
+    '--win-dir-chooser',
     '--win-menu',
     '--win-menu-group', 'JSA',
     '--win-shortcut',
